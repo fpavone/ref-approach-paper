@@ -164,9 +164,10 @@ ggsave("../paper/graphics/k.pdf",plot_k,width=10,height=3)
 
 
 ## Posterior intervals: done with the last iteration
+load(paste("fullBayes_n50rho0.3.Rdata",sep=""))
 
-theta_ref <- extract(rhs_ref,pars=paste("theta[",1:p,"]",sep=""))
-theta_data <- extract(rhs_data,pars=paste("theta[",1:p,"]",sep=""))
+theta_ref <- rstan::extract(rhs_ref,pars=paste("theta[",1:p,"]",sep=""))
+theta_data <- rstan::extract(rhs_data,pars=paste("theta[",1:p,"]",sep=""))
 
 int_ref <- theta_ref %>% 
   map(~c(mean=mean(.),sd=sd(.))) %>%
