@@ -1,0 +1,406 @@
+\documentclass[american,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Reference model in feature selection problems},
+            pdfauthor={Federico Pavone, Juho Piironen, Aki Vehtari},
+            pdfkeywords={keywords},
+            pdfborder={0 0 0},
+            breaklinks=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=RoyalBlue,
+            filecolor=black,
+            urlcolor=RoyalBlue,
+          }
+\urlstyle{same}  % don't use monospace font for urls
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=american]{babel}
+\else
+  \usepackage{polyglossia}
+  \setmainlanguage[variant=american]{english}
+\fi
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\usepackage{placeins}
+\usepackage{graphicx,grffile,subcaption}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{3}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+   
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table,dvipsnames]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{graphicx,pdflscape}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{supertabular}
+%\usepackage{booktabs,caption,fixltx2e}
+\usepackage{booktabs,fixltx2e}
+\usepackage[font={small,it}]{caption}
+\usepackage{tcolorbox}
+\usepackage{paralist}
+\usepackage{multicol}
+\setcitestyle{round}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+
+
+\title{Reference model in feature selection problems 
+	\vspace{.1in}}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Federico Pavone, Juho Piironen, Paul-Christian B\"{u}rkner and Aki Vehtari}
+    
+    \author{
+    Federico Pavone, 
+  Juho Piironen,
+  Paul-Christian B\"{u}rkner
+  and Aki Vehtari\footnote{Helsinki Institute for Information Technology HIIT,
+  Department of Computer Science, Aalto University, Finland.}
+  }
+	 
+    
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{\today}
+    \date{\today}
+%    \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+We carry out a comparison of different methods of feature selection using or not what we call a reference model on top of the procedure, that is a model that describes well our data. We measure the performance and the stability of each method using both the standard approach, that simply relies on data, and the reference model one. We include different procedures in the comparison as a selection through high probability density posterior credibility intervals, a selection made by controlling the Q-value and the local false discovery rate. Finally, we include in the comparison also a real world data example. Results show an increased stability and a better performance of the selection in favour of the reference model approach.
+\end{abstract}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+In statistical applications, one of the main steps of the modelling workflow is covariate or feature selection. From a full Bayesian perspective, when the goal of the analysis is to do prediction, no selection should be carried out and integration over all parameters uncertainties, i.e. posterior distributions, is the recommended procedure. However, a high dimensional parameter space brings different difficulties as computation burden and overfitting. For such reason different feature selection procedures have been proposed both in the frequentist and Bayesian setting (e.g. see \cite{paper:feature_selection}, \cite{paper:vehtari_ojanen} and \cite{paper:model_selection}). Sometimes the task of the analysis is not prediction, but rather inference on which variables are significantly related to the phenomenon of interest. A common case is microarray data in medicine or biology, where for example for a very large number of genes, expression levels are measured for two sets of patients labeled as \textit{positive} or \textit{negative} to some disease (typically a \textit{small n large p} scenario).  The main goal of the analysis is to spot which subset of these genes is significantly related to the disease in order to perform further experiments. A possible way to proceed is to perform hypothesis testing to assess the significance of each gene, based on some modelling assumptions. \cite{book:efron} refers to this as multiple hypothesis testing problem. Such example could be still considered as feature selection, intended this time as the problem of ``identifying \textit{all} features that are predictive about (that is, statistically related to) the target variable'' \citep{paper:projpred}.
+
+Regardless which kind of selection problem we are trying to solve, we consider examples of the reference model approach all those methods that make use of a full-encompassing model, i.e. the reference one, to carry out the selection. The idea of using a reference model is already present in some works from the 60s as \cite{paper:reference_lindley}. It is also the basis for the projection predictive approach \citep{paper:original_proj, paper:projpred}, from which we have taken the hint of using the reference model as a filter (see Section \ref{reference-model-approach}).
+
+\begin{itemize}
+\item add original contribution that are:
+\item motivation and example on how the use of a reference model improves the selection (projpred example)
+\item a comparison between using a reference model or not in the normal means problem  both with simulated data and the bodyfat data
+\end{itemize}
+
+The paper is structured as follows. In Section \ref{reference-model-approach} we introduce the idea of the reference model, its benefits with examples and how we used it as a filter on our data in a very simple way. In Section \ref{comparison} we use different methods for feature selection comparing the selection results using or not the reference model in the framework of the normal means problem. Finally, in Section \ref{conclusions} we present our conclusions.
+
+\hypertarget{reference-model-approach}{%
+\section{Reference model approach to feature selection}\label{reference-model-approach}}
+
+The reference model approach has his roots in  the $\mathcal{M}$-\textit{complete} framework \citep{book:bernardo_smith,paper:vehtari_ojanen} and started to be used in the feature selection context already starting from the 60s with \cite{paper:reference_lindley}. There is not a specific definition of what a reference model is; ideally any full-encompassing model which has a good predictive performance is a candidate reference model. General guidelines on how to devise it are the same about any model in a data analysis context, expect for the fact that no selection is carried out for the reference model. \cite{paper:projpred} showed that through the projection predictive approach the reference model can helps in terms of stability and model size in the selection process. In this Section we aim to give some hints on why this happens and on how we can generally rely on a reference model approach to feature selection with a simple example.
+
+Consider the following data generation mechanism for each statistical unit, already used in \cite{paper:projpred}:
+\
+\begin{alignat}{2} \label{eq:simulated_data}
+     &f\sim N(0,1) && \nonumber \\ 
+     Y|&f\sim N(f,1) && \\
+     X_{j}|&f \overset{iid}{\sim} N(\sqrt{\rho}f,1-\rho) \quad &&j=1,..,k \nonumber \\
+     X_{j}|&f \overset{iid}{\sim} N(0,1) &&j=k+1,..,p \nonumber
+\end{alignat}
+$f$ is the latent variable of interest of which $Y$ is a noisy observation. The first $k$ covariates are significantly related to the target variable $Y$ and correlated among themselves. Precisely $\rho$ is the correlation among any pair of the first $k$ covariates, whereas $\sqrt{\rho}$ and $\sqrt{\rho}/2$ are the level of correlation between any significant covariate and respectively $f$ and $Y$. Figure \ref{fig:correlation} shows the scatter plot of the absolute value of the sample correlation of each feature with the point prediction by a reference model, in this case see model \eqref{eq:ref_mod}, against the absolute value of the sample correlation of each feature with the noisy observations $\{y\}_{i=1}^{n}$. Looking at the marginal distribution, we observe that using a reference model the two group of features, i.e. relevant and non-relevant, have a minor overlap with respect to when the correlation is computed using directly the observed data. Therefore the significance of each covariate is more clearly described when those are compared to a less noisy representation of the true phenomenon of interest, that is the prediction done by a reference model. 
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.3\textwidth]{graphics/correlation.pdf}
+  \caption{Sample correlation plot of each feature (relevant in red, non-relevant in blue) with the target variable $y$ and the latent variable $f$ respectively on the x and y axis. Simulation parameters: $n=70$, $\rho=0.3$, $k=100$, $p=1000$.\\}
+  \label{fig:correlation}
+\end{figure}
+
+
+What is shown in Figure \ref{fig:correlation} is related also to the projection predictive approach. In case of a submodel belonging to the generalised linear model family, it happens that the draw-by-draw projection coincide with the maximum likelihood estimator with observed data substituted with reference model's predictions \citep{paper:projpred}. It is possible to see the idea of the reference model as a filter on our data also from the projection of the predictive distribution itself. Let us call $p_{\text{ref}}(\tilde{y}|D)$ the posterior predictive distribution for a new observation $\tilde{y}$ for the reference model and let $\pi(\theta)$ and $q_{\pi}(\tilde{y})$ be respectively the submodel parameter and the induced predictive distributions. The projection of the predictive distribution allows to find the optimal parameter distribution $\pi^{*}$ minimising the KL discrepancy among the induced predictive distribution of the submodel and the reference model one:
+\
+\begin{equation} 
+\pi^{*}\quad \text{s.t.} \quad \text{KL}[p_{\text{ref}}(\tilde{y}|D)||q_{\pi^{*}}(\tilde{y})]=\underset{\pi}{\text{min}} \; \text{KL}[p_{\text{ref}}(\tilde{y}|D)||q_{\pi}(\tilde{y})] 
+\end{equation}
+Consider now the predictive performance of such submodel, a common utility in Bayesian context is the expected log-predictive density defined as:
+\
+\begin{equation} 
+\text{elpd}[q_{\pi}]=\int \text{log}\,q_{\pi}(\tilde{y})p_{t}(\tilde{y})d\tilde{y} 
+\end{equation}
+where $p_{t}$ is the distribution of a new observation under the true data generation mechanism. Maximising the elpd of a model is equivalent to minimising the KL-divergence of its predictive distribution from the true data generation mechanism. Therefore the projection corresponds to maximising the elpd using as distribution of the true data generation mechanism the posterior predictive distribution of the reference model, i.e.:
+\
+\begin{equation} \label{proj_as_filter}
+\underset{\pi}{\text{min}} \; \text{KL}[p_{\text{ref}}(\tilde{y}|D)||q_{\pi}(\tilde{y})] \leftrightarrow \underset{\pi}{\text{max}} \; \int \text{log}\,q_{\pi}(\tilde{y})p_{\text{ref}}(\tilde{y}|D)d\tilde{y} 
+\end{equation}
+Equation \eqref{proj_as_filter} clearly shows the action of the reference model as a filter on our target observations, substituting the unknown true data generation mechanism, that is usually estimated with the data empirical distribution, with the best known approximation that is available, i.e. the reference model posterior predictive distribution.
+
+A simple, but effective, reference model approach that can be used on top of any feature selection procedure consists in substituting the target observations with a point prediction of the reference model, e.g. posterior predictive mean. Afterwards any method for feature selection can be used. In Section \ref{comparison} we compare some well-known methods from the literature using both such reference model approach and the original data, observing at the end of the selection higher stability and quality of the selection thanks to the reference model.
+
+\hypertarget{projection}{%
+\subsection{Benefits of the reference model: an example with the projection predictive approach}\label{projection}}
+\begin{itemize}
+\item correct bootstrap results for projpred --> 1000 bootstrap samples 
+\item thus correct the comment on the table and on the barplot!!!!
+\end{itemize}
+
+The projection predictive approach uses the reference model to project the posterior samples in the submodels. The R-package \textit{projpred} (available at \url{https://CRAN.R-project.org/package=projpred}) implements the projection in case of submodels in the family of the generalised linear models and additionally provides a framework to choose the optimal submodel size through a predictive utility comparison between the submodels and the reference model. When the goal is prediction, the choice is usually on the smallest submodel that is sufficiently close to the reference model prediction utility score. Further details on the projection predictive approach can be found in \cite{paper:projpred}.
+
+We show the benefits of the reference model in the form of the projection approach (projpred) with respect to the stepwise backward regression (steplm) using the body fat data \citep{paper:bodyfat_johnson}. The analysis is mainly taken from Vehtari's R-notebook available at \url{https://avehtari.github.io/modelselection/bodyfat.html}, adjusting only the number of bootstrap repetitions to 1000 to have a consistent comparison with results from \cite{paper:bodyfat}. The target variable of interest is the amount of body fat, which is measured with a complex and expensive procedure, and the original covariates are 13 anthropometric measurements (e.g. height, weight), some of which are highly correlated among themselves and thus provide some challenges in the model selection, for a total of 251 observations. The goal is to find the simplest model which is able to describe, that is to predict, sufficiently well the amount of fat. 
+
+\cite{paper:bodyfat} report the results using the stepwise backward elimination with a significance level of 0.157 with AIC selection fixing abdomen and height to be always included in the model. We implement the selection via projection: the reference model includes all the covariates using as a prior the regularised horseshoe, submodels are explored using a forward search, the predictive utility is the expected log-predictive density (elpd) estimated using PSIS-LOO \citep{paper:psis_loo}. In order to automatise the procedure, we select the submodel size as the smallest which has an elpd score higher than the reference model with probability 0.05. Figure \ref{fig:inclusion_frequencies} shows the bootstrap inclusions frequencies combining the results from \cite{paper:bodyfat} for the stepwise backward elimination and our experiments for the projection. The projection predictive approach has only two variables with inclusion frequencies above 50 (abdomen is the only included always), while the stepwise regression has seven features, of which abdomen and height are fixed. Such a lower stability of the stepwise regression can be observed also in the bootstrap model selection frequencies reported in Table \ref{tab:model_frequencies}. The first five selected models have a cumulative frequency of 74\% with projpred, whereas with the stepwise regression only of 11.5\%. In addition to that we note that the size of the selected model is much smaller when using projpred.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/inc_prob.pdf}
+  \caption{Bootstrap inclusion frequencies after 1000 bootstrap samples.}
+  \label{fig:inclusion_frequencies}
+\end{figure}
+
+
+\begin{table}[tp]
+\scriptsize
+\centering
+\begin{tabular}{l||l|r||l|r}
+  \hline
+M & projpred & Freq & steplm & Freq  \\ 
+  \hline
+1 & abdomen, weight & 37 & abdomen, height, wrist, age, chest, biceps & 32 \\
+2 & abdomen, wrist & 10 & abdomen, height, wrist, age, neck, forearm, thigh, hip & 29 \\
+3 & abdomen, height & 10 & abdomen, height, wrist, age, forearm, chest & 19 \\
+4 & abdomen, height, wrist & 9 & abdomen, height, wrist, age, neck, forearm, chest & 19 \\
+5 & abdomen, weight, wrist & 8 & abdomen, height, wrist, age, neck, forearm, chest, thigh, hip & 19 \\
+6 & abdomen, chest, height, wrist & 3 & abdomen, height, wrist, age, neck, chest, biceps & 18 \\
+7 & abdomen, height, neck, wrist & 2 & abdomen, height, wrist, age, neck, thigh, biceps, hip & 16 \\
+8 & abdomen, age, wrist & 2 & abdomen, height, wrist, age, neck, forearm & 15 \\
+9 & abdomen, age, height, neck, thigh, wrist & 2 & abdomen, height, wrist, age, neck, biceps & 15 \\
+10 & abdomen, chest & 1 & abdomen, height, wrist, age, beck, forearm, chest, biceps & 14 \\
+   \hline
+\end{tabular}
+\caption{Bootstrap model selection frequencies after 1000 bootstrap samples.}
+\label{tab:model_frequencies}
+\end{table}
+
+Table \ref{tab:model_performances} reports the predictive performances, in terms of root mean square error, of the full model and the correspondent selected model using both the projection predictive approach and the stepwise backward elimination. We also repeat the selection after adding uncorrelated noisy features up to a total of 100 covariates and report in such a case both the size of the selected model and the number of selected noisy features. While with the original data we do not observe any gain using projpred in terms of predictive performance (we do observe a smaller size for the selected model, however with a much higher computational cost), when noisy features are added the projection is able to notably improve the predictive performance keeping the same submodel size, whereas the stepwise regression selects a much larger submodel including a large number (32 over 38) of noisy features.
+
+\begin{table}[tp]
+\scriptsize
+\centering
+\begin{tabular}{l|r|r|r|r}
+  \hline
+ & rmse.full & rmse.sel & size.sel & noisy.sel \\ 
+  \hline
+projpred & 4.4 & 4.5 & 2 & -  \\
+steplm & 4.4 & 4.5 & 7 & - \\
+\hline
+\hline
+projpred & $^{*}$4.4 & $^{*}$4.5 & 2 & 0  \\
+steplm & 5.3 & 5.5 & 38 & 32 \\
+   \hline
+\end{tabular}
+\caption{Model predictive performances with original data (top table) and adding noisy features (bottom table). Results with an asterisk using 10-fold CV, otherwise 20-fold CV.}
+\label{tab:model_performances}
+\end{table}
+
+
+\hypertarget{comparison}{%
+\section{A comparison in the normal means problem framework}\label{comparison}}
+
+In this Section we show the benefits of the use of a reference model. We consider as reference problem the normal means estimation problem, which consists in estimating the vector of means, usually sparse, of a normal vector of observations. Let us call $p$ the dimensionality of the vector of means and let $\{z_{j}\}_{j=1}^{p}$ be the vector of observations, the normal means problem can be written as follows:
+\
+\begin{equation}\label{eq:normal_means_problem}
+Z_{j}|\theta_{j},\sigma\overset{ind}{\sim}N(\theta_{j},\sigma^{2}) \quad j=1,..,p
+\end{equation}
+Note that it is equivalent to a linear regression where the design matrix is the identity one. This formulation can be retrieved in different ways, a common example is given by microarray data, where a large set of genes are usually tested in two groups of patient labelled as positive or negative to some disease. The objective of the analysis is to spot the whole subset of statistically relevant genes to the disease and one possible way to proceed is to compute the two-samples $t$-statistics for each gene and after combining it with the cumulative density function of the standard distribution, the resulting data can be used in the problem formulation \eqref{eq:normal_means_problem}. For further details see the examples in \cite{paper:efron, book:efron}. 
+\\
+In our examples we retrieve the normal means problem from the sample correlation using the Fisher $z$-transformation approximation \citep{paper:hawkins}. Suppose to have a continuous target random variable $Y$ and a set of $p$ continuous covariates $\{X_{j}\}_{j=1}^{p}$ and let us call $\rho_{j}=Cor(Y,X_{j})$. Suppose to observe $n$ statistical units and define $r_{j}$ the sample correlation between the observations of the target variables $\{y_{i}\}_{i=1}^{n}$ and the j-th covariate $\{x_{ij}\}_{i=1}^{n}$. Let finally refer to the function $\text{tanh}^{-1}(\cdot)$ as $T_{F}(\cdot)$. It holds the following modelling approximation (assuming each pair $(Y,X_{j})$ normally distributed):
+\
+\begin{equation}
+T_{F}(r_{j})\overset{ind}{\sim} N(T_{F}(\rho_{j}),\frac{1}{n-3}) \quad j=1,..,p
+\end{equation}
+Therefore rescaling the quantities $T_{F}(r_{j})$ by $\sqrt{n-3}$ and referring to the results as variables $z_{j}$, we find again formulation \eqref{eq:normal_means_problem} with unit variance:
+\
+\begin{equation} \label{eq:normal_means_problem2}
+Z_{j}|\theta_{j}\overset{ind}{\sim}N(\theta_{j},1) \quad j=1,..,p
+\end{equation}
+Note that now the quantity of interest $\theta_{j}$ stands for $\sqrt{n-3}\,T_{F}(\rho_{j})$. There are different ways to proceed with the selection from the normal means problem, we consider in our comparison both frequentist and Bayesian state-of-the-art methods. From a full-Bayesian perspective, a Bayesian regression model is fitted to the normal means problem typically using a sparsifying prior as in \cite{paper:dirichlet_laplace}, \cite{paper:horseshoe+} and \cite{paper:EBmed}. In case of continuous priors, as the Dirichlet-Laplace (DL) and the horseshoe+ priors, there is not a canonical way to complete the selection; in their experiments \cite{paper:dirichlet_laplace} use k-means clustering over the posterior samples using the DL prior, whereas \cite{paper:horseshoe+} focus the analysis on the obtained shrinkage and the correct estimation of the sparse signals using the horseshoe+ prior. We include in our experiments the DL and the regularised horseshoe prior \citep{paper:rhs}, which has shown in our opinion better scalability with respect to the horseshoe+, comparing the shrinkage and the correct estimation of the sparse signals using or not the reference model approach. The quantity of interests that we consider are the average SSE (sum of square errors) and the average SESE (sum of expected square errors), defined as follows:
+\
+\begin{align}
+\text{SSE}&=\sum_{j=1}^{p}(\hat{\theta}_{j} - \theta^{0}_{j})^{2} \label{eq:SSE} \\
+\text{SESE}&=\sum_{j=1}^{p}\mathbb{E}_{\theta_{j}}[(\theta_{j}-\theta^{0}_{j})^{2}|\mathbf{z}] \label{eq:SESE}
+\end{align}
+where $\theta_{j}^{0}=\sqrt{n-3}\,T_{F}(\rho_{j})$ is the true value, $\hat{\theta}_{j}$ is the posterior median of each parameter $\theta_{j}$ and \eqref{eq:SESE} is a sum of posterior expactations. Note that the quantity SESE takes in account also the uncertainty, thus the shrinkage, of the posterior distributions, whereas the SSE measures only the bias in the point estimates. \cite{paper:EBmed} use a mixture of a delta distribution in zero and a heavy-tailed distribution, when this is a Laplace distribution they show an interesting thresholding property of the median estimator and thus present a complete selection procedure using their prior. We include in our comparison such method using the R-package \textit{EbayesThresh} together with the control of the local false discovery rate \citep{book:efron, paper:efron}, using the R-package \textit{locfdr}, and a simple selection procedure using inclusion probability at 0.9 for the HDP posterior credible intervals using the regularised horseshoe prior. All these methods provide a complete selection procedures, we compare the result using or not a reference model on top of the procedure evaluating the average false discovery rate (i.e. ratio of the number of non-relevant selected features over the number of selected features) and the average sensitivity (i.e. ratio of the number of relevant selected features over the total number of relevant features). We also provide a comparison of the stability of the selection using the measure proposed by \cite{paper:stability}.
+
+\hypertarget{simulated-data}{%
+\subsection{Simulated data}\label{simulated-data}}
+\begin{itemize}
+\item details about hyperparameters of the methods used
+\end{itemize}
+
+First we use simulated data in order to vary the difficulty of the selection problem. We rely on the scheme \eqref{eq:simulated_data} using different levels of correlation ($\rho$) and number observation ($n$), precisely $p$ and $k$ are fixed respectively at $1000$ and $100$, whereas $n\in\{50,70,100\}$ and $\rho\in\{0.3,0.5\}$. Lower the correlation level and the number of observation are, more challenging the selection is. As mentioned, this data generation mechanism was already proposed by \cite{paper:projpred}, who also devise a reference model sufficiently good in predictions. It consists in a linear regression using the first five supervised principal components (SPCs) \citep{paper:original_spc, paper:spc} as follows:
+\
+\begin{equation}
+\label{eq:ref_mod}
+\begin{aligned}
+    Y_{i}|&\boldsymbol{\beta},\sigma^{2},\boldsymbol{u}_{i} \overset{ind}{\sim} N(\boldsymbol{u}_{i}^{T}\boldsymbol{\beta},\sigma^{2}) \quad &i=1,..,n \\
+    &\beta_{j}|\!\begin{aligned}[t] &\tau \overset{iid}{\sim} N(0,\tau^{2})\\
+    &\tau \sim t_{4}^{+}(0,s_{max}^{-2}) 
+    \end{aligned} &j=1,..,5 \\ 
+    &\sigma \sim t_{3}^{+}(0,10) \\
+\end{aligned}
+\end{equation}
+where $\boldsymbol{u}_{i}$ stays for the $i$-th SPC and $s_{max}$ denotes the sample standard deviation of the largest SPC. All model are implemented in Stan \citep{paper:stan}. The normal means problem formulation is obtained as explained in Section \ref{comparison} by Fisher-transformation. We label as ``ref'' the reference approach, which consists in using the reference model on top of the computation of the z-values, and ``data'' the standard approach based on the observed data only. In Section \ref{shrinkage-signal} we analyse in the context of full-Bayes methods the different shrinkage and signal estimation provided by the use of a reference model or not. Section \ref{complete-selection} shows results for the complete selection procedures.
+
+\hypertarget{shrinkage-signal}{%
+\subsubsection{Shrinkage and signal analysis}\label{shrinkage-signal}}
+In the framework of full-Bayes methods we analyse the effect of the reference model using two continuous hierarchical shrinkage priors: the Dirichlet-Laplace \citep{paper:dirichlet_laplace} and the regularised horseshoe prior \citep{paper:rhs}. Although the horseshoe+ prior by \cite{paper:horseshoe+} is a state-of-the-art prior for sparse signal analysis in the context of the normal means problem, we decided to include the regularised horseshoe due to its faster MCMC inference, since our purpose in this paper is not to study the best prior choice, but rather compare and show the benefits of using a reference model when carrying out variable selection. 
+As already mentioned, continuous priors do not usually give an automatic selection procedure, in this Section we study the amount of shrinkage and the bias of the posterior median looking at the SESE and the SSE (see definitions \eqref{eq:SSE} and \eqref{eq:SESE}). In the case of the regularised horseshoe prior, we also take into account the posterior mean for the shrinkage factor for each parameter $\theta_{j}$, which for model \eqref{eq:normal_means_problem2} is defined as:
+\
+\begin{equation}
+\kappa_{j}=\frac{1}{1+\tau^{2}\lambda_{j}^{2}}
+\end{equation}
+with $\tau$ and $\lambda_{j}$ respectively global and local shrinkage parameters, for further details see \cite{paper:rhs}.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/post_int.pdf}
+  \caption{Posterior intervals for the parameters of the normal means problem ($n=50$, $\rho=0.3$) using the regularised horseshoe prior. Posterior means and one standard deviation intervals depicted. Respectively in red and in blue relevant and non-relevant features. Horizontal dashed line corresponds to the true value of the mean for the relevant features.\\}
+  \label{fig:posterior_intervals}
+\end{figure}
+
+Figure \ref{fig:posterior_intervals} shows an example of posterior distributions for the model \eqref{eq:normal_means_problem2} using the regularised horseshoe prior. Respectively on the right and on the left the results using or not the reference model approach. It is evident how the reference model helps in tearing apart the signals from the noise, resulting in less biased estimates. This is quantified in Figure \ref{fig:SESE_SSE} where average SESE and SSE are depicted after 100 simulations. We observe that the reference approach (in orange) has a clear lower error estimate for both the SESE and the SSE. As $n$ and $\rho$ grow, the amount of error diminish, as expected, when using the reference model, whereas it unexpectedly increases when it is not used \hl{(WHY??)}. We also note that the two priors seem to achieve very similar results, regardless of the approach used.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/SESE_SSE.pdf}
+  \caption{Average SESE and SSE after 100 simulations.\\}
+  \label{fig:SESE_SSE}
+\end{figure}
+
+Figure \ref{fig:k} shows the posterior medians for the shrinkage factors of each parameter, averaged after 100 data simulations. Relevant and non-relevant features are respectively highlighted in red and blue. The ideal shrinkage would have $\kappa=0$ when the parameter is a signal, whereas $\kappa=1$ when it is noise. In almost every simulated scenario, the reference model approach achieves a better shrinkage, resulting in a lower posterior median value for $\kappa$ for the relevant features (in red) and a higher one for the non-relevant ones. The only exception is the case $n=50$ and $\rho=0.3$, where we observe that on average the reference model approach slightly underestimate the shrinkage factor for the non-relevant variables with the respect to the approach without a reference model. However, the shrinkage factor for the relevant features is much better estimated using a reference model with a difference in the order of 0.2 units, whereas for the non-relevant features the relative underestimation is only about 0.05.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/k.pdf}
+  \caption{Average posterior median values for the shrinkage factors after 100 simulations. Respectively in red and in blue relevant and non-relevant variables.\\}
+  \label{fig:k}
+\end{figure}
+
+
+\hypertarget{complete-selection}{%
+\subsubsection{Complete selection analysis}\label{complete-selection}}
+As complete selection procedures we consider the control of the local false discovery rate \citep{paper:efron, book:efron}, the empirical Bayes median \citep{paper:EBmed} and the selection by posterior credible intervals. The control of the local false discovery rate is applied through the R-package \textit{locfdr} using splines with 7 degrees of freedom to fit the marginal density and selecting features with local false discovery rate under the value 0.2. Such a value is the common suggested one just for the fact that it corresponds to a Bayes factor large than 36, other values can be considered and in our experience do not affect the results of the comparison. The empirical Bayes median procedure is given by the R-package \textit{EbayesThresh} and consists in fitting a Bayesian model with a prior composed by a mixture of a delta in zero and a heavy-tailed distribution. We use, as suggested, a Laplace distribution resulting in a thresholding property, i.e. there exists a threshold value such that all the data under that threshold have posterior median equal to zero. Therefore the selection is done including those parameters whose posterior median is different from zero. The hyperparameter of the Laplace distribution and the mixing weight of the prior are estimated by marginal maximum likelihood. The selection by posterior credible intervals is done using the regularised horseshoe prior and selecting those features whose highest probability density posterior credible interval does not include zero at the level 0.9.
+\\
+Figure \ref{fig:sensitivity_vs_fdr} reports the average sensitivity (on the y-axis) versus the average false discovery rate (x-axis) after 100 data simulations for the different combination of $n$ and $\rho$. For each method (different colours) the square and the circle dots respectively correspond to using or not the reference approach. The best selection performance is on the top left corner, which means lowest false discovery rate and highest sensitivity. It is possible to note that regardless of the method used for the selection, the use of a reference model improves the quality diminishing the false discovery rate (left shifting) and/or augmenting the sensitivity (up shifting). In accordance with what we would expect, higher the number of observation and the correlation are, easier the selection is and thus the benefit of the reference model are less notable, since the unprocessed data already give enough information to identify the significant variables.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr.pdf}
+  \caption{Sensitivity against false discovery rate after 100 data simulations.\\}
+  \label{fig:sensitivity_vs_fdr}
+\end{figure}
+
+Figure \ref{fig:stability} shows the estimates of the stability measure proposed by \cite{paper:stability} with 0.95 confidence intervals after 100 simulations. Such a measure takes in account the variability of the subset of the selected features at each simulation (originally at each bootstrap sample) modelling the selection of each variable as a Bernoulli process. Further details are available in their paper as asymptotic normal distribution, based on which confidence intervals are computed. The reference model helps improving the stability of the selection: again such benefit is notable when the problem is more difficult (small $n$ and $\rho$). We observe also less uncertainty in the stability estimates for the reference approach (i.e. the width of the 0.95 confidence intervals), which can be still connected to the overall stability of the procedure.
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/stability.pdf}
+  \caption{Stability estimates with 0.95 confidence intervals after 100 data simulations.\\}
+  \label{fig:stability}
+\end{figure}
+
+
+
+
+\hypertarget{real-world-data}{%
+\subsection{Real world data}\label{real-world-data}}
+
+\begin{itemize}
+\item Bodyfat data
+\item Results for local false discovery rate
+\end{itemize}
+
+\hypertarget{conclusions}{%
+\section{Conclusions and discussion}\label{conclusions}}
+
+
+\bibliography{ref_approach}
+
+
+\end{document}
