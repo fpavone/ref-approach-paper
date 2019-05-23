@@ -42,16 +42,28 @@ for (i in 1:bootnum) {
   projb <- project(bcvvs, nv = nv, ns = 4000)
   boot_est[i, colnames(as.matrix(projb)[,-(nv+2)])] <- colMeans(as.matrix(projb)[,-(nv+2)])
 }
+
+save.image("body_bootstrap.RData")
+
 boot_01 <- (boot_est != 0) * 1
 boot_inclusion <- data.frame(projpred_incp=(apply(boot_01, 2, function(x) sum(x) / length(x) * 100)))
 boot_01 <- data.frame(boot_01)
 
-bn <- data.frame(boot_nvs) %>% group_by_all() %>% count(sort=TRUE)
-bd <- boot_01 %>% group_by_at(vars(-X.Intercept.)) %>% count(sort=TRUE)
-boot_inclusion <- boot_inclusion %>% tibble::rownames_to_column(var="variable") %>% filter(variable != "X.Intercept.") %>% arrange(-projpred_incp)
+bn <- data.frame(boot_nvs) %>% 
+  group_by_all() %>% 
+  count(sort=TRUE)
+bd <- boot_01 %>% 
+  group_by_at(vars(-X.Intercept.)) %>% 
+  count(sort=TRUE)
+boot_inclusion <- boot_inclusion %>% 
+  tibble::rownames_to_column(var="variable") %>% 
+  filter(variable != "X.Intercept.") %>% 
+  arrange(-projpred_incp)
 boot_inclusion$steplm_incp <- c(100, 28, 98, 100, 85, 63, 51, 48, 34, 43, 54, 41, 18)
-boot_inclusion <- boot_inclusion %>% rename(projpred=projpred_incp, steplm=steplm_incp)
+boot_inclusion <- boot_inclusion %>% 
+  rename(projpred=projpred_incp, steplm=steplm_incp)
 cumsum(bd$n)
+
 for (i in 1:20) {
   print(paste(paste0(colnames(bd)[c(as.logical(bd[i,1:13]),FALSE)], collapse=", "),bd$n[i],sep=", "))
 }
