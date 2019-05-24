@@ -203,24 +203,25 @@ ggsave("../paper/graphics/post_int.pdf",post_int,width=10,height=3)
 #####################################################
 ###### BOOTSTRAP INCLUSION PROBABILITES PLOT ########
 
-data_plot <- tibble(variable = c("abdomen","weight","wrist","height",
-                                 "age", "neck", "biceps", "chest", "thigh",
-                                 "ankle", "forearm", "hip", "knee"),
-                    projpred = c(100,58,46,35,9,9,6,5,4,4,3,0,0),
-                    steplm = c(100,28,98,100,85,63,51,48,34,43,54,41,18))
+load("bodyfat_bootstrap.RData")
 
-inc_prob <- data_plot %>%
+inc_prob <- boot_inclusion %>%
   gather(key="method", value="freq", projpred,steplm) %>%
   ggplot(aes(x=variable,y=freq,fill=method)) + 
   geom_bar(stat="identity",position=position_dodge()) +
   labs(x="",y="",fill="") +
   #guides(fill=FALSE) +
-  scale_x_discrete(limits=data_plot$variable) +
+  scale_x_discrete(limits=boot_inclusion$variable) +
   scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58")) +
   theme_light()
 
 ggsave("../paper/graphics/inc_prob.pdf",inc_prob,width=10,height=3)
 
+
+# Model selection frequencies
+for (i in 1:20) {
+  print(paste(paste0(colnames(bd)[c(as.logical(bd[i,1:13]),FALSE)], collapse=", "),bd$n[i],sep=", "))
+}
 
 
 #####################################################

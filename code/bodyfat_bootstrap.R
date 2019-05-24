@@ -43,7 +43,7 @@ for (i in 1:bootnum) {
   boot_est[i, colnames(as.matrix(projb)[,-(nv+2)])] <- colMeans(as.matrix(projb)[,-(nv+2)])
 }
 
-save.image("body_bootstrap.RData")
+#save.image("body_bootstrap.RData")
 
 boot_01 <- (boot_est != 0) * 1
 boot_inclusion <- data.frame(projpred_incp=(apply(boot_01, 2, function(x) sum(x) / length(x) * 100)))
@@ -57,7 +57,7 @@ bd <- boot_01 %>%
   count(sort=TRUE)
 boot_inclusion <- boot_inclusion %>% 
   tibble::rownames_to_column(var="variable") %>% 
-  filter(variable != "X.Intercept.") %>% 
+  filter(variable != "(Intercept)") %>% 
   arrange(-projpred_incp)
 boot_inclusion$steplm_incp <- c(100, 28, 98, 100, 85, 63, 51, 48, 34, 43, 54, 41, 18)
 boot_inclusion <- boot_inclusion %>% 
@@ -68,4 +68,4 @@ for (i in 1:20) {
   print(paste(paste0(colnames(bd)[c(as.logical(bd[i,1:13]),FALSE)], collapse=", "),bd$n[i],sep=", "))
 }
 
-save(boot_01, boot_inclusion, boot_nvs, bbn, file = "bodyfat_bootstrap.RData")
+save.image("bodyfat_bootstrap.RData")

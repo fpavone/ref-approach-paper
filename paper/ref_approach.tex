@@ -215,16 +215,12 @@ A simple, but effective, reference model approach that can be used on top of any
 
 \hypertarget{projection}{%
 \subsection{Benefits of the reference model: an example with the projection predictive approach}\label{projection}}
-\begin{itemize}
-\item correct bootstrap results for projpred --> 1000 bootstrap samples 
-\item thus correct the comment on the table and on the barplot!!!!
-\end{itemize}
 
 The projection predictive approach uses the reference model to project the posterior samples in the submodels. The R-package \textit{projpred} (available at \url{https://CRAN.R-project.org/package=projpred}) implements the projection in case of submodels in the family of the generalised linear models and additionally provides a framework to choose the optimal submodel size through a predictive utility comparison between the submodels and the reference model. When the goal is prediction, the choice is usually on the smallest submodel that is sufficiently close to the reference model prediction utility score. Further details on the projection predictive approach can be found in \cite{paper:projpred}.
 
 We show the benefits of the reference model in the form of the projection approach (projpred) with respect to the stepwise backward regression (steplm) using the body fat data \citep{paper:bodyfat_johnson}. The analysis is mainly taken from Vehtari's R-notebook available at \url{https://avehtari.github.io/modelselection/bodyfat.html}, adjusting only the number of bootstrap repetitions to 1000 to have a consistent comparison with results from \cite{paper:bodyfat}. The target variable of interest is the amount of body fat, which is measured with a complex and expensive procedure, and the original covariates are 13 anthropometric measurements (e.g. height, weight), some of which are highly correlated among themselves and thus provide some challenges in the model selection, for a total of 251 observations. The goal is to find the simplest model which is able to describe, that is to predict, sufficiently well the amount of fat. 
 
-\cite{paper:bodyfat} report the results using the stepwise backward elimination with a significance level of 0.157 with AIC selection fixing abdomen and height to be always included in the model. We implement the selection via projection: the reference model includes all the covariates using as a prior the regularised horseshoe, submodels are explored using a forward search, the predictive utility is the expected log-predictive density (elpd) estimated using PSIS-LOO \citep{paper:psis_loo}. In order to automatise the procedure, we select the submodel size as the smallest which has an elpd score higher than the reference model with probability 0.05. Figure \ref{fig:inclusion_frequencies} shows the bootstrap inclusions frequencies combining the results from \cite{paper:bodyfat} for the stepwise backward elimination and our experiments for the projection. The projection predictive approach has only two variables with inclusion frequencies above 50 (abdomen is the only included always), while the stepwise regression has seven features, of which abdomen and height are fixed. Such a lower stability of the stepwise regression can be observed also in the bootstrap model selection frequencies reported in Table \ref{tab:model_frequencies}. The first five selected models have a cumulative frequency of 74\% with projpred, whereas with the stepwise regression only of 11.5\%. In addition to that we note that the size of the selected model is much smaller when using projpred.
+\cite{paper:bodyfat} report the results using the stepwise backward elimination with a significance level of 0.157 with AIC selection fixing abdomen and height to be always included in the model. We implement the selection via projection: the reference model includes all the covariates using as a prior the regularised horseshoe, submodels are explored using a forward search, the predictive utility is the expected log-predictive density (elpd) estimated using PSIS-LOO \citep{paper:psis_loo}. In order to automatise the procedure, we select the submodel size as the smallest which has an elpd score higher than the reference model with probability 0.05. Figure \ref{fig:inclusion_frequencies} shows the bootstrap inclusions frequencies combining the results from \cite{paper:bodyfat} for the stepwise backward elimination and our experiments for the projection. The projection predictive approach has only two variables with inclusion frequencies above 50 (abdomen is the only included always), the third most included is `wrist' at 49.5 and the fourth is `height' at 27.8, while the stepwise regression has seven features above 50, of which abdomen and height are fixed. Such a lower stability of the stepwise regression can be observed also in the bootstrap model selection frequencies reported in Table \ref{tab:model_frequencies}. The first five selected models have a cumulative frequency of almost 70\% with projpred, whereas with the stepwise regression only of 11.8\%. In addition to that we note that the size of the selected model is much smaller when using projpred.
 
 \begin{figure}[tp]
   \centering
@@ -239,18 +235,18 @@ We show the benefits of the reference model in the form of the projection approa
 \centering
 \begin{tabular}{l||l|r||l|r}
   \hline
-M & projpred & Freq & steplm & Freq  \\ 
+M & projpred & Freq (\%) & steplm & Freq (\%)  \\ 
   \hline
-1 & abdomen, weight & 37 & abdomen, height, wrist, age, chest, biceps & 32 \\
-2 & abdomen, wrist & 10 & abdomen, height, wrist, age, neck, forearm, thigh, hip & 29 \\
-3 & abdomen, height & 10 & abdomen, height, wrist, age, forearm, chest & 19 \\
-4 & abdomen, height, wrist & 9 & abdomen, height, wrist, age, neck, forearm, chest & 19 \\
-5 & abdomen, weight, wrist & 8 & abdomen, height, wrist, age, neck, forearm, chest, thigh, hip & 19 \\
-6 & abdomen, chest, height, wrist & 3 & abdomen, height, wrist, age, neck, chest, biceps & 18 \\
-7 & abdomen, height, neck, wrist & 2 & abdomen, height, wrist, age, neck, thigh, biceps, hip & 16 \\
-8 & abdomen, age, wrist & 2 & abdomen, height, wrist, age, neck, forearm & 15 \\
-9 & abdomen, age, height, neck, thigh, wrist & 2 & abdomen, height, wrist, age, neck, biceps & 15 \\
-10 & abdomen, chest & 1 & abdomen, height, wrist, age, beck, forearm, chest, biceps & 14 \\
+1 & abdomen, weight & 34.2 & abdomen, height, wrist, age, chest, biceps & 3.2 \\
+2 & abdomen, wrist & 13.3 & abdomen, height, wrist, age, neck, forearm, thigh, hip & 2.9 \\
+3 & abdomen, weight, wrist & 7.6 & abdomen, height, wrist, age, forearm, chest & 1.9 \\
+4 & abdomen, height & 7.4 & abdomen, height, wrist, age, neck, forearm, chest & 1.9 \\
+5 & abdomen, height, wrist & 6.7 & abdomen, height, wrist, age, neck, forearm, chest, thigh, hip & 1.9 \\
+6 & abdomen, age, wrist & 2.9 & abdomen, height, wrist, age, neck, chest, biceps & 1.8 \\
+7 & abdomen, height, neck & 2.2 & abdomen, height, wrist, age, neck, thigh, biceps, hip & 1.6 \\
+8 & abdomen, age, height, wrist & 1.2 & abdomen, height, wrist, age, neck, forearm & 1.5 \\
+9 & abdomen, weight, thigh & 1.1 & abdomen, height, wrist, age, neck, biceps & 1.5 \\
+10 & abdomen, weight, neck & 1.0 & abdomen, height, wrist, age, beck, forearm, chest, biceps & 1.4 \\
    \hline
 \end{tabular}
 \caption{Bootstrap model selection frequencies after 1000 bootstrap samples.}
