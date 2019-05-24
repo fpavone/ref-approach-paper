@@ -8,3 +8,4 @@ paper/*
 !paper/*.pdf
 *.Rdata
 *.RData
+*.rds
