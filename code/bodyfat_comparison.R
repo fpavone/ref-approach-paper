@@ -43,7 +43,7 @@ ci95_X_data <- matrix(0,nrow=times,ncol=p)
 ## Stan models
 fit_model <- stan_model("model.stan", model_name = "reference_model",
                         auto_write = rstan_options("auto_write"=TRUE))
-rhs_model <- stan_model("mht_rhs.stan", model_name = "rhs_model",
+rhs_model <- stan_model("mht_rhs_sigmaprior.stan", model_name = "rhs_model",
                         auto_write = rstan_options("auto_write"=TRUE))
 
 for(i in 1:times){
@@ -90,20 +90,20 @@ for(i in 1:times){
   z_data <- sqrt(n-3) * 0.5*log((1+r_data)/(1-r_data)) # Fisher transformation * (n-3)
   
   ## Control of of the local false discovery rate
-  lfdr_ref <- locfdr(z_ref, nulltype = 0, plot = 0, bre = 120, type = 1)
-  lfdr_data <- locfdr(z_data, nulltype = 0, plot = 0, bre = 120, type = 1)
+  lfdr_ref <- locfdr(z_ref, nulltype = 1, plot = 0, bre = 120, type = 1)
+  lfdr_data <- locfdr(z_data, nulltype = 1, plot = 0, bre = 120, type = 1)
   
-  lfdr_sel_ref <- which(lfdr_ref$fdr<0.2)
-  lfdr_sel_data <- which(lfdr_data$fdr<0.2)
+  lfdr_sel_ref <- which(lfdr_ref$fdr<=0.2)
+  lfdr_sel_data <- which(lfdr_data$fdr<=0.2)
   
   lfdr_X_ref[i,lfdr_sel_ref] <- 1
   lfdr_X_data[i,lfdr_sel_data] <- 1
   
   ## Empirical Bayes median thresholding
   z.est_ref <- ebayesthresh(z_ref, prior = "laplace", a = NA,
-                            sdev = 1, verbose = TRUE, threshrule = "median") 
+                            sdev = NA, verbose = TRUE, threshrule = "median") 
   z.est_data <- ebayesthresh(z_data, prior = "laplace", a = NA,
-                             sdev = 1, verbose = TRUE, threshrule = "median") 
+                             sdev = NA, verbose = TRUE, threshrule = "median") 
   
   ebmt_sel_ref <- which(z.est_ref$muhat!=0)
   ebmt_sel_data <- which(z.est_data$muhat!=0)
@@ -123,7 +123,7 @@ for(i in 1:times){
   data_stan$nu_local <- rhs$df
   data_stan$slab_scale <- rhs$slab_scale
   data_stan$slab_df <- rhs$slab_df
-  data_stan$sigma <- 1 # Features are already transformed to have scale = 1 
+ # data_stan$sigma <- 1 # Features are already transformed to have scale = 1 
   
   rhs_ref <- sampling(rhs_model, data = c(data_stan,list(y = z_ref)), 
                       chain = 1, iter = 2000, seed = 38925,
