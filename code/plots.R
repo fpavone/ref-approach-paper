@@ -116,6 +116,9 @@ for(nn in c(50,70,100)){
   for(rr in c(0.3,0.5)){
     load(paste("fullBayes_n",nn,"rho",rr,".Rdata",sep=""))
     
+    # Correcting SSE and SESE to be independent of n
+    results$error <- results$error/sqrt(n-3)
+    
     table_results <- table_results %>%
       bind_rows(results)
     
