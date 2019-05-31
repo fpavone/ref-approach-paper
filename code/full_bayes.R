@@ -1,6 +1,4 @@
-library(dplyr)
-library(purrr)
-library(tibble)
+library(tidyverse)
 library(dimreduce)
 library(locfdr)
 library(EbayesThresh)
@@ -50,7 +48,7 @@ k_RHS_ref <- numeric(p)
 k_RHS_data <- numeric(p)
 
 for(i in 1:times){
-  data <- simulate_data()
+  data <- simulate_data() 
   y <- dplyr::pull(data, var="y")
   x <- dplyr::select(data, -contains("y"))
   
