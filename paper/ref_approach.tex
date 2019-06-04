@@ -299,7 +299,7 @@ steplm & 5.3 & 5.5 & 38 & 32 \\
 \subsection{Computational burden} \label{computational-burden}}
 
 \begin{itemize}
-\item add more quantitative results: e.g. times for projpred and steplm
+\item add more quantitative results: e.g. times for projpred and steplm ?? Maybe not useful
 \end{itemize}
 
 We can consider the reference model approach as a family of methods, thus providing an answer to the question what the computational burden is, is not possible, because not unique. It is possible to identify a common and inevitable overhead though, that is the cost of fitting the reference model. In the simple reference model approach we have described at the end of Section \ref{reference-model-approach}, it is actually the only added cost. In general, a full Bayesian model is advisable in order to have the best predictive performance, however including all the available features can be often quite computationally demanding. In such a case a first possible speed-up could be using screening or dimensionality reduction techniques, as for example the supervised principal components \citep{paper:original_spc,paper:piironen_spc}. However, in some cases this does not always result in an appreciable speed-up, as when there are many predictive and not correlated features and thus many of them have to be included in the reference model anyway. Other alternatives could be fixing some parameters with their maximum marginal likelihood value (typically referred as empirical Bayes) or even use frequentist approach, if predictions are good enough.
