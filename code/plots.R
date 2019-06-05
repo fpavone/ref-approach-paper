@@ -363,8 +363,8 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
   facet_grid(~n, labeller=facet.labels) + 
   #geom_abline(intercept=0, slope=1, linetype='dashed') +
-  scale_x_continuous(limits=c(0,0.9)) +
-  scale_y_continuous(limits=c(0,0.9)) +
+  scale_x_continuous(limits=c(0,0.5)) +
+  scale_y_continuous(limits=c(0.25,0.9)) +
   geom_point(aes(shape=approach),size=2.5) +
   scale_shape_manual(values = c(16,15)) +
   geom_line(aes(col=method)) +
