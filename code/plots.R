@@ -99,6 +99,10 @@ ggsave("../paper/graphics/stability.pdf",plot2,width=10,height=3)
 ###########################################
 ########### FULL BAYES PLOTS ##############
 
+#### NOTE CLEAN CODE AFTER NEW fullBayes result!!!
+# 1) no more 1/(n-3) in this script
+# 2) results_RHS and results_DL objects
+
 table_results <- tibble(error = numeric(),
                         error_type = character(),
                         prior = character(),
@@ -106,26 +110,35 @@ table_results <- tibble(error = numeric(),
                         n = numeric(),
                         rho = numeric())
 
-k_plot <- tibble(k.value = numeric(),
+k_plot_RHS <- tibble(k.value = numeric(),
                  n = numeric(),
                  rho = numeric(),
                  label = character(),
                  approach = character())
+
+k_plot_DL <- tibble(k.value = numeric(),
+                     n = numeric(),
+                     rho = numeric(),
+                     label = character(),
+                     approach = character())
 
 for(nn in c(50,70,100)){
   for(rr in c(0.3,0.5)){
     load(paste("fullBayes_n",nn,"rho",rr,".Rdata",sep=""))
     
     # Correcting SSE and SESE to be independent of n
-    results$error <- results$error/(n-3)
-    
+    #results$error <- results$error/(n-3)
+
     table_results <- table_results %>%
       bind_rows(results)
-    
-    k_plot <- k_plot %>%
-      bind_rows((k_result %>% 
-                  add_column(label = rep(c(rep('r',k),rep('s',p-k)),2)) %>%
+
+    k_plot_RHS <- k_plot_RHS %>%
+      bind_rows((k_result_RHS %>%
                   add_column(id = rep(1:p,2))))
+    
+    k_plot_DL <- k_plot_DL %>%
+      bind_rows((k_result_DL %>%
+                   add_column(id = rep(1:p,2))))
   }
 }
 
@@ -134,9 +147,10 @@ facet.labels <- labeller(error_type = function(x){x},
 
 plot_SESE_SSE <- table_results %>%
   group_by(error_type,prior,approach,n,rho) %>%
-  summarise(avg.error=mean(error)) %>%
+  summarise(avg.error=mean(error), sd.error = sd(error)) %>%
   ggplot(aes(x=n, y=avg.error, color=approach)) +
   geom_line(aes(linetype=prior)) + 
+  geom_errorbar(aes(ymin=avg.error-sd.error,ymax=avg.error+sd.error), width = 1) + 
   geom_point() +
   scale_x_continuous(breaks=c(50,70,100)) +
   facet_grid(error_type~rho, labeller=facet.labels) +
@@ -151,7 +165,7 @@ ggsave("../paper/graphics/SESE_SSE.pdf",plot_SESE_SSE,width=10,height=3)
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
 
-plot_k <- k_plot %>% 
+plot_k_RHS <- k_plot_RHS %>% 
   spread(key=approach,value=k.value) %>%
   ggplot(aes(x=data,y=ref,color=label)) +
   geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) + 
@@ -161,7 +175,19 @@ plot_k <- k_plot %>%
   guides(color=FALSE) +
   theme_light()
 
-ggsave("../paper/graphics/k.pdf",plot_k,width=10,height=3)
+ggsave("../paper/graphics/k_RHS.pdf",plot_k_RHS,width=10,height=3)
+
+plot_k_DL <- k_plot_DL %>% 
+  spread(key=approach,value=k.value) %>%
+  ggplot(aes(x=data,y=ref,color=label)) +
+  geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) + 
+  geom_point(size=0.5) + 
+  facet_grid(rho~n, labeller=facet.labels) +
+  labs(x="k.data",y="k.ref") +
+  guides(color=FALSE) +
+  theme_light()
+
+ggsave("../paper/graphics/k_DL.pdf",plot_k_DL,width=10,height=3)
 
 
 
@@ -215,6 +241,7 @@ inc_prob <- boot_inclusion %>%
   labs(x="",y="",fill="") +
   #guides(fill=FALSE) +
   scale_x_discrete(limits=boot_inclusion$variable) +
+  scale_y_continuous(labels = scales::number_format(suffix="%")) +
   scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58")) +
   theme_light()
 
