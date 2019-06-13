@@ -47,6 +47,9 @@ dl_model <- stan_model("dl_shrinkage.stan", model_name = "dl_model",
 k_RHS_ref <- numeric(p)
 k_RHS_data <- numeric(p)
 
+k_DL_ref <- numeric(p)
+k_DL_data <- numeric(p)
+
 for(i in 1:times){
   data <- simulate_data() 
   y <- dplyr::pull(data, var="y")
@@ -122,23 +125,23 @@ for(i in 1:times){
   SESE_RHS_ref <- theta_RHS_ref %>% 
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
     map(~.^2) %>%
-    map(~mean(.)) %>%
+    map(~mean(.)/(n-3)) %>%
     reduce(sum)
   SESE_RHS_data <- theta_RHS_data %>% 
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
     map(~.^2) %>%
-    map(~mean(.)) %>%
+    map(~mean(.)/(n-3)) %>%
     reduce(sum)
   
   SSE_RHS_ref <- theta_RHS_ref %>%
     map(~median(.)) %>%
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
-    map(~.^2) %>%
+    map(~(.^2)/(n-3)) %>%
     reduce(sum)
   SSE_RHS_data <- theta_RHS_data %>%
     map(~median(.)) %>%
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
-    map(~.^2) %>%
+    map(~(.^2)/(n-3)) %>%
     reduce(sum)
   
   lambda_RHS_ref <- extract(rhs_ref,pars=paste("lambda[",1:p,"]",sep=""))
@@ -177,24 +180,50 @@ for(i in 1:times){
   SESE_DL_ref <- theta_DL_ref %>% 
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
     map(~.^2) %>%
-    map(~mean(.)) %>%
+    map(~mean(.)/(n-3)) %>%
     reduce(sum)
   SESE_DL_data <- theta_DL_data %>% 
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
     map(~.^2) %>%
-    map(~mean(.)) %>%
+    map(~mean(.)/(n-3)) %>%
     reduce(sum)
   
   SSE_DL_ref <- theta_DL_ref %>%
     map(~median(.)) %>%
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
-    map(~.^2) %>%
+    map(~(.^2)/(n-3)) %>%
     reduce(sum)
   SSE_DL_data <- theta_DL_data %>%
     map(~median(.)) %>%
     map2(as.list(c(rep(true,k),rep(0,p-k))), ~ ..1 - ..2) %>%
-    map(~.^2) %>%
+    map(~(.^2)/(n-3)) %>%
     reduce(sum)
+  
+  phi_DL_ref <- extract(DL_ref,pars=paste("phi[",1:p,"]",sep=""))
+  phi_DL_data <- extract(DL_data,pars=paste("phi[",1:p,"]",sep=""))
+  
+  psi_s_DL_ref <- extract(DL_ref,pars=paste("psi_s[",1:p,"]",sep=""))
+  psi_s_DL_data <- extract(DL_data,pars=paste("psi_s[",1:p,"]",sep=""))
+  
+  tau_DL_ref <- extract(DL_ref,par="tau")
+  tau_DL_data <- extract(DL_data,par="tau")
+  
+  
+  k_DL_ref <- k_DL_ref + (psi_s_DL_ref %>%
+                              map2(phi_DL_ref,~.x*.y) %>%
+                              map(~.*tau_DL_ref$tau) %>%
+                              map(~.^2) %>%
+                              map(~. + 1) %>%
+                              map(~.^(-1)) %>%
+                              map_dbl(~mean(.)))
+  
+  k_DL_data <- k_DL_data + (psi_s_DL_data %>%
+                            map2(phi_DL_data,~.x*.y) %>%
+                            map(~.*tau_DL_data$tau) %>%
+                            map(~.^2) %>%
+                            map(~. + 1) %>%
+                            map(~.^(-1)) %>%
+                            map_dbl(~mean(.)))
   
   ## Save results
   results <- results %>%
@@ -219,11 +248,19 @@ for(i in 1:times){
   
 }
 
-k_result <- tibble(k.value = c(k_RHS_ref/times, k_RHS_data/times),
+k_result_RHS <- tibble(k.value = c(k_RHS_ref/times, k_RHS_data/times),
                    n = rep(n,p*2),
                    rho = rep(rho,p*2),
                    label = rep(c(rep('r',k),rep('s',p-k)),2),
-                   approach = c(rep(c('ref','data'),each=p)))
+                   approach = c(rep(c('ref','data'),each=p)),
+                   prior = rep('RHS',p*2))
+
+k_result_DL <- tibble(k.value = c(k_DL_ref/times, k_DL_data/times),
+                       n = rep(n,p*2),
+                       rho = rep(rho,p*2),
+                       label = rep(c(rep('r',k),rep('s',p-k)),2),
+                       approach = c(rep(c('ref','data'),each=p)),
+                       prior = rep('DL',p*2))
 
 save.image(paste("fullBayes_n",n,"rho",rho,".Rdata",sep=""))
 
