@@ -8,8 +8,8 @@ data {
 
 parameters {
   simplex[n] phi; // Dirichlet distributed parameter
-  vector<lower=0>[n] lambda; // local shrinkage parameter
-  real<lower=0> a;
+  vector<lower=0>[n] psi; // local shrinkage parameter
+  real<lower=1.0/n,upper=0.5> a;
   
   real<lower=0> tau; // global shrinkage parameter
   vector[n] z; // helper for theta = weights
@@ -17,16 +17,16 @@ parameters {
 
 transformed parameters {
   vector[n] theta; // weights
-  vector<lower=0>[n] lambda_s;
+  vector<lower=0>[n] psi_s;
   
-  lambda_s = sqrt(lambda);
-  theta = z .* lambda_s .* phi * tau;
+  psi_s = sqrt(psi);
+  theta = z .* psi_s .* phi * tau;
 }
 
 model{
   a ~ uniform(1.0/n,0.5);
   tau ~ gamma(n*a,0.5); 
-  lambda ~ exponential(0.5);
+  psi ~ exponential(0.5);
   // a ~ inv_gamma(2 + 1/(2*n^2),(1+1/(2*n^2))/n);
   phi ~ dirichlet(rep_vector(a,n));
   z ~ normal(0,1); // implies theta_j ~ normal(0, sqrt(lambda_j)*phi_j*tau)
