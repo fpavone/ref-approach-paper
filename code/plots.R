@@ -2,7 +2,6 @@
 ### Script for the plots of the paper ####
 ##########################################
 library(tidyverse)
-library(ggplot2)
 library(latex2exp)
 source("getStability.R")
 
@@ -367,7 +366,7 @@ data.plot <- tibble(n = numeric(),
                     stab.up = numeric())
 
 for(nn in c(50,70,100,251)){
-  load(paste("bodyfat_type1_n",nn,".Rdata",sep=""))
+  load(paste("bodyfat_type1_varyN_n",nn,".Rdata",sep=""))
   
   data.plot <- data.plot %>% 
     # Credibility intervals inclusion probabilities with regularized horseshoe prior
@@ -407,8 +406,8 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
   facet_grid(~n, labeller=facet.labels) + 
   #geom_abline(intercept=0, slope=1, linetype='dashed') +
-  scale_x_continuous(limits=c(0,0.55)) +
-  scale_y_continuous(limits=c(0.3,0.85), breaks = c(0.3,0.5,0.7,)) +
+  scale_x_continuous(limits=c(0,0.6)) +
+  scale_y_continuous(limits=c(0.3,0.9)) +
   geom_point(aes(shape=approach),size=2.5) +
   scale_shape_manual(values = c(16,15)) +
   geom_line(aes(col=method)) +
@@ -428,5 +427,94 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   theme_light()
 
 ggsave("../paper/graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
+
+
+############################################################
+########## BODYFAT VARIABLE SELECTION VARYING P ############
+
+k <- 13
+
+avg.sensitivity <- function(X){
+  tmp <- apply(X,1,function(x){sum(which(x==1)<=k)/k})
+  return(mean(tmp, na.rm = TRUE))
+}
+
+avg.fdr <- function(X){
+  tmp <- apply(X,1,function(x){sum(which(x==1)>k)/sum(x)})
+  return(mean(tmp, na.rm = TRUE))
+}
+
+data.plot <- tibble(n = numeric(),
+                    rho = numeric(),
+                    method = character(),
+                    approach = character(),
+                    recall = numeric(),
+                    fdr = numeric(),
+                    stab.low = numeric(),
+                    stab.mean = numeric(),
+                    stab.up = numeric())
+
+for(pp in c(100,500,1000,2000,5000)){
+  load(paste("bodyfat_type1_varyP_p",pp,".Rdata",sep=""))
+  
+  data.plot <- data.plot %>% 
+    # Credibility intervals inclusion probabilities with regularized horseshoe prior
+    bind_rows(tibble(p = rep(p,2),      
+                     method = rep("ci.90",2),
+                     approach = c("ref","data"),
+                     sensitivity = c(avg.sensitivity(ci90_X_ref),avg.sensitivity(ci90_X_data)),
+                     fdr = c(avg.fdr(ci90_X_ref),avg.fdr(ci90_X_data)),
+                     stab.low = c(getStability(ci90_X_ref)$lower,getStability(ci90_X_data)$lower),
+                     stab.mean = c(getStability(ci90_X_ref)$stability,getStability(ci90_X_data)$stability),
+                     stab.up = c(getStability(ci90_X_ref)$upper,getStability(ci90_X_data)$upper))) %>%
+    # Control of the local false discovery rate
+    bind_rows(tibble(p = rep(p,2),      
+                     method = rep("loc.fdr",2),
+                     approach = c("ref","data"),
+                     sensitivity = c(avg.sensitivity(lfdr_X_ref),avg.sensitivity(lfdr_X_data)),
+                     fdr = c(avg.fdr(lfdr_X_ref),avg.fdr(lfdr_X_data)),
+                     stab.low = c(getStability(lfdr_X_ref)$lower,getStability(lfdr_X_data)$lower),
+                     stab.mean = c(getStability(lfdr_X_ref)$stability,getStability(lfdr_X_data)$stability),
+                     stab.up = c(getStability(lfdr_X_ref)$upper,getStability(lfdr_X_data)$upper))) %>%
+    # Empirical Bayes median thresholding
+    bind_rows(tibble(p = rep(p,2),      
+                     method = rep("EB.med",2),
+                     approach = c("ref","data"),
+                     sensitivity = c(avg.sensitivity(ebmt_X_ref),avg.sensitivity(ebmt_X_data)),
+                     fdr = c(avg.fdr(ebmt_X_ref),avg.fdr(ebmt_X_data)),
+                     stab.low = c(getStability(ebmt_X_ref)$lower,getStability(ebmt_X_data)$lower),
+                     stab.mean = c(getStability(ebmt_X_ref)$stability,getStability(ebmt_X_data)$stability),
+                     stab.up = c(getStability(ebmt_X_ref)$upper,getStability(ebmt_X_data)$upper)))
+}
+
+
+
+facet.labels <- labeller(p = function(x){paste("p=",x,sep="")})
+
+## Sensitivity vs False discovery rate plot
+plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
+  facet_grid(~p, labeller=facet.labels) + 
+  #geom_abline(intercept=0, slope=1, linetype='dashed') +
+  #scale_x_continuous(limits=c(0,0.6)) +
+  #scale_y_continuous(limits=c(0.3,0.9)) +
+  geom_point(aes(shape=approach),size=2.5) +
+  scale_shape_manual(values = c(16,15)) +
+  geom_line(aes(col=method)) +
+  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method") +
+  theme_light()
+
+ggsave("../paper/graphics/bodyfat_varyingP_sensitivity_vs_fdr.pdf",plot1,width=12,height=2.1)
+
+## Stability plot
+plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) + 
+  facet_grid(~p, labeller=facet.labels) + 
+  geom_point(size=2.5) +
+  geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
+  coord_flip() +
+  labs(x="",y="Stability", col="Approach") +
+  scale_color_manual(values=c("#819FF7","#FAAC58")) +
+  theme_light()
+
+ggsave("../paper/graphics/bodyfat_varyingP_stability.pdf",plot2,width=12,height=2)
 
   
