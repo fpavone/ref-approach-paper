@@ -43,10 +43,10 @@ data.plot <- tibble(n = numeric(),
 for(nn in c(50,70,100)){
   for(rr in c(0.3,0.5)){
     load(paste("ref_approach_n",nn,"rho",rr,".Rdata",sep=""))
-    
-    data.plot <- data.plot %>% 
+
+    data.plot <- data.plot %>%
       # Credibility intervals inclusion probabilities with regularized horseshoe prior
-      bind_rows(tibble(n = rep(n,2),      
+      bind_rows(tibble(n = rep(n,2),
               rho = rep(rho,2),
               method = rep("ci.90",2),
               approach = c("ref","data"),
@@ -58,7 +58,7 @@ for(nn in c(50,70,100)){
               stab.mean = c(getStability(ci90_X_ref)$stability,getStability(ci90_X_data)$stability),
               stab.up = c(getStability(ci90_X_ref)$upper,getStability(ci90_X_data)$upper))) %>%
       # Control of the local false discovery rate
-      bind_rows(tibble(n = rep(n,2),      
+      bind_rows(tibble(n = rep(n,2),
               rho = rep(rho,2),
               method = rep("loc.fdr",2),
               approach = c("ref","data"),
@@ -70,7 +70,7 @@ for(nn in c(50,70,100)){
               stab.mean = c(getStability(lfdr_X_ref)$stability,getStability(lfdr_X_data)$stability),
               stab.up = c(getStability(lfdr_X_ref)$upper,getStability(lfdr_X_data)$upper))) %>%
       # Empirical Bayes median thresholding
-      bind_rows(tibble(n = rep(n,2),      
+      bind_rows(tibble(n = rep(n,2),
               rho = rep(rho,2),
               method = rep("EB.med",2),
               approach = c("ref","data"),
@@ -81,7 +81,7 @@ for(nn in c(50,70,100)){
               stab.low = c(getStability(ebmt_X_ref)$lower,getStability(ebmt_X_data)$lower),
               stab.mean = c(getStability(ebmt_X_ref)$stability,getStability(ebmt_X_data)$stability),
               stab.up = c(getStability(ebmt_X_ref)$upper,getStability(ebmt_X_data)$upper)))
-    
+
   }
 }
 
@@ -90,8 +90,8 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
 
 ## Sensitivity vs False discovery rate plot
-plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
-  facet_grid(rho~n, labeller=facet.labels) + 
+plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
+  facet_grid(rho~n, labeller=facet.labels) +
   geom_point(aes(shape=approach),size=2.5) +
  # geom_errorbar(aes(ymin=sensitivity-sensitivity.sd, ymax=sensitivity+sensitivity.sd)) +
  # geom_errorbarh(aes(xmin=fdr-fdr.sd, xmax=fdr+fdr.sd)) +
@@ -103,8 +103,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
 ggsave("../paper/graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
 
 ## Stability plot
-plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) + 
-  facet_grid(rho~n, labeller=facet.labels) + 
+plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
+  facet_grid(rho~n, labeller=facet.labels) +
   geom_point(size=2.5) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
@@ -141,7 +141,7 @@ k_plot_DL <- tibble(k.value = numeric(),
 for(nn in c(50,70,100)){
   for(rr in c(0.3,0.5)){
     load(paste("fullBayes_n",nn,"rho",rr,".Rdata",sep=""))
-    
+
     # Correcting SSE and SESE to be independent of n
     #results$error <- results$error/(n-3)
 
@@ -151,7 +151,7 @@ for(nn in c(50,70,100)){
     k_plot_RHS <- k_plot_RHS %>%
       bind_rows((k_result_RHS %>%
                   add_column(id = rep(1:p,2))))
-    
+
     k_plot_DL <- k_plot_DL %>%
       bind_rows((k_result_DL %>%
                    add_column(id = rep(1:p,2))))
@@ -165,8 +165,8 @@ plot_SESE_SSE <- table_results %>%
   group_by(error_type,prior,approach,n,rho) %>%
   summarise(avg.error=mean(error), sd.error = sd(error)) %>%
   ggplot(aes(x=n, y=avg.error, color=approach)) +
-  geom_line(aes(linetype=prior)) + 
-  geom_errorbar(aes(ymin=avg.error-sd.error,ymax=avg.error+sd.error), width = 1) + 
+  geom_line(aes(linetype=prior)) +
+  geom_errorbar(aes(ymin=avg.error-sd.error,ymax=avg.error+sd.error), width = 1) +
   geom_point() +
   scale_x_continuous(breaks=c(50,70,100)) +
   facet_grid(error_type~rho, labeller=facet.labels) +
@@ -181,11 +181,11 @@ ggsave("../paper/graphics/SESE_SSE.pdf",plot_SESE_SSE,width=10,height=3)
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
 
-plot_k_RHS <- k_plot_RHS %>% 
+plot_k_RHS <- k_plot_RHS %>%
   spread(key=approach,value=k.value) %>%
   ggplot(aes(x=data,y=ref,color=label)) +
-  geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) + 
-  geom_point(size=0.5) + 
+  geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) +
+  geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
   labs(x="k.data",y="k.ref") +
   guides(color=FALSE) +
@@ -193,11 +193,11 @@ plot_k_RHS <- k_plot_RHS %>%
 
 ggsave("../paper/graphics/k_RHS.pdf",plot_k_RHS,width=10,height=3)
 
-plot_k_DL <- k_plot_DL %>% 
+plot_k_DL <- k_plot_DL %>%
   spread(key=approach,value=k.value) %>%
   ggplot(aes(x=data,y=ref,color=label)) +
-  geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) + 
-  geom_point(size=0.5) + 
+  geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) +
+  geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
   labs(x="k.data",y="k.ref") +
   guides(color=FALSE) +
@@ -214,14 +214,14 @@ load(paste("fullBayes_n50rho0.3.Rdata",sep=""))
 theta_ref <- rstan::extract(rhs_ref,pars=paste("theta[",1:p,"]",sep=""))
 theta_data <- rstan::extract(rhs_data,pars=paste("theta[",1:p,"]",sep=""))
 
-int_ref <- theta_ref %>% 
+int_ref <- theta_ref %>%
   map(~c(mean=mean(.),sd=sd(.))) %>%
   transpose() %>%
   map(~flatten_dbl(.)) %>%
   map_dfc(~.) %>%
   add_column(label=c(rep("r",k),rep("s",p-k)), approach=rep('ref',p))
 
-int_data <- theta_data %>% 
+int_data <- theta_data %>%
   map(~c(mean=mean(.),sd=sd(.))) %>%
   transpose() %>%
   map(~flatten_dbl(.)) %>%
@@ -230,16 +230,16 @@ int_data <- theta_data %>%
 
 plot_data <- int_ref %>% bind_rows(int_data)
 
-post_int <- ggplot(plot_data, aes(x=rep(1:p,2),y=mean,color=label)) + 
+post_int <- ggplot(plot_data, aes(x=rep(1:p,2),y=mean,color=label)) +
   geom_hline(yintercept=true, linetype="dashed") +
-  geom_pointrange(aes(ymin=mean-sd,ymax=mean+sd),size=0.05) + 
-  facet_grid(~approach) + 
+  geom_pointrange(aes(ymin=mean-sd,ymax=mean+sd),size=0.05) +
+  facet_grid(~approach) +
   labs(x="",y="") +
   #labs(x="",y=TeX("$\\theta_{j}$")) +
   guides(color=FALSE) +
   theme_light() + theme(axis.text.x=element_blank(),
                         axis.ticks.x=element_blank(),
-                        axis.line.x=element_blank()) 
+                        axis.line.x=element_blank())
 
 ggsave("../paper/graphics/post_int.pdf",post_int,width=10,height=3)
 
@@ -252,7 +252,7 @@ load("bodyfat_bootstrap.RData")
 
 inc_prob <- boot_inclusion %>%
   gather(key="method", value="freq", projpred,steplm) %>%
-  ggplot(aes(x=variable,y=freq,fill=method)) + 
+  ggplot(aes(x=variable,y=freq,fill=method)) +
   geom_bar(stat="identity",position=position_dodge()) +
   labs(x="",y="",fill="") +
   #guides(fill=FALSE) +
@@ -297,7 +297,7 @@ model_data <- list(y = y,
                    p = nc,
                    n = n,
                    s_max = dr$sdev[1])
-fit <- stan("model.stan", data = model_data, 
+fit <- stan("model.stan", data = model_data,
             chains=1, seed=45342)
 
 draws <- as.matrix(fit) # posterior draws
@@ -321,8 +321,8 @@ cor_plot <- tibble(corXf = abs(cor(x,f)),
                    corXYfit = abs(cor(x,yfit)),
                    corXY = abs(cor(x,y)),
                    label = c(rep('r',k),rep('s',p-k))) %>%
-  ggplot(aes(x=corXY,y=corXYfit,color=label)) + 
-  geom_point(size=0.3) + 
+  ggplot(aes(x=corXY,y=corXYfit,color=label)) +
+  geom_point(size=0.3) +
   labs(x=TeX('$|Cor(x,y)|$'),y=TeX('$|Cor(x,\\hat{y})|$')) +
   guides(color=FALSE) +
   scale_x_continuous(limits = c(0,1)) +
@@ -331,11 +331,11 @@ cor_plot <- tibble(corXf = abs(cor(x,f)),
 
 
 cor_plot_final <- ggExtra::ggMarginal(cor_plot,
-                                      groupColour = TRUE, 
-                                      groupFill = TRUE, 
-                                     # size = 8, 
+                                      groupColour = TRUE,
+                                      groupFill = TRUE,
+                                     # size = 8,
                                       type = 'density',
-                                      xparams = list(size=0.5), 
+                                      xparams = list(size=0.5),
                                       yparams = list(size=0.5))
 ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 
@@ -367,10 +367,10 @@ data.plot <- tibble(n = numeric(),
 
 for(nn in c(50,70,100,251)){
   load(paste("bodyfat_type1_varyN_n",nn,".Rdata",sep=""))
-  
-  data.plot <- data.plot %>% 
+
+  data.plot <- data.plot %>%
     # Credibility intervals inclusion probabilities with regularized horseshoe prior
-    bind_rows(tibble(n = rep(n,2),      
+    bind_rows(tibble(n = rep(n,2),
                      method = rep("ci.90",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(ci90_X_ref),avg.sensitivity(ci90_X_data)),
@@ -379,7 +379,7 @@ for(nn in c(50,70,100,251)){
                      stab.mean = c(getStability(ci90_X_ref)$stability,getStability(ci90_X_data)$stability),
                      stab.up = c(getStability(ci90_X_ref)$upper,getStability(ci90_X_data)$upper))) %>%
     # Control of the local false discovery rate
-    bind_rows(tibble(n = rep(n,2),      
+    bind_rows(tibble(n = rep(n,2),
                      method = rep("loc.fdr",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(lfdr_X_ref),avg.sensitivity(lfdr_X_data)),
@@ -388,7 +388,7 @@ for(nn in c(50,70,100,251)){
                      stab.mean = c(getStability(lfdr_X_ref)$stability,getStability(lfdr_X_data)$stability),
                      stab.up = c(getStability(lfdr_X_ref)$upper,getStability(lfdr_X_data)$upper))) %>%
     # Empirical Bayes median thresholding
-    bind_rows(tibble(n = rep(n,2),      
+    bind_rows(tibble(n = rep(n,2),
                      method = rep("EB.med",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(ebmt_X_ref),avg.sensitivity(ebmt_X_data)),
@@ -403,8 +403,8 @@ for(nn in c(50,70,100,251)){
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 
 ## Sensitivity vs False discovery rate plot
-plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
-  facet_grid(~n, labeller=facet.labels) + 
+plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
+  facet_grid(~n, labeller=facet.labels) +
   #geom_abline(intercept=0, slope=1, linetype='dashed') +
   scale_x_continuous(limits=c(0,0.6)) +
   scale_y_continuous(limits=c(0.3,0.9)) +
@@ -417,8 +417,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
 ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.1)
 
 ## Stability plot
-plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) + 
-  facet_grid(~n, labeller=facet.labels) + 
+plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
+  facet_grid(~n, labeller=facet.labels) +
   geom_point(size=2.5) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
@@ -456,10 +456,10 @@ data.plot <- tibble(n = numeric(),
 
 for(pp in c(100,500,1000,2000,5000)){
   load(paste("bodyfat_type1_varyP_p",pp,".Rdata",sep=""))
-  
-  data.plot <- data.plot %>% 
+
+  data.plot <- data.plot %>%
     # Credibility intervals inclusion probabilities with regularized horseshoe prior
-    bind_rows(tibble(p = rep(p,2),      
+    bind_rows(tibble(p = rep(p,2),
                      method = rep("ci.90",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(ci90_X_ref),avg.sensitivity(ci90_X_data)),
@@ -468,7 +468,7 @@ for(pp in c(100,500,1000,2000,5000)){
                      stab.mean = c(getStability(ci90_X_ref)$stability,getStability(ci90_X_data)$stability),
                      stab.up = c(getStability(ci90_X_ref)$upper,getStability(ci90_X_data)$upper))) %>%
     # Control of the local false discovery rate
-    bind_rows(tibble(p = rep(p,2),      
+    bind_rows(tibble(p = rep(p,2),
                      method = rep("loc.fdr",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(lfdr_X_ref),avg.sensitivity(lfdr_X_data)),
@@ -477,7 +477,7 @@ for(pp in c(100,500,1000,2000,5000)){
                      stab.mean = c(getStability(lfdr_X_ref)$stability,getStability(lfdr_X_data)$stability),
                      stab.up = c(getStability(lfdr_X_ref)$upper,getStability(lfdr_X_data)$upper))) %>%
     # Empirical Bayes median thresholding
-    bind_rows(tibble(p = rep(p,2),      
+    bind_rows(tibble(p = rep(p,2),
                      method = rep("EB.med",2),
                      approach = c("ref","data"),
                      sensitivity = c(avg.sensitivity(ebmt_X_ref),avg.sensitivity(ebmt_X_data)),
@@ -492,8 +492,8 @@ for(pp in c(100,500,1000,2000,5000)){
 facet.labels <- labeller(p = function(x){paste("p=",x,sep="")})
 
 ## Sensitivity vs False discovery rate plot
-plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) + 
-  facet_grid(~p, labeller=facet.labels) + 
+plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
+  facet_grid(~p, labeller=facet.labels) +
   #geom_abline(intercept=0, slope=1, linetype='dashed') +
   #scale_x_continuous(limits=c(0,0.6)) +
   #scale_y_continuous(limits=c(0.3,0.9)) +
@@ -506,8 +506,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
 ggsave("../paper/graphics/bodyfat_varyingP_sensitivity_vs_fdr.pdf",plot1,width=12,height=2.1)
 
 ## Stability plot
-plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) + 
-  facet_grid(~p, labeller=facet.labels) + 
+plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
+  facet_grid(~p, labeller=facet.labels) +
   geom_point(size=2.5) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
@@ -517,4 +517,24 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
 
 ggsave("../paper/graphics/bodyfat_varyingP_stability.pdf",plot2,width=12,height=2)
 
-  
+#################################################
+###### BODYFAT STEPWISE w/wout REF APPROACH #####
+
+load('bodyfat_step.Rdata')
+
+data.plot <- data.frame(stat=c(noisy_ref,noisy_data,rmse_ref,rmse_data),
+                        method=rep(c(rep('ref',100),rep('data',100)),2),
+                        type=c(rep('noisy',200),rep('rmse',200)))
+
+facet.labels <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
+
+plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
+    facet_grid(~type, scales='free', labeller=facet.labels) +
+    geom_histogram(position = "identity", alpha=0.7, bins=30) +
+    labs(x='',y='',fill='Approach') +
+    guides(color=FALSE) +
+    scale_fill_manual(values=c("#819FF7","#FAAC58")) +
+    scale_color_manual(values=c("#819FF7","#FAAC58")) +
+    theme_light()
+
+ggsave("../paper/graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
