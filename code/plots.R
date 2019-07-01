@@ -2,6 +2,10 @@
 ### Script for the plots of the paper ####
 ##########################################
 library(tidyverse)
+theme_set(theme_light() +
+          theme(strip.background = element_rect(color='black',fill='white'),
+                strip.text.x = element_text(color='black'),
+                strip.text.y = element_text(color='black')))
 library(latex2exp)
 source("getStability.R")
 
@@ -97,8 +101,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
  # geom_errorbarh(aes(xmin=fdr-fdr.sd, xmax=fdr+fdr.sd)) +
   scale_shape_manual(values = c(16,15)) +
   geom_line(aes(col=method)) +
-  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method") +
-  theme_light()
+  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
+#  theme_light()
 
 ggsave("../paper/graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
 
@@ -109,8 +113,8 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
-  scale_color_manual(values=c("#819FF7","#FAAC58")) +
-  theme_light()
+  scale_color_manual(values=c("#819FF7","#FAAC58"))
+#  theme_light()
 
 ggsave("../paper/graphics/stability.pdf",plot2,width=10,height=3)
 
@@ -171,8 +175,8 @@ plot_SESE_SSE <- table_results %>%
   scale_x_continuous(breaks=c(50,70,100)) +
   facet_grid(error_type~rho, labeller=facet.labels) +
   labs(x="Number of observations", y="", linetype="Prior", color="Approach") +
-  scale_color_manual(values=c("#819FF7","#FAAC58")) +
-  theme_light()
+  scale_color_manual(values=c("#819FF7","#FAAC58"))
+ # theme_light()
 
 ggsave("../paper/graphics/SESE_SSE.pdf",plot_SESE_SSE,width=10,height=3)
 
@@ -188,8 +192,8 @@ plot_k_RHS <- k_plot_RHS %>%
   geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
   labs(x="k.data",y="k.ref") +
-  guides(color=FALSE) +
-  theme_light()
+  guides(color=FALSE)
+#  theme_light()
 
 ggsave("../paper/graphics/k_RHS.pdf",plot_k_RHS,width=10,height=3)
 
@@ -200,8 +204,8 @@ plot_k_DL <- k_plot_DL %>%
   geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
   labs(x="k.data",y="k.ref") +
-  guides(color=FALSE) +
-  theme_light()
+  guides(color=FALSE)
+#  theme_light()
 
 ggsave("../paper/graphics/k_DL.pdf",plot_k_DL,width=10,height=3)
 
@@ -231,13 +235,14 @@ int_data <- theta_data %>%
 plot_data <- int_ref %>% bind_rows(int_data)
 
 post_int <- ggplot(plot_data, aes(x=rep(1:p,2),y=mean,color=label)) +
-  geom_hline(yintercept=true, linetype="dashed") +
-  geom_pointrange(aes(ymin=mean-sd,ymax=mean+sd),size=0.05) +
-  facet_grid(~approach) +
-  labs(x="",y="") +
-  #labs(x="",y=TeX("$\\theta_{j}$")) +
-  guides(color=FALSE) +
-  theme_light() + theme(axis.text.x=element_blank(),
+    geom_hline(yintercept=true, linetype="dashed") +
+    geom_pointrange(aes(ymin=mean-sd,ymax=mean+sd),size=0.05) +
+    facet_grid(~approach) +
+    labs(x="",y="") +
+    ##labs(x="",y=TeX("$\\theta_{j}$")) +
+    guides(color=FALSE) +
+  #  theme_light() +
+    theme(axis.text.x=element_blank(),
                         axis.ticks.x=element_blank(),
                         axis.line.x=element_blank())
 
@@ -258,8 +263,8 @@ inc_prob <- boot_inclusion %>%
   #guides(fill=FALSE) +
   scale_x_discrete(limits=boot_inclusion$variable) +
   scale_y_continuous(labels = scales::number_format(suffix="%")) +
-  scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58")) +
-  theme_light()
+  scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58"))
+#  theme_light()
 
 ggsave("../paper/graphics/inc_prob.pdf",inc_prob,width=10,height=3)
 
@@ -298,7 +303,7 @@ model_data <- list(y = y,
                    n = n,
                    s_max = dr$sdev[1])
 fit <- stan("model.stan", data = model_data,
-            chains=1, seed=45342)
+            chains=1, seed=45342, save_dso=F)
 
 draws <- as.matrix(fit) # posterior draws
 sigma <- draws[,'sigma'] # noise std
@@ -326,8 +331,8 @@ cor_plot <- tibble(corXf = abs(cor(x,f)),
   labs(x=TeX('$|Cor(x,y)|$'),y=TeX('$|Cor(x,\\hat{y})|$')) +
   guides(color=FALSE) +
   scale_x_continuous(limits = c(0,1)) +
-  scale_y_continuous(limits = c(0,1)) +
-  theme_light()
+  scale_y_continuous(limits = c(0,1))
+#  theme_light()
 
 
 cor_plot_final <- ggExtra::ggMarginal(cor_plot,
@@ -404,15 +409,19 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 
 ## Sensitivity vs False discovery rate plot
 plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
-  facet_grid(~n, labeller=facet.labels) +
-  #geom_abline(intercept=0, slope=1, linetype='dashed') +
-  scale_x_continuous(limits=c(0,0.6)) +
-  scale_y_continuous(limits=c(0.3,0.9)) +
-  geom_point(aes(shape=approach),size=2.5) +
-  scale_shape_manual(values = c(16,15)) +
-  geom_line(aes(col=method)) +
-  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method") +
-  theme_light()
+    facet_grid(~n, labeller=facet.labels) +
+    ##geom_abline(intercept=0, slope=1, linetype='dashed') +
+    scale_x_continuous(limits=c(0,0.6)) +
+    scale_y_continuous(limits=c(0.3,0.9)) +
+    geom_point(aes(shape=approach),size=2.5) +
+    scale_shape_manual(values = c(16,15)) +
+    geom_line(aes(col=method)) +
+    labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
+   # theme_light() +
+   # theme(strip.background = element_rect(color='black',fill='white'),
+  #        strip.text.x = element_text(color='black'),
+   #       strip.text.y = element_text(color='black'))
+
 
 ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.1)
 
@@ -423,8 +432,8 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
-  scale_color_manual(values=c("#819FF7","#FAAC58")) +
-  theme_light()
+  scale_color_manual(values=c("#819FF7","#FAAC58"))
+#  theme_light()
 
 ggsave("../paper/graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 
@@ -500,8 +509,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
   geom_point(aes(shape=approach),size=2.5) +
   scale_shape_manual(values = c(16,15)) +
   geom_line(aes(col=method)) +
-  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method") +
-  theme_light()
+  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
+#  theme_light()
 
 ggsave("../paper/graphics/bodyfat_varyingP_sensitivity_vs_fdr.pdf",plot1,width=12,height=2.1)
 
@@ -512,8 +521,8 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
-  scale_color_manual(values=c("#819FF7","#FAAC58")) +
-  theme_light()
+  scale_color_manual(values=c("#819FF7","#FAAC58"))
+#  theme_light()
 
 ggsave("../paper/graphics/bodyfat_varyingP_stability.pdf",plot2,width=12,height=2)
 
@@ -534,7 +543,7 @@ plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
     labs(x='',y='',fill='Approach') +
     guides(color=FALSE) +
     scale_fill_manual(values=c("#819FF7","#FAAC58")) +
-    scale_color_manual(values=c("#819FF7","#FAAC58")) +
-    theme_light()
+    scale_color_manual(values=c("#819FF7","#FAAC58"))
+#    theme_light()
 
 ggsave("../paper/graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
