@@ -191,7 +191,7 @@ plot_k_RHS <- k_plot_RHS %>%
   geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) +
   geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
-  labs(x="k.data",y="k.ref") +
+  labs(x="kappa.data",y="kappa.ref") +
   guides(color=FALSE)
 #  theme_light()
 
@@ -203,7 +203,7 @@ plot_k_DL <- k_plot_DL %>%
   geom_abline(slope=1,intercept=0,linetype="dashed",size=0.5) +
   geom_point(size=0.5) +
   facet_grid(rho~n, labeller=facet.labels) +
-  labs(x="k.data",y="k.ref") +
+  labs(x="kappa.data",y="kappa.ref") +
   guides(color=FALSE)
 #  theme_light()
 
@@ -253,15 +253,16 @@ ggsave("../paper/graphics/post_int.pdf",post_int,width=10,height=3)
 #####################################################
 ###### BOOTSTRAP INCLUSION PROBABILITES PLOT ########
 
-load("bodyfat_bootstrap.RData")
-
+load("bodyfat_notebook.RData") # originally bodyfat_bootstrap.Rdata
+ordered <- boot_inclusion %>%
+    arrange(desc(projpred))
 inc_prob <- boot_inclusion %>%
   gather(key="method", value="freq", projpred,steplm) %>%
   ggplot(aes(x=variable,y=freq,fill=method)) +
   geom_bar(stat="identity",position=position_dodge()) +
   labs(x="",y="",fill="") +
   #guides(fill=FALSE) +
-  scale_x_discrete(limits=boot_inclusion$variable) +
+  scale_x_discrete(limits=ordered$variable) +
   scale_y_continuous(labels = scales::number_format(suffix="%")) +
   scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58"))
 #  theme_light()
@@ -270,8 +271,26 @@ ggsave("../paper/graphics/inc_prob.pdf",inc_prob,width=10,height=3)
 
 
 # Model selection frequencies
-for (i in 1:20) {
-  print(paste(paste0(colnames(bd)[c(as.logical(bd[i,1:13]),FALSE)], collapse=", "),bd$n[i],sep=", "))
+models_step <- as_tibble(boot_step) %>%
+    group_by_at(pred) %>%
+    count() %>%
+    ungroup() %>%
+    arrange(desc(n))
+
+for(i in 1:min(10,nrow(models_step))){
+    print(paste(paste(pred[models_step[i,pred]==1],collapse=' + '),
+                models_step$n[i]/bootnum*100))
+}
+
+models_proj <- as_tibble(boot_proj) %>%
+    group_by_at(pred) %>%
+    count() %>%
+    ungroup() %>%
+    arrange(desc(n))
+
+for(i in 1:min(10,nrow(models_proj))){
+    print(paste(paste(pred[models_proj[i,pred]==1],collapse=' + '),
+                models_proj$n[i]/bootnum*100))
 }
 
 
