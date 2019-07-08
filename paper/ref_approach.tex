@@ -153,7 +153,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-When a reference model is used to guide the variable selection problem, it acts as a noise-filter modelling the data generation mechanism. We show how this translate into higher stability and goodness of the selection. We devise a simple reference model approach that can be used on top of any feature selection procedure and use the normal means problem as a benchmark comparing different methods using or not the reference model. We include in our comparisons state-of-the-art complete selection procedures showing improved stability, false discovery rate and sensitivity of the selection, and also Bayesian methods controlling the amount of posterior shrinkage and bias. In addition to that we show in a real-world example the benefits achieved by the reference model through the projection predictive approach compared to the selection via stepwise backward regression.
+When a reference model is used to guide the variable selection problem, it acts as a noise-filter modelling the data generation mechanism. We show how this translate into higher stability and better selection of variables. We devise a simple reference model approach that can be used on top of any feature selection procedure and use the normal means problem as a benchmark comparing different methods with or without a reference model. We include in our comparisons state-of-the-art complete selection procedures showing improved stability, false discovery rate and sensitivity of the selection, and also Bayesian methods controlling the amount of posterior shrinkage and bias. Furthermore we show in a real-world example the benefits achieved by the reference model through the projection predictive approach compared to the selection via stepwise backward regression.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -161,36 +161,117 @@ When a reference model is used to guide the variable selection problem, it acts 
 
 %In statistical applications, one of the main steps of the modelling workflow is covariate or feature selection, which can be seen as a special case of model reduction. From a full Bayesian perspective, when the goal of the analysis is to do prediction, no selection should be carried out and integration over all parameters uncertainties, i.e. posterior distributions, is the recommended procedure. In a high dimensional parameter space the choice of the prior plays an even more key role due to different difficulties that can rise, as computation burden and overfitting. In addition to that, sometimes collecting all the features for a future observation is not possible or too expensive. In order to solve or, at least, simplify these problems, different feature selection procedures have been proposed both in the frequentist and the Bayesian setting \cite[e.g. see][]{paper:feature_selection,vehtari2012survey,paper:model_selection}. Sometimes the task of the analysis is not prediction, but rather inference on which variables are substantially related to the phenomenon of interest. This typically happens in a \textit{small n large p} scenario, as in many microarray data analysis in medicine or biology. A very large number of genes is usually analysed in two groups of individuals labeled as \textit{positive} or \textit{negative} to some disease. The main goal of the analysis is to spot the subset of explanatory genes in order to perform further experiments \cite[see examples in][]{efron2012large}.
 
-In statistical applications, one of the main steps of the modelling workflow is covariate or feature selection, which is a special case of model reduction. The necessity of carrying out the selection arises from different problematics. Sometimes the leading objective of the analysis is to predict future observations, thus the main focus in building the model is on the predictive performance. Yet a high dimensional parameter space often leads to dangers as overfitting or other technical problems, as expensive costs to collect all the features for future observations or computational and memory burdens (e.g. when operating on limited resources), and thus a sparser representation of the model would be preferred. In addition to that, simpler models bring also advantages in terms of interpretability. Some other times, variable selection can be also seen as an inferential tool: the interest is on knowing which variables are meaningful, or relevant, in relation to the target variable of interest. This typically happens in a \textit{small n large p} scenario, as in many microarray data analysis in medicine or biology. A very large number of genes is usually analysed in two groups of individuals labeled as \textit{positive} or \textit{negative} to some disease; the goal is to spot the subset of explanatory genes in order to perform further experiments \cite[see examples in][]{efron2012large}.
+In statistical applications, one of the main steps of the modelling
+workflow is covariate or feature selection, which is a special case of
+model reduction.  Simpler models bring advantages in reduced
+measurement costs and improved interpretability. Variable selection
+can be also used as an inferential tool: the interest is on knowing
+which variables contain predictive information about the target
+variable of interest.  The variable selection is most challenging in a
+\textit{small n large p} scenario, which is common case, for example,
+in microarray data analysis in medicine and biology.
 
-Either the target of the selection is the minimal subset of feature with good enough predictive ability, or the whole subset of relevant variables, the selection process is going to be based on assumptions regarding the ``true'' data generation mechanism. Making assumptions means making models, thus we identify two families of feature selection, or more in general model reduction, approaches depending on how the data generation mechanism is modelled: the data based and the reference model based ones. The former includes all those methods that use the observed empirical distribution as model approximation of the data generation mechanism, as for example happens in the Lasso selection \cite{tibshirani1996regression} or in the stepwise backward/forward regression, where the selected submodels balance sparsity with predictive ability on the observed data. The reference model based methods use instead the predictive distribution of a full-encompassing model, i.e. the reference model, as an approximation of the data generation mechanism. Such an idea is widely present in the literature with different names; for example, \cite{harrell2015regression} refers to the reference model as a full model that can be thought as the ``gold standard'' and shows some examples of how it can be used to seek a sparser approximation. He highlights some of the benefits as the possibility to calculate the accuracy with which the submodel approximates the best model and the inheritance of the shrinkage when it is applied to the full model. \cite{faraggi2001understanding} deal with the necessity of identifying interpretable risk groups in the context of survival data using neural networks, which typically perform very well in terms of prediction, but whose covariates are difficult to be understood in terms of relevance. \cite{faraggi2001understanding} propose to combine the benefits of the neural networks, which become what we call reference models, with the interpretability of regression trees, in order to provide a framework to make inferences about risk groups. \cite{paul2008preconditioning}, using the term preconditioning, explore approximating models fitting Lasso or stepwise regression against consistent estimates $\hat{y}$ of a reference model instead of the observed response quantities $y$. 
+% The necessity of carrying out the selection arises from different problematics. Sometimes the leading objective of the analysis is to predict future observationgs, thus the main focus in building the model is on the predictive performance. Yet a high dimensional parameter space often leads to dangers as overfitting or other technical problems, as expensive costs to collect all the features for future observations or computational and memory burdens (e.g. when operating on limited resources), and thus a sparser representation of the model would be preferred. In addition to that, simpler models bring also advantages in terms of interpretability. Some other times,
+% variable selection can be also seen as an inferential tool: the interest is on knowing which variables are meaningful, or relevant, in relation to the target variable of interest.
+% This typically happens in a \textit{small n large p} scenario, as in many microarray data analysis in medicine or biology.
+
+% A very large number of genes is usually analysed in two groups of individuals labeled as \textit{positive} or \textit{negative} to some disease; the goal is to spot the subset of explanatory genes in order to perform further experiments \cite[see examples in][]{efron2012large}.
+
+The goal of the variable selection can be the minimal subset of which
+provides good predictive performance (or balance sparsity with
+predictive performance), or the all variables which have some
+predictive information about the target variable.  In the predictive
+performance based variable selection, the future data generation
+mechanism can be modelled either using the observed data or a
+reference model.
+% process is going to be based on assumptions regarding the ``true''
+% data generation mechanism.  Making assumptions means making models,
+% thus we identify two families of feature selection, or more in general
+% model reduction, approaches depending on how the data generation
+% mechanism is modelled: the data based and the reference model based
+% ones.
+The data based approaches, such as the Lasso selection
+\cite{tibshirani1996regression} and the stepwise backward/forward
+regression the observed empirical data distribution is used as a
+proxy of the future data usually in combination with cross-validation
+or information criteria to take into account the double use of the
+data.
+%
+The reference model based methods approximate the future data
+mechanism using the predictive distribution of a reference model,
+which can be, for example, the full-encompassing model. The reference
+model approach has been used for long time in the Bayesian framework
+since seminal work by \citet{paper:reference_lindley}. For more
+historical references see review by \citet{vehtari2012survey} and for
+most recent methodological development see paper by
+\citet{paper:projpred}.
+
+% The reference model approach has been used for long time in the Bayesian framework, an example the pioneering work by \cite{paper:reference_lindley}. Following \cite{goutis1998model}, \cite{paper:original_proj} project the posterior distribution of the reference model in each candidate model by minimisation of the Kullback-Liebler divergence, and then select the smallest one with enough explanatory power avoiding any prior elicitation for the submodels. In the special case of candidate models being GLMs from the exponential family, the optimisation problem corresponds to the task of finding the maximum likelihood estimate using the expected pointwise predictions of the reference model instead of the observed target values. Different extensions have followed \cite{paper:original_proj}, as \cite{nott2010bayesian} that add an $l_{1}$ penalty to select the best approximating model and \cite{tran2012predictive}, who select the best approximating model by optimising the Kullback-Liebler divergence between the predictive distribution of the reference model and the approximating model plus an $l_{1}$ penalty on the submodel coefficients. A recent review of these methods together with some methodological improvements, as clustered projection and selection by comparison of a predictive performance utility, is given by \cite{paper:projpred}.
+
+The reference models have been used also in non-Bayesian context. For example,
+\cite{harrell2015regression} refers to the reference model as a full model that can be thought as the ``gold standard''.
+% and shows some examples of how it can be used to seek a sparser approximation. He highlights some of the benefits as the possibility to calculate the accuracy with which the submodel approximates the best model and the inheritance of the shrinkage when it is applied to the full model.
+\cite{faraggi2001understanding} deal with the necessity of identifying
+interpretable risk groups in the context of survival data using neural
+networks, which typically perform very well in terms of prediction,
+but whose covariates are difficult to be understood in terms of
+relevance. % \cite{faraggi2001understanding} propose to combine the benefits of the neural networks, which become what we call reference models, with the interpretability of regression trees, in order to provide a framework to make inferences about risk groups.
+\cite{paul2008preconditioning}, using the term preconditioning,
+explore approximating models fitting Lasso or stepwise regression
+against consistent estimates $\hat{y}$ of a reference model instead of
+the observed response quantities $y$.
 %\cite{harrell2015regression} includes also the possibility of using simple least squares for the approximating models as long as the target is the linear predictor of a full regression model \hl{CHECK}.
 \\
-The reference model approach has been used for long time also in the Bayesian framework, an example the pioneering work by \cite{paper:reference_lindley}. Following \cite{goutis1998model}, \cite{paper:original_proj} project the posterior distribution of the reference model in each candidate model by minimisation of the Kullback-Liebler divergence, and then select the smallest one with enough explanatory power avoiding any prior elicitation for the submodels. In the special case of candidate models being GLMs from the exponential family, the optimisation problem corresponds to the task of finding the maximum likelihood estimate using the expected pointwise predictions of the reference model instead of the observed target values. Different extensions have followed \cite{paper:original_proj}, as \cite{nott2010bayesian} that add an $l_{1}$ penalty to select the best approximating model and \cite{tran2012predictive}, who select the best approximating model by optimising the Kullback-Liebler divergence between the predictive distribution of the reference model and the approximating model plus an $l_{1}$ penalty on the submodel coefficients. A recent review of these methods together with some methodological improvements, as clustered projection and selection by comparison of a predictive performance utility, is given by \cite{paper:projpred}.
 %\cite{paper:projpred} extend the projection algorithm with the clustered projection and choose the best model comparing the predictive performance of the explored submodels with the reference model one.
 
 %\cite{paper:projpred} show in their experiments the benefits of the projection predictive approach in terms of predictive ability of the selected model and smaller size compared to other methods. It could be of interest to know how often a certain method includes non-relevant features. One could argue that such question can not have a general answer, because it depends both on the data and, when it is used, on the choice of the reference model. Moreover in real settings it is hard to define what relevant means, in most of the cases all the features have some level of relevance in term of prediction ability and thus the question looses of meaning.  However, it is still possible to simulate certain artificial scenarios and control which features are included. \cite{paper:model_selection} report results about the proportion of relevant and non-relevant features selected with different variable selection methods, showing overall better results in favour of the projection predictive approach. The explored submodels using the projection show also a higher performance and stability with respect to the compared methods, given the same submodel size.
 
-In this paper we bring motivations for the use of a reference model. A properly designed model is able to clean part of the noise present in the data, thus to provide an improved and more stable selection process. As an example, we show the improvements in the selection when using the projection predictive approach versus the stepwise regression, with a real world dataset. We argue that, however the reference model is used, it can be always seen acting as a filter on the observed data. Following this idea, we devise a simple reference model approach that can be applied on top of any selection procedure. We thus show the reference model benefits, regardless of what specific procedure is applied, using as a benchmark the normal means estimation problem. We apply different state-of-the-art methods comparing in each case the results basing the selection on the data or on the reference model. In case of full Bayesian methods, we report results in terms of shrinkage and accuracy of the posterior estimates, whereas when a full selection is carried out, we compute quantities as false discovery rate, sensitivity and a measure of the stability of the selection. The results indicate how the core reason why the reference model based methods perform well is the reference model itself, rather than the specific way of using it. We do recognise that all these methods diversify how the subset of variables is actually chosen and which properties it has, thus it remains fundamental to investigate and develop such different procedures. We hope that this work can increase the attractiveness on this family of methods and, therefore, it can be of interest to a large number of practitioners.
-\\
-We would like also the reader to note that besides the fact that we consider a Bayesian framework in our discussion, the reference model can and is built also in frequentist settings, as it is done in some of the references previously provided.
+In this paper we examine in detail the benefits of using a reference
+model.  A properly designed reference model is able to filter part of
+the noise present in the data, thus to provide an improved and more
+stable selection process even if the reference model would not be the
+true data generating process. The substantial reduction of the variance is more important than small bias due the potential model misspecification.
 
-The paper is structured as follows. In Section \ref{reference-model-approach} we introduce the idea of the reference model, its benefits with examples, including the projection predictive approach, and how it can be used as a filter on data in a simple way. In Section \ref{comparison} we use different methods for feature selection comparing the selection results using or not the reference model in the framework of the normal means problem. Finally, in Section \ref{conclusion} we present our conclusions.
+We argue that, however the reference model is used, it can be always seen acting as a filter on the observed data. Following this idea, we devise a simple reference model approach that can be applied on top of any selection procedure. We thus show the reference model benefits, regardless of what specific procedure is applied, using as a benchmark the normal means estimation problem. We apply different state-of-the-art methods comparing in each case the results basing the selection on the data or on the reference model. In case of full Bayesian methods, we report results in terms of shrinkage and accuracy of the posterior estimates, whereas when a full selection is carried out, we compute quantities as false discovery rate, sensitivity and a measure of the stability of the selection. We also demonstrate the improvements in applied case when using the reference model based projection predictive approach versus the stepwise regression.
+
+The results indicate the core reason why the reference model based
+methods perform well is the reference model itself, rather than the
+specific way of using it. We do recognize that all these methods
+diversify how the subset of variables is actually chosen and which
+properties it has, thus it remains fundamental to investigate and
+develop such different procedures.
+% We hope that this work can increase
+% the attractiveness on this family of methods and, therefore, it can be
+% of interest to a large number of practitioners.
+\\
+We would like also the reader to note that although we focus on
+Bayesian approach, the benefits of the reference model approach can be
+obtained also in frequentist settings.
+
+The paper is structured as follows. In Section \ref{reference-model-approach} we review the concept of the reference model, its benefits with examples, including the projection predictive approach, and how it can be used as a filter on data in a simple way. In Section \ref{comparison} we use different methods for feature selection comparing the selection results using or not the reference model in the framework of the normal means problem. Finally, in Section \ref{conclusion} we present our conclusions.
 
 \hypertarget{reference-model-approach}{%
 \section{Why the reference model helps}\label{reference-model-approach}}
 
-The main assumption under any reference model approach is to be operating in a $\mathcal{M}$-\textit{complete} framework \citep{book:bernardo_smith,vehtari2012survey}, i.e. to be able to construct a model, that is the reference model, whose description of a future observation distribution is comparable to the ``true'' data generation mechanism. In practice, any full-encompassing model which has a good predictive performance is a candidate reference model. General modelling guidelines apply also for the reference model, except no variable selection is carried out at this stage.
+The main assumption under any reference model approach is that we
+operate in a $\mathcal{M}$-\textit{complete} framework
+\citep{book:bernardo_smith,vehtari2012survey}, that is we have constructed a
+model which reflects in the best way our beliefs about the future
+data. In practice, this would often be the full-encompassing model
+(including as submodels all models we consider having non-zero prior
+probability) which has passed model checking and criticism \citep[see,
+e.g.][]{BDA3}. 
  
-A good predictive model is able to clean part of the noise present in the data. The noise is the main source of the instability and tends to obscure the relevance of the covariates in relation to the target variable of interest. Indeed, let us consider the following explanatory example taken from \cite{paper:projpred}. The data generation mechanism for each statistical unit is the following:
-\
+A good predictive model is able to filter part of the noise present in the data. The noise is the main source of the instability and tends to obscure the relevance of the covariates in relation to the target variable of interest. Indeed, let us consider the following explanatory example taken from \cite{paper:projpred}. The data generation mechanism is
 \begin{alignat}{2} \label{eq:simulated_data}
      &f\sim N(0,1) && \nonumber \\ 
      Y|&f\sim N(f,1) && \\
      X_{j}|&f \overset{iid}{\sim} N(\sqrt{\rho}f,1-\rho) \quad &&j=1,..,k \nonumber \\
-     X_{j}|&f \overset{iid}{\sim} N(0,1) &&j=k+1,..,p \nonumber
+     X_{j}|&f \overset{iid}{\sim} N(0,1) &&j=k+1,..,p \nonumber,
 \end{alignat}
-$f$ is the latent variable of interest of which $Y$ is a noisy observation. The first $k$ covariates are significantly related to the target variable $Y$ and correlated among themselves. Precisely, $\rho$ is the correlation among any pair of the first $k$ covariates, whereas $\sqrt{\rho}$ and $\sqrt{\rho}/2$ are the level of correlation between any significant covariate and respectively $f$ and $Y$. If we had an infinite amount of observations, the sample correlation would be equal to the true correlation, though, even in this ideal asymptotic regime, the correlation computed would be still a biased indicator of the true relevance of each variable with respect to the latent variable of interest due to the intrinsic noisy nature of $Y$. When using a reference model, we are trying to model $f$ through the covariates $\{X_{j}\}_{j=1}^{p}$ taking in account that what we observe (i.e. $Y$) is corrupted by noise. Thus, if our model is good, we are able to describe $f$ better than the simply observed variable $Y$ and to use such information to assess the relevance of the features. Indeed, Figure \ref{fig:correlation} shows the scatter plot of the absolute value of the sample correlation of each feature with the point prediction by a reference model, in this case see model \eqref{eq:ref_mod}, against the absolute value of the sample correlation of each feature with the noisy observations $\{y\}_{i=1}^{n}$. Looking at the marginal distribution, we observe that using a reference model the two groups of features, i.e. relevant and non-relevant, have a minor overlap, and thus can be better distinguished, with respect to when the correlation is computed using directly the observed data. We can think about the correlation as a general indicator of the relevance of a feature.  
+where $f$ is the latent variable of interest of which $Y$ is a noisy observation. The first $k$ covariates are strongly related to the target variable $Y$ and correlated among themselves. Precisely, $\rho$ is the correlation among any pair of the first $k$ covariates, whereas $\sqrt{\rho}$ and $\sqrt{\rho}/2$ are the level of correlation between any relevant covariate and respectively $f$ and $Y$. If we had an infinite amount of observations, the sample correlation would be equal to the true correlation, though, even in this ideal asymptotic regime, the correlation computed would be still a biased indicator of the true relevance of each variable with respect to the latent variable of interest due to the intrinsic noisy nature of $Y$.
+
+When using a reference model, we first model $f$ using all the covariates $\{X_{j}\}_{j=1}^{p}$ taking into account that we observe noisy $Y$. If our model is good, we are able to describe $f$ better than the noisy $Y$, which imporves the accuracy in the estimation of the relevance of the covariates.  Figure \ref{fig:correlation} shows the scatter plot of the absolute value of the sample correlation of each feature with the point prediction by a reference model, in this case see model \eqref{eq:ref_mod}, against the absolute value of the sample correlation of each feature with the noisy observations $\{y\}_{i=1}^{n}$. Looking at the marginal distributions, we can see that using a reference model to filter out noise in the data the two groups of features (relevant and non-relevant) can be better distinguished than when the correlation is computed using directly using only the observed noisy data. 
 
 \begin{figure}[tp]
   \centering
@@ -199,7 +280,9 @@ $f$ is the latent variable of interest of which $Y$ is a noisy observation. The 
   \label{fig:correlation}
 \end{figure}
 
-In Figure \ref{fig:correlation} the reference model acts as a noise-filter on the observed data through its predictions. This simple idea is what happens every time a reference model is used, as it is evident for example in the preconditioning by \cite{paul2008preconditioning} or in the draw-by-draw projection for GLMs by \cite{paper:original_proj}.\\
+% In Figure \ref{fig:correlation} the reference model filters the noise.
+% This simple idea is what happens every time a reference model is used, as it is evident for example in the preconditioning by \cite{paul2008preconditioning} or in the draw-by-draw projection for GLMs by \cite{paper:original_proj}.\\
+% Above the correlation was used to estimate the relevance of a covariate.  
 As an another example, let us consider a candidate submodel in a feature selection process and let us refer with $\pi$ to the parameter distribution of the submodel and with $q_{\pi}(\tilde{y})$ to the induced predictive distribution. We would like to choose $\pi$ in order that the latter maximises some predictive performance utility, as the expected log-predictive density (elpd) defined as:
 \
 \begin{equation}\label{eq:elpd}
