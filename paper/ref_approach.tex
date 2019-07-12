@@ -260,7 +260,7 @@ model which reflects in the best way our beliefs about the future
 data. In practice, this would often be the full-encompassing model
 (including as submodels all models we consider having non-zero prior
 probability) which has passed model checking and criticism \citep[see,
-e.g.][]{BDA3}. 
+e.g.][]{gelman2013bayesian}. 
  
 A good predictive model is able to filter part of the noise present in the data. The noise is the main source of the instability and tends to obscure the relevance of the covariates in relation to the target variable of interest. Indeed, let us consider the following explanatory example taken from \cite{paper:projpred}. The data generation mechanism is
 \begin{alignat}{2} \label{eq:simulated_data}
@@ -271,7 +271,7 @@ A good predictive model is able to filter part of the noise present in the data.
 \end{alignat}
 where $f$ is the latent variable of interest of which $Y$ is a noisy observation. The first $k$ covariates are strongly related to the target variable $Y$ and correlated among themselves. Precisely, $\rho$ is the correlation among any pair of the first $k$ covariates, whereas $\sqrt{\rho}$ and $\sqrt{\rho}/2$ are the level of correlation between any relevant covariate and respectively $f$ and $Y$. If we had an infinite amount of observations, the sample correlation would be equal to the true correlation, though, even in this ideal asymptotic regime, the correlation computed would be still a biased indicator of the true relevance of each variable with respect to the latent variable of interest due to the intrinsic noisy nature of $Y$.
 
-When using a reference model, we first model $f$ using all the covariates $\{X_{j}\}_{j=1}^{p}$ taking into account that we observe noisy $Y$. If our model is good, we are able to describe $f$ better than the noisy $Y$, which imporves the accuracy in the estimation of the relevance of the covariates.  Figure \ref{fig:correlation} shows the scatter plot of the absolute value of the sample correlation of each feature with the point prediction by a reference model, in this case see model \eqref{eq:ref_mod}, against the absolute value of the sample correlation of each feature with the noisy observations $\{y\}_{i=1}^{n}$. Looking at the marginal distributions, we can see that using a reference model to filter out noise in the data the two groups of features (relevant and non-relevant) can be better distinguished than when the correlation is computed using directly using only the observed noisy data. 
+When using a reference model, we first model $f$ using all the covariates $\{X_{j}\}_{j=1}^{p}$ taking into account that we observe noisy $Y$. If our model is good, we are able to describe $f$ better than the noisy $Y$, which imporves the accuracy in the estimation of the relevance of the covariates.  Figure \ref{fig:correlation} shows the scatter plot of the absolute value of the sample correlation of each feature with the point prediction by a reference model, in this case see model \eqref{eq:ref_mod}, against the absolute value of the sample correlation of each feature with the noisy observations $\{y\}_{i=1}^{n}$. Looking at the marginal distributions, we can see that using a reference model to filter out noise in the data the two groups of features (relevant and non-relevant) can be better distinguished than when the correlation is computed using directly the observed noisy data. 
 
 \begin{figure}[tp]
   \centering
