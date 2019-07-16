@@ -170,13 +170,13 @@ measurement costs and improved interpretability, we may be interested in
 finding the minimal subset of covariates which
 provides good predictive performance (or good balance between simplicity and
 predictive performance). 
-In the latter case, where the focus is on prediction, the true data generation
+Whenever the predictive capability is guiding the selection, the true data generation
 mechanism of future data can be approximated either by using the observed data directly or
 alternatively by using predictions from a \emph{reference model}.
 
 In data based approaches, such as Lasso selection
-\citep{tibshirani1996regression} or stepwise backward/forward
-regression, the observed empirical data distribution is utilized as a
+\citep{tibshirani1996regression} or stepwise backward/forward 
+regression \citep{venables2013modern,harrell2015regression}, the observed empirical data distribution is utilized as a
 proxy of future data usually in combination with cross-validation
 or information criteria to provide estimates for out-of-sample
 predictive performance.
@@ -211,7 +211,7 @@ true data generating process. Moreover, our analyses indicate that the substanti
 variance attributable to noise is usually
 more important than small potential bias due model misspecification.
 We argue that, regardless of how the reference model is set up and used in the
-inference prodecure, it can be always seen as acting as a filter on the observed 
+inference procedure, it can be always seen as acting as a filter on the observed 
 data. Following this idea, we devise a simple reference model approach that can
 be applied on top of any variable selection procedure. 
 
@@ -219,13 +219,15 @@ In our simulations and analysis of real data, we apply several state-of-the-art 
 for each of these methods, the results obtained by using a data based and a
 reference model based approach. When a full 
 variable selection is carried out, we report and compare quantities such as 
-the false discovery rate, sensitivity and stability of the selection. For fully Bayesian methods, we additionally report results in terms of shrinkage and accuracy of the posterior estimates.
+the false discovery rate \citep{paper:fdr_BH}, sensitivity and stability of the selection \citep{paper:stability}. For fully Bayesian methods, we additionally report results in terms of shrinkage and accuracy of the posterior estimates.
 We show the benefits
 of a reference model approach, regardless of what specific procedure is applied, using 
 the normal means estimation problem as a benchmark. 
 Variable selection is typically most challenging in 
 \textit{small n large p} scenarios, that is, scenarios with small number of
-observations but a lot of unknown model parameters. These occur frequently, for example, in microarray data analysis in medicine or biology.
+observations but a lot of unknown model parameters. 
+These occur frequently, for example, 
+in microarray data analysis in medicine or biology \citep{dudoit2003multiple,liao2007logistic,paper:efron}.
 In general, the less data we have and the more complex 
 the estimated models, the higher the benefit of using a reference
 models as the basis for variable selection.
