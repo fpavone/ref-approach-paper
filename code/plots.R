@@ -562,7 +562,9 @@ plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
     labs(x='',y='',fill='Approach') +
     guides(color=FALSE) +
     scale_fill_manual(values=c("#819FF7","#FAAC58")) +
-    scale_color_manual(values=c("#819FF7","#FAAC58"))
+    scale_color_manual(values=c("#819FF7","#FAAC58")) +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank())
 #    theme_light()
 
 ggsave("../paper/graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
