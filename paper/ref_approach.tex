@@ -128,7 +128,7 @@
 \newtheorem{example}{Example}
 
 
-\title{The reference model approach in feature selection problems 
+\title{Using reference models in feature selection problems 
 	\vspace{.1in}}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
@@ -153,7 +153,14 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-When a reference model is used to guide the variable selection problem, it acts as a noise-filter modelling the data generation mechanism. We show how this translate into higher stability and better selection of variables. We devise a simple reference model approach that can be used on top of any feature selection procedure and use the normal means problem as a benchmark comparing different methods using or not a reference model. We include in our comparisons state-of-the-art complete selection procedures showing improved stability, false discovery rate and sensitivity of the selection, and also Bayesian methods controlling the amount of posterior shrinkage and bias. Furthermore we show in a real-world example the benefits achieved by the reference model through the projection predictive approach compared to the selection via stepwise backward regression.
+
+Feature selection, or more generally, model reduction is an important aspect of statistical workflows aiming to provide insides from data. While a vast number of feature selection procedures are available, it often remains unclear what are the underlying principles explaining why certain methods are working better than others. We investigate and discuss one of these principles in detail, which we identify with the use of a reference model. We demonstrate how such a model acts as a noise-filter on the target variable by approximating its data generation mechanism.
+To this end, we devise a simple reference model approach that can be used on top of any feature selection method. In several numerical experiments, we show how this translates into better and more stable feature selection independently of the specific selection procedure. 
+These benefits are also illustrated on a real-world example of predicting the amount of body fat for which we compare a reference model based selection method to a purely data driven approach.
+
+
+%When a reference model is used to guide the variable selection problem, it acts as a noise-filter modelling the data generation mechanism. We show how this translate into higher stability and better selection of variables. We devise a simple reference model approach that can be used on top of any feature selection procedure and use the normal means problem as a benchmark comparing different methods using or not a reference model. We include in our comparisons state-of-the-art complete selection procedures showing improved stability, false discovery rate and sensitivity of the selection, and also Bayesian methods controlling the amount of posterior shrinkage and bias. Furthermore we show in a real-world example the benefits achieved by the reference model through the projection predictive approach compared to the selection via stepwise backward regression.
+
 \end{abstract}
 
 \hypertarget{introduction}{%
