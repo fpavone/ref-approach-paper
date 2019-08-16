@@ -5,7 +5,6 @@ paper/*
 !paper/graphics/
 !paper/*.tex
 !paper/*.bib
-!paper/*.pdf
 *.Rdata
 *.RData
 *.rds
