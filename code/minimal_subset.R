@@ -5,9 +5,9 @@ library(rstan)
 library(rstanarm)
 library(loo)
 options(mc.cores = parallel::detectCores())
-set.seed(453876)
+## set.seed(453876)
 
-args = commandArgs(trailingOnly=TRUE) # n rho nc
+args = commandArgs(trailingOnly=TRUE) # n rho
 
 ## Simulation parameters
 n <- as.numeric(args[1])  # number of observations
@@ -39,9 +39,10 @@ rmse.bayes.step.data <- numeric(times)
 rmse.bayes.step.ref <- numeric(times)
 NA_count <- 0
 ## Experiment
+times.intervals <- matrix(1:times,nrow=25,ncol=4)
+which.intervals <- as.numeric(args[3])
 
-for(i in 1:times){
-
+for(i in as.vector(times.intervals[which.intervals,])){
     print(paste('iteration:',i))
     data <- simulate_data(n)
     test <- simulate_data(1000)
@@ -212,5 +213,5 @@ for(i in 1:times){
     X.bayes.step.ref[i, sel.bayes.step.ref] <- 1
 }
 
-save.image(file = paste("minimal_subset_final_n",n,"rho",rho,".RData",sep=""))
+save.image(file = paste("minimal_subset_final_n",n,"_rho",rho,"_inter",which.intervals,".RData",sep=""))
 
