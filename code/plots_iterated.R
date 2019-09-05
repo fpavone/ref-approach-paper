@@ -53,7 +53,7 @@ data.plot <- tibble(n = numeric(),
 for(nn in c(50,70,100)){
   for(rr in c(0.3,0.5)){
       load(paste('iterated_n',
-                 nn,'_rho',rr,'_3alphas.Rdata',sep = ''))
+                 nn,'_rho',rr,'_3alphas_suponlyT.Rdata',sep = ''))
       aa <- 2 ## correspond to alpha = 0.16, default value ## for(aa in 1:length(alpha_vec)){
           X_ref_test <- X_proj_test_list[[aa]]
           X_ref_cv <- X_proj_cv_list[[aa]]
