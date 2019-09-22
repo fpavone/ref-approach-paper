@@ -686,3 +686,108 @@ plot2 <- ggplot(data.plot, aes(x=entropy,y=method, color=approach)) +
     labs(x='Entropy',y='',color='Approach')
 
 ggsave('../paper/graphics/entropy.pdf',plot2,width=10,height=3)
+
+
+##++++++++++++++++++++++++++++++++++++++++++++++++#
+##++++++++++++++++++++++++++++++++++++++++++++++++#
+####### MINIMAL SUBSET SELECTION PARALLEL #########
+##++++++++++++++++++++++++++++++++++++++++++++++++#
+##++++++++++++++++++++++++++++++++++++++++++++++++#
+
+data.plot <- tibble(n = numeric(),
+                    rho = numeric(),
+                    method = character(),
+                    fdr = numeric(),
+                    rmse = numeric(),
+                    entropy = numeric())
+
+library(entropy)
+
+intervals <- matrix(1:100,nrow=25,ncol=4)
+
+for(nn in c(80,100,150)){
+    for(rr in c(0.3,0.5)){
+        X.projpred.tot <- numeric()
+        X.step.data.tot <- numeric()
+        X.step.ref.tot <- numeric()
+        X.bayes.step.data.tot <- numeric()
+        X.bayes.step.ref.tot <- numeric()
+        rmse.projpred.tot <- numeric()
+        rmse.step.data.tot <- numeric()
+        rmse.step.ref.tot <- numeric()
+        rmse.bayes.step.data.tot <- numeric()
+        rmse.bayes.step.ref.tot <- numeric()
+        for(ii in seq(1,25)){
+            load(paste('minimal_subset_parallel/minimal_subset_final_n',nn,'_rho',rr,'_inter',ii,'.RData',sep=''))
+            which.intervals <- intervals[ii,]
+            X.projpred.tot <- rbind(X.projpred.tot,
+                                    X.projpred[which.intervals,])
+            X.step.data.tot <- rbind(X.step.data.tot,
+                                     X.step.data[which.intervals,])
+            X.step.ref.tot <- rbind(X.step.ref.tot,
+                                    X.step.ref[which.intervals,])
+            X.bayes.step.data.tot <- rbind(X.bayes.step.data.tot,
+                                       X.bayes.step.data[which.intervals,])
+            X.bayes.step.ref.tot <- rbind(X.bayes.step.ref.tot,
+                                      X.bayes.step.ref[which.intervals,])
+            rmse.projpred.tot <- c(rmse.projpred.tot,
+                                   rmse.projpred[which.intervals])
+            rmse.step.data.tot <- c(rmse.step.data.tot,
+                                    rmse.step.data[which.intervals])
+            rmse.step.ref.tot <- c(rmse.step.ref.tot,
+                                   rmse.step.ref[which.intervals])
+            rmse.bayes.step.data.tot <- c(rmse.bayes.step.data.tot,
+                                          rmse.bayes.step.data[which.intervals])
+            rmse.bayes.step.ref.tot <- c(rmse.bayes.step.ref.tot,
+                                         rmse.bayes.step.ref[which.intervals])
+        }
+        data.plot <- data.plot %>%
+            bind_rows(tibble(n = rep(n,5),
+                             rho = rep(rho,5),
+                             approach = c('ref',
+                                          'data',
+                                          'ref',
+                                          'data',
+                                          'ref'),
+                             method = c('projpred',
+                                        'step',
+                                        'step',
+                                        'bayes.step.data',
+                                        'baeyes.step.ref'),
+                             fdr = c(avg.fdr(X.projpred.tot),
+                                     avg.fdr(X.step.data.tot),
+                                     avg.fdr(X.step.ref.tot),
+                                     avg.fdr(X.bayes.step.data.tot),
+                                     avg.fdr(X.bayes.step.ref.tot)),
+                             rmse = c(mean(rmse.projpred.tot),
+                                      mean(rmse.step.data.tot),
+                                      mean(rmse.step.ref.tot),
+                                      mean(rmse.bayes.step.data.tot),
+                                      mean(rmse.bayes.step.ref.tot)),
+                             entropy = c(entropy(y=apply(X.projpred.tot,2,sum)),
+                                         entropy(apply(X.step.data.tot,2,sum)),
+                                         entropy(apply(X.step.ref.tot,2,sum)),
+                                         entropy(apply(X.bayes.step.data.tot,2,sum)),
+                                         entropy(apply(X.bayes.step.ref.tot,2,sum)))))
+    }
+}
+
+facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
+                         rho=function(x){paste("rho=",x,sep="")})
+
+plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
+    facet_grid(rho~n, labeller=facet.labels) +
+    geom_point(aes(shape=approach),size=2) +
+    scale_shape_manual(values = c(16,15)) +
+    geom_line(data=filter(data.plot,method=='step'),aes(x=fdr,y=rmse)) +
+    labs(x='False discovery rate', y='RMSE',shape='Approach',color='method')
+
+ggsave('../paper/graphics/rmse_vs_fdr_parallel.pdf',plot1,width=10,height=3)
+
+plot2 <- ggplot(data.plot, aes(x=entropy,y=method, color=approach)) +
+    facet_grid(rho~n, labeller = facet.labels) +
+    geom_point() +
+    scale_color_manual(values=c("#819FF7","#FAAC58")) +
+    labs(x='Entropy',y='',color='Approach')
+
+ggsave('../paper/graphics/entropy_parallel.pdf',plot2,width=10,height=3)
