@@ -465,6 +465,7 @@ Bayesian p-value, defined as:
 \end{equation}
 The selection continues if the reduced model has an elpd score higher than the
 current fitted model.
+\item Bayesian stepwise selection (ref model based): same as the data based, but instead of using the observed data values to fit the models at each step, it uses the observed covariate and the target values predicted by a reference model 
 \end{itemize}
 
 We simulate data according to \eqref{eq:simulated_data} fixing the overall number of 
@@ -481,14 +482,14 @@ than all the other ones.
 
 \begin{figure}[tp]
   \centering
-  \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr.pdf}
+  \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr_parallel.pdf}
   \caption{Root mean square error (RMSE) against false discovery rate for the minimal subset of feature selection.\\}
   \label{fig:rmse_vs_fdr}
 \end{figure}
 
 \begin{figure}[tp]
   \centering
-  \includegraphics[width=0.98\textwidth]{graphics/entropy.pdf}
+  \includegraphics[width=0.98\textwidth]{graphics/entropy_parallel.pdf}
   \caption{Entropy score for the minimal subset of feature selection.\\}
   \label{fig:entropy}
 \end{figure}
