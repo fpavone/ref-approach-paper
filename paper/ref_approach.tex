@@ -153,7 +153,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Feature selection, or more generally, model reduction is an important aspect of statistical workflow aiming to provide insights from data. In this paper we discuss and demonstrate the benefits of using a reference model in feature selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. Use of the reference model predictions in the model selection reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes well the future data distribution, it can be shown that decision theoretically justified approach is to project the reference model to a reduced model leading to projection predictive variable selection approach. The reference model can be used also ad-hoc in combination with common feature selection methods.  In several numerical experiments, we demonstrate superior performance of projection predictive approach and show how use of a reference model translates into better and more stable feature selection independently of the specific selection procedure. 
+  Feature selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper we discuss and demonstrate the benefits of using a reference model in feature selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common feature selection methods.  In several numerical experiments, we demonstrate superior performance of projection predictive approach and show how use of a reference model translates into better and more stable feature selection independently of the specific selection procedure. 
 % These benefits are also illustrated on a real-world example of predicting the amount of body fat for which we compare a reference model based selection method to a purely data driven approach.
 \end{abstract}
 
@@ -188,12 +188,12 @@ model including all covariates.  The main assumption under any
 reference model approach is that we operate in an
 $\mathcal{M}$-\textit{complete} framework
 \citep{book:bernardo_smith,vehtari2012survey}, that is, we have
-constructed a model which reflects in the best way our beliefs about
-the future data and which has passed model checking and criticism
+constructed a model which reflects our beliefs about
+the future data in the best possible way and which has passed model checking and criticism
 \citep[see, e.g.][]{gelman2013bayesian}.  The reference model approach
-has been used for long time in Bayesian statistics since the seminal
+has been used for a long time in Bayesian statistics since the seminal
 work of \citet{paper:reference_lindley}. For more historical
-references, see papers by \citet{vehtari2012survey} and
+references, see the papers by \citet{vehtari2012survey} and
 \citet{paper:model_selection}, and for most recent methodological
 development see \citet{paper:projpred}.
 
@@ -242,14 +242,12 @@ all the covariates using a regularised horseshoe prior on the
 covariate coefficients \citep{paper:rhs}. Submodels are explored using
 forward search (the results are not sensitive to whether forward or
 backward search is used), and the predictive utility is the expected
-log-predictive density (elpd) estimated using PSIS-LOO
-\citep{paper:psis_loo}.  We select the submodel as the one with the
-smallest size which has an elpd score similar to the reference model
+log-predictive density (elpd) estimated using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
+\citep[PSIS-LOO-CV; ][]{paper:psis_loo}.  We select the smallest  submodel with an elpd score similar to the reference model
 when taking into account the uncertainty in estimating the predictive
 model performance. See Appendix A for brief review of projection
-predictive approach and papers by \citet{paper:model_selection} and
-\citet{paper:projpred} for more details. projpred selection is made
-using the \texttt{projpred} package.
+predictive approach and \citet{paper:model_selection} and
+\citet{paper:projpred} for more details. The complete projpred procedure is implemented in the \texttt{projpred} R package.
 
 The inclusion frequencies of each feature in the final model given 100
 bootstrap samples are depicted in Figure
@@ -296,7 +294,7 @@ M & projpred & Freq \% & steplm & Freq \%  \\
 \end{table}
 
 
-First two rows of Table \ref{tab:model_performances} report the
+In the first two rows of Table \ref{tab:model_performances}, we report the
 predictive performances, in terms of cross-validated root mean square
 error (RMSE), of the full model and the selected models using either
 the projection predictive approach or the stepwise backward
@@ -305,8 +303,8 @@ selected models by different approaches even if there is difference in
 the selected features.
 
 We repeat the experiment with a modified data set by adding 84
-unrelated noisy features. Last two rows of Table
-\ref{tab:model_performances} report cross-validated RMSE, the size of
+unrelated noisy features. In the last two rows of Table
+\ref{tab:model_performances}, we report the cross-validated RMSE, the size of
 the selected model and the number of selected noisy features using
 either the projection predictive approach or the stepwise backward
 elimination.  The projection predictive approach has similar
@@ -339,15 +337,16 @@ original & projpred & 4.35 & 4.47 & 2 &   \\
 
 Both projpred and steplm compare a large number of models using either
 forward or backward search, which can lead to selection induced
-overfitting, but even with 100 covariates projpred is able to select a
-submodel with similar performance as the full model. Although projpred
-uses Bayesian inference and steplm maximum likelihood, it is not
-here the decisive feature explaining the difference in the performance.  The
-main difference between the approaches is whether a reference model is
-used or not, and in the rest of the paper we look into more detail how
-the benefits and limitations of the reference model approach.
+overfitting, but even with 100 covariates, projpred is able to select a
+submodel with similar performance as the full model. In this example, the two
+ compared methods also differ in other aspects than the usage of a reference 
+ model, such as that projpred
+uses Bayesian inference and steplm uses maximum likelihood estimation. 
+However, as we show in the present paper, one of the primary difference 
+with respect to quality of the variable selection is indeed whether or 
+not a reference model approach is applied.
 
-\subsection{Benefits and cost of using a reference model}
+\subsection{Benefits and costs of using a reference model}
 
 A properly designed reference model is able to filter parts of the
 noise present in the data, and hence provide an improved and more
@@ -451,7 +450,7 @@ features. When the goal is to select a minimal subset of features
 which have similar predictive performance as the full model we call it
 \emph{minimal subset feature selection}. This minimal subset might
 exclude features which have some predictive information about the
-target, but given the minimal subset these features are nit able to
+target but given the minimal subset, these features are not able to
 provide such additional information which would improve predictive
 performance. The usual reason for this is that the relevant features
 not in the minimal subset highly correlate with features already in
@@ -466,29 +465,39 @@ projection predictive approach (with a reference model), a Bayesian
 stepwise forward selection (without a reference model), and stepwise
 forward selection with and without a reference model.
 \begin{itemize}
-\item projpred: The reference model is a Bayesian linear regression
-  model (ie, the posterior predictive distributions are used) using
-  the first five supervised principal components. The search heuristic
-  is forward search, and the predictive performance is estimated via
-  10-fold cross-validation.
+\item projpred: The Projective prediction approach is used. 
+  The reference model is a Bayesian linear regression
+  model using the first five supervised principal components as predictors
+  and the full posterior predictive distribution as the basis of the projection.   
+  The search heuristic  is forward search and the predictive performance 
+  is estimated via 10-fold cross-validation.
+  
 \item steplm (data based): Stepwise selection using AIC as in the bodyfat example.
-\item steplm using a reference model: The reference model is the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ are used to replace the target variable $y$. Same AIC selection is used in data based steplm.
-\item Bayesian stepwise selection (data based): At each step the model
-  fitted is a Bayesian linear regression using regularised horseshoe
-  prior and the feature excluded is the one with higher Bayesian
-  $p$-value, defined as:
+
+\item steplm (reference model based): The reference model is the same as for
+ projpred, but only point predictions (posterior predictive means) $\hat{y}$ 
+ are used to replace the target variable $y$. The same AIC selection strategy 
+ as in the data based steplm is used.
+
+\item Bayesian stepwise selection (data based): At each step, the fitted model
+ is a Bayesian linear regression using the regularised horseshoe
+  prior and the feature excluded is the one with the highest Bayesian
+  $p$-value defined as:
 \begin{equation}
-\text{Bayesian p-value}(\theta) := \text{min}\{P(\theta\leq0|D),P(\theta>0|D)\}
+\text{Bayesian p-value}(\theta) := \text{min}\{P(\theta\leq0 \; | \; D),P(\theta>0 \; | \; D)\}
 \end{equation}
-The selection continues if the reduced model has an elpd score higher than the
-current fitted model.
-\item Bayesian stepwise selection (ref model based): same as the data based, but instead of using the observed data values to fit the models at each step, it uses the observed covariate and the target values predicted by a reference model 
+The selection continues if the reduced model has an elpd score higher 
+(i.e., better) than the current model.
+
+\item Bayesian stepwise selection (reference model based): The reference model is the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ are used to replace the target variable $y$. The same Bayesian
+  $p$-value selection strategy as in the data based Bayesian stepwise selection is used.
+
+%Same as the data based Bayesian stepwise selection, but instead of using the observed data values to fit the models at each step, it uses the target values predicted by the reference model (which is the same as in the projpred approach).
 \end{itemize}
 
-In Figure \ref{fig:rmse_vs_fdr} it is shown, for different values of
-$n$ and $\rho$, the predictive performance in terms of root mean
-square error and the false discovery rate of the selected submodel,
-averaged after 100 data simulations. projpred has superior FDR and the
+In Figure \ref{fig:rmse_vs_fdr}, the predictive performance is shown
+for different values of $n$ and $\rho$ in terms of RMSE and the false discovery rate (FDR) of the selected submodel,
+averaged after 100 data simulations. We see that projpred has superior FDR and the
 smallest RMSE. Using a reference model improves steplm significantly,
 but the minimal subset feature selection stays unreliable. Stepwise
 Bayesian linear regression model without a reference model is better
@@ -501,10 +510,12 @@ selection. Highly correlated predictive features may happen to be
 alternately selected, making the measure of the stability of the
 selection a non-trivial task. Entropy suffers of such a problem, thus
 such a measure should be seen as one of different possible
-measurements of the actual stability. The use of a reference model
+measurements of the actual stability. 
+[TODO: please clarify the above sentences about entropy.] 
+The use of a reference model
 improves slightly stability of steplm in feature selection. The
 projection predictive approach results to be far more stable than all
-the other ones. This is likely due to as projpred is based on better
+other approaches. This is likely due to projpred being based on better
 decision theoretical formulation which 1) takes into account the full
 predictive distribution and not just point estimate and 2) projects
 the reference model posterior to the submodel instead of using a
@@ -532,7 +543,7 @@ simple refit of submodels.
 
 % \hypertarget{comparison}{%
 %   \section{A comparison in the normal means problem framework}\label{comparison}}
-\section{Complete feature selection}
+\section{Complete feature selection}\label{comparison}
 
 Alternative to minimal subset feature selection is \emph{complete
   feature selection}, in which the goal is to find all relevant
