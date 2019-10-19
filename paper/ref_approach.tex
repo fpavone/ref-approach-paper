@@ -210,6 +210,7 @@ stepwise regression against consistent estimates $\hat{y}$ of a
 reference model instead of the observed responses $y$.
 
 \subsection{Example of model selection with or without reference model}
+\label{intro-example}
 
 To motivate the further discussion and experiments, we start by simple
 example comparing projection predictive approach (\emph{projpred},
@@ -379,11 +380,12 @@ models.
 The remainder of the paper is structured as follows. In Section
 \ref{reference-model-approach}, we review the concept of the reference
 model, its benefits with examples and how it can be used as a filter
-on data in a simple way. In Section \ref{comparison}, we show the
-benefits of a reference model approach, regardless of what specific
-procedure is applied, using the normal means estimation problem as a
-benchmark. Finally, we end with a conclusion in Section
-\ref{conclusion}.
+on data in a simple way. In Section \ref{comparison-minimal-subset} and 
+Section \ref{comparison-complete-subset}, we show the
+benefits of a reference model approaches for minimal and complete 
+feature selection, respectively, before we illustrate the use 
+of a reference model in a detailed case study of the 'body fat' data.
+Finally, we end with a conclusion in Section \ref{conclusion}.
 
 
 \hypertarget{reference-model-approach}{%
@@ -424,7 +426,7 @@ the form of a scatter plot of (absolute) correlations of the
 covariates with $Y$ against the corresponding correlations with the
 predictions of a reference model (in this case the posterior
 predictive means of model \eqref{eq:ref_mod}; see Section
-\ref{simulated-data}). Looking at the marginal distributions, we see
+\ref{simulations}). Looking at the marginal distributions, we see
 that using a reference model to filter out noise in the data, the two
 groups of features (relevant and non-relevant) can be distinguished
 much better than when the correlation is computed using the observed
@@ -543,33 +545,72 @@ simple refit of submodels.
 
 % \hypertarget{comparison}{%
 %   \section{A comparison in the normal means problem framework}\label{comparison}}
-\section{Complete feature selection}\label{comparison}
+\section{Complete feature selection}\label{comparison-complete-subset}
+\label{complete-selection}
 
-Alternative to minimal subset feature selection is \emph{complete
-  feature selection}, in which the goal is to find all relevant
-features which have some predictive information about the target. In
+An alternative to minimal subset feature selection is \emph{complete
+  feature selection} in which the goal is to find all relevant
+features that have some predictive information about the target. In
 complete feature selection it is possible that there are theoretically
-relevant features, but given finite noisy data we are not able infer
-these effects.
-
-The projection predictive approach was designed for the minimal subset
-feature selection, but here examine its performance also in complete
-feature selection. In addition, we analyse the benefits of reference
-model approach in combination of a few common complete feature
+relevant features, but given finite noisy data we are not able infer their relevance.
+The projection predictive approach was originally designed for the minimal subset
+feature selection but we will generalized it for the complete
+feature selection case. In addition, we analyse the benefits of the reference
+model approach in combination with three other complete feature
 selection approaches. 
 
-\subsection{Complete feature selection approaches to be compared}
+As criteria of selection performance, we evaluate the average false
+discovery rate (i.e., the ratio of the number of non-relevant selected
+features over the number of selected features) and the average
+sensitivity (i.e., the ratio of the number of relevant selected
+features over the total number of relevant features). We also provide
+a comparison of the stability of the selection by means of a stability
+measure proposed by \cite{paper:stability}. 
 
-Many Bayesian approaches for complete feature selection first fit a
-Bayesian regression model using some sparsifying prior on the
-regression coefficients, for example, as discussed in
-\cite{paper:dirichlet_laplace}, \cite{bhadra2017horseshoe+} and
-\cite{johnstone2004needles}.  In our experiments, we include the
-Dirichlet-Laplace \cite[DL;][]{paper:dirichlet_laplace} prior and the
-regularised horseshoe (RHS) prior \citep{paper:rhs}, which we think
-scales better to higher number of covariates as compared to other
-horseshoe-like priors.
-\note{Aki: How this paragraph connects to the next paragraph?}
+%Table \ref{tab:comparison} summarises the methods used in the numerical experiments.
+
+\subsection{Iterative projections}
+
+We can use the projection predictive approach for complete feature
+selection by using it iteratively.  Applying the straightforward
+implementation of projpred, we are able to select a minimal subset of
+features, which yield to a model with a predictive performance
+comparable to the full model one.  The iterative projection repeats
+the projpred selection for different iterations, at each time
+excluding from the search the features selected in the previous
+iterations. At each iteration the selected submodel size corresponds to the
+one having a predictive performance close enough to the baseline
+model, which in this iterative version is the submodel with the
+highest predictive score explored at the current iteration. The
+stopping rule that we adopted is the following:
+\begin{equation} 
+\label{eq:rule_of_thumb}
+\text{min} \{i\in \{0,..,p\}: \text{P}(\text{elpd}_{i}-\text{elpd}_{\text{best}}>0)\geq \alpha \}
+\end{equation}
+where $i$ indexes the submodel size and ``best'' stays for the best predictive explored submodel
+at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
+the stopping rule.
+The choice of the hyperparameter $\alpha$ can be non-trivial, we have 
+observed sensitivity of the selection to such a choice mainly when using cross-validation with a small
+number of observations or not very predictive features. 
+In our experiments we chose the default value used in the \texttt{projpred} 
+\texttt{R}-package that corresponds to $\alpha=0.16$.
+\hl{NOTE: if necessary I can add a pseudo-code illustration of the iterative projection algorithm, as 
+I did in the thesis}
+TODO: add the pseudo code here
+
+\subsection{Alternative complete feature selection approaches}
+
+% Many Bayesian approaches for complete feature selection first fit a
+% Bayesian regression model using some sparsifying prior on the
+% regression coefficients, for example, as discussed in
+% \cite{paper:dirichlet_laplace}, \cite{bhadra2017horseshoe+} and
+% \cite{johnstone2004needles}.  In our experiments, we include the
+% Dirichlet-Laplace \cite[DL;][]{paper:dirichlet_laplace} prior and the
+% regularised horseshoe (RHS) prior \citep{paper:rhs}, which in our experience
+% scales better to higher number of covariates as compared to other
+% horseshoe-like priors.
+% \note{Aki: How this paragraph connects to the next paragraph?}
 
 % If these priors have continuous support, as is the case for the DL and
 % horseshoe-like priors \citep{paper:hs,bhadra2017horseshoe+,paper:rhs},
@@ -634,66 +675,28 @@ horseshoe-like priors.
 % notation of \cite{paper:dirichlet_laplace}. We use the posterior mean
 % of $\kappa_{j}$ as a point estimate.
 
-Within the set of complete selection procedures, we consider three
-Bayesian methods.  \cite{johnstone2004needles} use a spike-and-slab
-type prior given by a mixture of a delta distribution in zero and a
-heavy-tailed distribution \cite[see
-also][]{paper:spike_slab_mitchell}. When the latter is a Laplace
-distribution, they show an interesting thresholding property of the
-median estimator and, based on this observation, present a complete
-selection procedure using their prior. We refer to this method as
-\emph{EB.med}. Further, we use a method to control for the local false
-discovery rate (\emph{loc.fdr}) as described in \cite{paper:efron,
-  efron2012large}. Finally, we device a simple selection procedure
-based on posterior credible intervals using the regularised horseshoe
-prior in which we select covariates whose 90\% credible intervals
-excludes zero (\emph{ci.90}) \note{Reference for this?}.
+%Within the set of complete selection procedures, we consider three
+%Bayesian methods.  \cite{johnstone2004needles} use a spike-and-slab
+%type prior given by a mixture of a delta distribution in zero and a
+%heavy-tailed distribution \cite[see
+%also][]{paper:spike_slab_mitchell}. When the latter is a Laplace
+%distribution, they show an interesting thresholding property of the
+%median estimator and, based on this observation, present a complete
+%selection procedure using their prior. We refer to this method as
+%\emph{EB.med}. Further, we use a method to control for the local false
+%discovery rate (\emph{loc.fdr}) as described in \cite{paper:efron,
+%  efron2012large}. Finally, we device a simple selection procedure
+%based on posterior credible intervals using the regularised horseshoe
+%prior in which we select covariates whose 90\% credible intervals
+%excludes zero (\emph{ci.90}) \note{Reference for this?}.
 
-All of these methods provide a complete selection procedure and we
-compare their performance with and without using a reference model.
-\note{Aki: Explain here how the reference mdoels are used for these. Point
-  estimates replace data?}
-
-As criteria of selection performance, we evaluate the average false
-discovery rate (i.e., the ratio of the number of non-relevant selected
-features over the number of selected features) and the average
-sensitivity (i.e., the ratio of the number of relevant selected
-features over the total number of relevant features). We also provide
-a comparison of the stability of the selection by means of a stability
-measure proposed by \cite{paper:stability}. Table \ref{tab:comparison}
-summarises the methods used in the numerical experiments.
-
-\note{Aki: ``Type: Complete selection'' doesn't make sense in the table. Maybe we need to discuss when to use the term complete selection and what is the alternative title for this section.}
-
-\begin{table}[tp]
-\scriptsize
-\centering
-\begin{tabular}{l|l|l|l}
- Method & Abbreviation & Type & Quantities of interest \\ 
-  \hline
- Regularised Horseshoe & RHS & Shrinkage prior & SSE, SESE, $\kappa$ \\
- Dirichlet-Laplace & DL & Shrinkage prior & SSE, SESE, $\kappa$ \\
- Local false discovery rate & loc.fdr & Complete selection & fdr, sensitivity, stability \\
- Median estimator & EB.med & Complete selection & fdr, sensitivity, stability \\
- Credible intervals & ci.90 & Complete selection & fdr, sensitivity, stability \\
-\end{tabular}
-\caption{Summary of the shrinkage and selection methods used in the numerical experiments.}
-\label{tab:comparison}
-\end{table}
-
-\hypertarget{complete-selection}{%
-\subsection{Details of methods?}\label{complete-selection}}
-
-\note{Should this be combined with previous subsection?}
-
-As complete selection procedures we consider the control of the local
+We consider three alternative complete selection procedures,
+ the control of the local
 false discovery rate \citep{paper:efron, efron2012large}, the
-empirical Bayes median \citep{johnstone2004needles}, the selection
-by posterior credible intervals and an adaptation of the projection 
-predictive approach that we name iterative projection.\
+empirical Bayes median \citep{johnstone2004needles}, and the selection
+by posterior credible intervals.
 
-The control of the local false discovery rate is applied through the
-\texttt{R}-package \texttt{locfdr}. It consists of testing the
+The control of the local false discovery rate consists of testing the
 z-values $\{z_{j}\}_{j=1}^{p}$ on whether they belong to the
 theoretical null distribution $f_{0}$ (i.e., the null hypothesis $H_0$
 meaning no relevance) against the alternative hypothesis distribution
@@ -712,12 +715,13 @@ discovery rate below $0.2$, which is suggested by
 \citet{efron2012large} as it corresponds to a Bayes factor larger than
 36 (assuming $\pi_{0}\geq0.9$). The results of the comparison are not
 sensitive to the specific value. We use the default setting to
-estimate $\pi_{0}$ from the data provided by the package.
+estimate $\pi_{0}$ from the data provided by the \texttt{R}-package
+\texttt{locfdr} (cite), which implements the method.
 
-The empirical Bayes median procedure is given by the
-\texttt{R}-package \texttt{EbayesThresh} and consists of fitting a
+The empirical Bayes median procedure consists of fitting a
 Bayesian model with a prior composed by a mixture of a delta in zero
-and a heavy-tailed distribution. As suggested by
+and a heavy-tailed distribution. It is implemented in the
+\texttt{R}-package \texttt{EbayesThresh} (cite). As suggested by
 \cite{johnstone2004needles}, we use a Laplace distribution resulting
 in a thresholding property, that is, there exists a threshold value
 such that all the data under that threshold have posterior median
@@ -730,41 +734,38 @@ The selection
 by 90\% posterior credible intervals is done using the regularised
 horseshoe prior and selecting those features whose posterior
 distribution does not include zero in the interval between the 5\% and
-the 95\% quantiles. \note{Reference?}
+the 95\% quantiles (cite).
 
-We can use the projection predictive approach for complete feature
-selection by using it iteratively.  Applying the straightforward
-implementation of projpred, we are able to select a minimal subset of
-features, which yield to a model with a predictive performance
-comparable to the full model one.  The iterative projection repeats
-the projpred selection for different iterations, at each time
-excluding from the search the features selected in the previous
-iterations. At each iteration the selected submodel size corresponds to the
-one having a predictive performance close enough to the baseline
-model, which in this iterative version is the submodel with the
-highest predictive score explored at the current iteration. The
-stopping rule that we adopted is the following:
-\begin{equation} 
-\label{eq:rule_of_thumb}
-\text{min} \{i\in \{0,..,p\}: \text{P}(\text{elpd}_{i}-\text{elpd}_{\text{best}}>0)\geq \alpha \}
-\end{equation}
-where $i$ indexes the submodel size and ``best'' stays for the best predictive explored submodel
-at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
-the stopping rule.
-The choice of the hyperparameter $\alpha$ can be non-trivial, we have 
-observed sensitivity of the selection to such a choice mainly when using cross-validation with a small
-number of observations or not very predictive features. 
-In our experiments we chose the default value used in the \texttt{projpred} 
-\texttt{R}-package that corresponds to $\alpha=0.16$.
-\hl{NOTE: if necessary I can add a pseudo-code illustration of the iterative projection algorithm, as 
-I did in the thesis}
+All of these methods provide a complete selection procedure and we
+compare their performance with and without using a reference model.
+That is, in the data condition, we apply the method on the original
+data $y$ while, in the referece model condition, we replace $y$ by
+their mean predictions $\hat{y}$ based on the reference model.
+  
 
+%\note{Aki: ``Type: Complete selection'' doesn't make sense in the table. Maybe we need to discuss when to use the term complete selection and what is the alternative title for this section.}
 
-\subsection{Simulated data}
+% \begin{table}[tp]
+% \scriptsize
+% \centering
+% \begin{tabular}{l|l|l|l}
+% Method & Abbreviation & Type & Quantities of interest \\ 
+%  \hline
+% Regularised Horseshoe & RHS & Shrinkage prior & SSE, SESE, $\kappa$ \\
+% Dirichlet-Laplace & DL & Shrinkage prior & SSE, SESE, $\kappa$ \\
+% Local false discovery rate & loc.fdr & Complete selection & fdr, sensitivity, stability \\
+% Median estimator & EB.med & Complete selection & fdr, sensitivity, stability \\
+% Credible intervals & ci.90 & Complete selection & fdr, sensitivity, stability \\
+% \end{tabular}
+% \caption{Summary of the shrinkage and selection methods used in the numerical experiments.}
+% \label{tab:comparison}
+% \end{table}
 
-\note{Aki: Why two subsections on simulated data? Combine this with next one, or did I understand their contents wrong?}
+\subsection{Simulations}
+\label{simulations}
 
-
+To investigate the performance of the four complete selection procedures,
+we are going to use simulations based on the normal means problem.
 The normal means problem consists of estimating the (usually
 sparse) vector of means of a vector of normally distributed
 observations. The dimensionality of the vector of means is denoted by
@@ -810,22 +811,10 @@ with unit variance: \
 \begin{equation} \label{eq:normal_means_problem2}
 Z_{j}|\theta_{j}\overset{ind}{\sim}N(\theta_{j},1) \quad j=1,..,p.
 \end{equation}
-Now the quantities of interest $\theta_{j}$ are equal to
+In our situation, the quantities of interest $\theta_{j}$ are equal to
 $\sqrt{n-3}\,T_{F}(\rho_{j})$.
 
 We use different levels of correlation $\rho\in\{0.3,0.5\}$ and number
-observation $n\in\{50,70,100\}$. The total number of covariates $p$
-and the number of relevant covariates $k$ are fixed to $p = 1000$ and
-$k = 100$, respectively. In general, the lower $\rho$ and $n$, the
-more challenging the selection.
-
-
-\hypertarget{simulated-data}{%
-\subsection{Simulated data}\label{simulated-data}}
-
-Here we use simulated data in order to control the difficulty of the
-selection problem. We rely on the scheme \eqref{eq:simulated_data}
-using different levels of correlation $\rho\in\{0.3,0.5\}$ and number
 observation $n\in\{50,70,100\}$. The total number of covariates $p$
 and the number of relevant covariates $k$ are fixed to $p = 1000$ and
 $k = 100$, respectively. In general, the lower $\rho$ and $n$, the
@@ -855,16 +844,16 @@ sensible to such a choice of the screening threshold, yet a more
 principled approach would be to use cross-validation to select the
 threshold as done in \cite{paper:projpred}.
 
-The normal means problem formulation is obtained as explained in
-Section \ref{comparison} by applying the Fisher-z-transformation to
-the empirical correlations. We label the reference approach as
-``ref'', which consists of using the reference model on top of the
-computation of the z-values, and the standard approach based on the
-observed data simply as ``data''. In Section \ref{shrinkage-signal},
-we analyse the different shrinkage and signal estimates in the context
-of the full Bayes estimation methods by comparing the ref and data
-approach. In Section \ref{complete-selection}, we present results for
-the complete selection procedures.
+% The normal means problem formulation is obtained as explained in
+% Section \ref{comparison} by applying the Fisher-z-transformation to
+% the empirical correlations. We label the reference approach as
+% ``ref'', which consists of using the reference model on top of the
+% computation of the z-values, and the standard approach based on the
+% observed data simply as ``data''. In Section \ref{shrinkage-signal},
+% we analyse the different shrinkage and signal estimates in the context
+% of the full Bayes estimation methods by comparing the ref and data
+% approach. In Section \ref{complete-selection}, we present results for
+% the complete selection procedures.
 
 % \hypertarget{shrinkage-signal}{%
 % \subsubsection{Shrinkage and signal analysis}\label{shrinkage-signal}}
@@ -954,9 +943,6 @@ the complete selection procedures.
 %   \label{fig:k}
 % \end{figure}
 
-
-\subsection{Simulation results of complete feature selection}
-
 Figure \ref{fig:sensitivity_vs_fdr_iterated} reports the average sensitivity on
 the vertical axis versus the average false discovery rate on the
 horizontal axis based on 100 data simulations for the different
@@ -1017,14 +1003,12 @@ projection does not perform well in the hardest scenarios.
 
 
 \hypertarget{real-world-data}{%
-\subsection{The body fat data: A real world example}\label{real-world-data}}
-
-\note{Aki: Is this only complete feature selection or also more results for the minimal subset feature selection?}
+\section{Case study: Body fat data}\label{real-world-data}}
 
 We conclude our  experiments using the real world `body fat' dataset
 one more time, which was already described in the motivational example
 comparing the projection predictive approach and the stepwise
-regression in Section \ref{projection}. We carry out two different
+regression in Section \ref{intro-example}. We carry out two different
 analyses: one using the normal means problem framework and another one
 using selection via stepwise backward regression. In the former, we
 add noisy uncorrelated covariates to the original data up to a total
@@ -1084,9 +1068,9 @@ marginal with only small improvements.
 \end{figure}
 
 In the second analysis, we repeat the selection of Section
-\ref{projection} via stepwise backward regression. In this case, the
+\ref{intro-example} via stepwise backward regression. In this case, the
 overall number of covariates (original plus noisy) is 100, as it was
-in the last part of Section \ref{projection}. We compare results with
+in the last part of Section \ref{intro-example}. We compare results with
 and without using a reference model on top of the procedure following
 our simple reference model approach outlined in
 \eqref{eq:ref_mod}. Figure \ref{fig:bodyfat_step_refvsdata} shows the
@@ -1099,9 +1083,9 @@ features included in the final model. This leads to less overfitting
 and thus to improved out-of-sample predictive performance in terms of
 RMSE. The reference model approach applied to the stepwise backward
 regression achieves outstanding improvements considering its
-simplicity, yet it does not reach the goodness of more thoughtful
-implementations, for instance, the projective prediction approach (see
-results of Section \ref{projection}).
+simplicity, yet it does not reach the goodness of the much
+more sophisticated projective prediction approach (see
+results of Section \ref{intro-example}).
 
 In this example, we have still used the reference model defined as a
 linear regression over some supervised principal components, because
@@ -1118,10 +1102,10 @@ comparably simple reference model.
 \section{Conclusion}\label{conclusion}}
 
 In this paper, we demonstrated the benefits of using a reference model
-to improve feature selection, or more generally, model reduction. The
-goal of this paper is not to provide a specific procedure to carry out
-the selection, but rather to explain and motivate the general benefits
-of a reference model.  We have seen how the reference model acts as an
+to improve feature selection, or more generally, model reduction. 
+We have motivated and explained the general benefits
+of a reference model regardless of the method it is applied in combination
+with. Specifically, we have seen how the reference model acts as an
 approximation of the data generation mechanism through its predictive
 distribution. Such approximation is generally less noisy than the
 sample estimation available purely from the observed data, leading to
@@ -1133,7 +1117,7 @@ more accurate and stable selection results independently of the
 specific selection method. These benefits apply to a large family of
 different approaches all involving a reference model in one way or the
 other. Some of these approaches have been present in the literature
-for several years \cite[e.g. see][]{vehtari2012survey,paper:projpred}
+for several years \cite[e.g., see][]{vehtari2012survey,paper:projpred}
 but often without a clear explanation of \emph{why} they are actually
 favourable and how they connect to other related approaches. We hope
 that the present paper can fill some of these gaps by providing a
@@ -1152,7 +1136,19 @@ reference models are required, which are more specifically tuned to
 the data and problem at hand, we recommend them to be developed using
 a robust (Bayesian) modelling workflow, for instance, as outlined in
 \cite{gabry2019visualization}.
-\\
+
+Another main result of this paper is that the projective
+prediction approach shows superior performance compared to alternative methods whether or not
+these methods make use of a reference model. That is, while the reference 
+model is certainly one important aspect the projective
+prediction approach, it is not the only reason for its superior performance.
+Rather, by incoporating the full uncertainty of the posterior predictive distribution into the feature selection procedure (instead of just using
+point estimates) and using principled cross-validation method, projective
+predictions combine several desirable features into a single procedure \citep{paper:projpred}.
+In summary, we would strongly recommend using projective predictions for
+feature selection if possible and feasible. However, if this is not an option
+in a given situation, we would in any case recommend using a reference model
+on top of the chosen feature selection method. 
 
 All Bayesian models used in the this paper have been implemented in
 the probabilistic programming language \texttt{Stan}
@@ -1226,7 +1222,7 @@ which are likely to yield even better results. Rather, the reason for
 focusing on this simple version is to enable a fair comparison between
 a reference model and a purely data based approach when otherwise
 using the same selection procedures. Other kinds of comparisons, as
-the one presented in Section \ref{projection}, work well as
+the one presented in Section \ref{intro-example}, work well as
 motivational examples but lack in terms of generality since the
 presence or absence of a reference model is not the only aspect
 differentiating the two procedures. We will come back to the more
