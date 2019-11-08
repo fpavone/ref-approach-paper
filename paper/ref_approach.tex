@@ -3,6 +3,7 @@
 \usepackage{amssymb,amsmath,amsthm}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fixltx2e} % provides \textsubscript
+\usepackage{algorithm2e}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
@@ -491,14 +492,17 @@ forward selection with and without a reference model.
 The selection continues if the reduced model has an elpd score higher 
 (i.e., better) than the current model.
 
-\item Bayesian stepwise selection (reference model based): The reference model is the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ are used to replace the target variable $y$. The same Bayesian
-  $p$-value selection strategy as in the data based Bayesian stepwise selection is used.
+\item Bayesian stepwise selection (reference model based): The reference model is 
+the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ 
+are used to replace the target variable $y$. The same Bayesian $p$-value selection
+ strategy as in the data based Bayesian stepwise selection is used.
 
 %Same as the data based Bayesian stepwise selection, but instead of using the observed data values to fit the models at each step, it uses the target values predicted by the reference model (which is the same as in the projpred approach).
 \end{itemize}
 
 In Figure \ref{fig:rmse_vs_fdr}, the predictive performance is shown
-for different values of $n$ and $\rho$ in terms of RMSE and the false discovery rate (FDR) of the selected submodel,
+for different values of $n$ and $\rho$ in terms of RMSE and the false
+ discovery rate (FDR) of the selected submodel,
 averaged after 100 data simulations. We see that projpred has superior FDR and the
 smallest RMSE. Using a reference model improves steplm significantly,
 but the minimal subset feature selection stays unreliable. Stepwise
@@ -510,10 +514,10 @@ Figure \ref{fig:entropy} reports the entropy scores for the different
 methods compared. Lower entropy corresponds to a more stable
 selection. Highly correlated predictive features may happen to be
 alternately selected, making the measure of the stability of the
-selection a non-trivial task. Entropy suffers of such a problem, thus
-such a measure should be seen as one of different possible
-measurements of the actual stability. 
-[TODO: please clarify the above sentences about entropy.] 
+selection a non-trivial task. Entropy can not distinguish the interchangeability 
+due to correlation from instability, thus such a measure should be 
+consider as relative indicator and not as an absolute measure of stability.
+\hl{TODO: The above sentence should be clearer now}
 The use of a reference model
 improves slightly stability of steplm in feature selection. The
 projection predictive approach results to be far more stable than all
@@ -589,15 +593,37 @@ stopping rule that we adopted is the following:
 \end{equation}
 where $i$ indexes the submodel size and ``best'' stays for the best predictive explored submodel
 at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
-the stopping rule.
+the stopping rule (see Algorithm \ref{alg:iterated_proj}).
 The choice of the hyperparameter $\alpha$ can be non-trivial, we have 
 observed sensitivity of the selection to such a choice mainly when using cross-validation with a small
 number of observations or not very predictive features. 
 In our experiments we chose the default value used in the \texttt{projpred} 
 \texttt{R}-package that corresponds to $\alpha=0.16$.
-\hl{NOTE: if necessary I can add a pseudo-code illustration of the iterative projection algorithm, as 
-I did in the thesis}
-TODO: add the pseudo code here
+
+\begin{center}
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{$R:=\{\text{selected features}\}$}
+ $F:=\{\text{set of features}\}$ \;
+ $R=\{\emptyset\}$ \;
+ Fit reference model\;
+ \While{$F\neq\{\emptyset\}$}{
+   projection.HeuristicSearch \;
+   projection.elpdEstimate() \;
+%:
+   $S=\text{min}\{\text{sub}: P(\text{elpd}_{\text{sub}}-\text{elpd}_{\text{base}}>0)\geq\alpha)$\} \;
+  
+  \eIf{$S=\{\emptyset\}$}{
+   break \;
+   }{
+   $R=R\cup S$\;
+   $F=F\setminus S$\;
+  }
+ }
+ \caption{Automated iterative projections}
+ \label{alg:iterated_proj}
+\end{algorithm}
+\end{center}
 
 \subsection{Alternative complete feature selection approaches}
 
@@ -963,7 +989,9 @@ projection performs fairly well if the number of observations and the correlatio
 are not too small. In those cases it mainly results to be too conservative, resulting in a low
 sensitivity, but good false discovery rate. Tuning $\alpha$ might lead to improved selection, yet
 the main source of poor performance could well be the miscalibration of the uncertainty of the predictive
-utility score for misspecified models with cross-validation \hl{(maybe add some references?)}.
+utility score for misspecified models with cross-validation \hl{(maybe add some references? The last sentence 
+refers to the problem when comparing misspecified models using CV. Tuomas did a talk about this problem.
+Maybe Aki can check the content and add some references - not sure Tuomas' work is already available)}.
 
 \begin{figure}[tp]
   \centering
