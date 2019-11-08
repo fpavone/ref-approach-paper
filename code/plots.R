@@ -6,6 +6,7 @@ theme_set(theme_light() +
           theme(strip.background = element_rect(color='black',fill='white'),
                 strip.text.x = element_text(color='black'),
                 strip.text.y = element_text(color='black')))
+shapes <- c('ref'=8, 'data'=20)
 library(latex2exp)
 source("getStability.R")
 
@@ -120,7 +121,7 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
   geom_point(aes(shape=approach),size=2.5) +
  # geom_errorbar(aes(ymin=sensitivity-sensitivity.sd, ymax=sensitivity+sensitivity.sd)) +
  # geom_errorbarh(aes(xmin=fdr-fdr.sd, xmax=fdr+fdr.sd)) +
-  scale_shape_manual(values = c(16,15)) +
+  scale_shape_manual(values = shapes) +
   geom_line(aes(col=method)) +
   labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 #  theme_light()
@@ -467,8 +468,8 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
     scale_x_continuous(limits=c(0,0.6)) +
     scale_y_continuous(limits=c(0.3,0.9)) +
-    geom_point(aes(shape=approach),size=2.5) +
-    scale_shape_manual(values = c(16,15)) +
+    geom_point(aes(shape=approach), size=2) +
+    scale_shape_manual(values = shapes) +
     geom_line(aes(col=method)) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
    # theme_light() +
@@ -482,7 +483,7 @@ ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=
 ## Stability plot
 plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   facet_grid(~n, labeller=facet.labels) +
-  geom_point(size=2.5) +
+  geom_point(size=1.5) +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
@@ -673,7 +674,7 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
 plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
     geom_point(aes(shape=approach),size=2) +
-    scale_shape_manual(values = c(16,15)) +
+    scale_shape_manual(values = shapes) +
     geom_line(data=filter(data.plot,method=='step'),aes(x=fdr,y=rmse)) +
     labs(x='False discovery rate', y='RMSE',shape='Approach',color='method')
 
@@ -752,8 +753,8 @@ for(nn in c(80,100,150)){
                              method = c('projpred',
                                         'step',
                                         'step',
-                                        'bayes.step.data',
-                                        'baeyes.step.ref'),
+                                        'bayes.step',
+                                        'bayes.step'),
                              fdr = c(avg.fdr(X.projpred.tot),
                                      avg.fdr(X.step.data.tot),
                                      avg.fdr(X.step.ref.tot),
@@ -778,8 +779,9 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
 plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
     geom_point(aes(shape=approach),size=2) +
-    scale_shape_manual(values = c(16,15)) +
+    scale_shape_manual(values = shapes) +
     geom_line(data=filter(data.plot,method=='step'),aes(x=fdr,y=rmse)) +
+    geom_line(data=filter(data.plot,method=='bayes.step'),aes(x=fdr,y=rmse)) +
     labs(x='False discovery rate', y='RMSE',shape='Approach',color='method')
 
 ggsave('../paper/graphics/rmse_vs_fdr_parallel.pdf',plot1,width=10,height=3)

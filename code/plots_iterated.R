@@ -4,6 +4,7 @@ theme_set(theme_light() +
           theme(strip.background = element_rect(color='black',fill='white'),
                 strip.text.x = element_text(color='black'),
                 strip.text.y = element_text(color='black')))
+shapes <- c('ref'=8, 'data'=20)
 library(latex2exp)
 source("getStability.R")
 
@@ -172,7 +173,7 @@ plot1 <- ggplot(data.plot.clean,aes(x=fdr,y=sensitivity,col=method)) +
     ##                 segment.size = 0.2,
     ##                 size = 3,
     ##                 alpha = 0.6) +
-    scale_shape_manual(values = c(16,15)) +
+    scale_shape_manual(values = shapes) +
     scale_colour_manual(values = colors) +
     geom_line(data=filter(data.plot.clean,method!='iter.cv'),aes(col=method)) +
     guides(label=FALSE) +
@@ -182,15 +183,13 @@ ggsave(filename='../paper/graphics/sensitivity_vs_fdr_iterated.pdf',plot1,width=
 
 plot2 <- ggplot(data.plot.clean,aes(y=stab.mean,x=method,col=approach)) +
   facet_grid(rho~n, labeller=facet.labels) +
-  geom_point(size=2.5) +
+  geom_point() +
   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
   scale_color_manual(values=c("#819FF7","#FAAC58"))
 
 ggsave(filename='../paper/graphics/stability_iterated.pdf',plot2, width=10,height=3)
-
-
 
 ## #### Test vs K10 ####
 
