@@ -512,17 +512,16 @@ When the variable selection is repeated with different simulated data
 sets, there is some variability in which variables are selected. We
 measure the stability of variable selection by computing the entropy
 of observed distribution over different models. The smallest entropy
-would be obtained if the approach selectes always the same set of
+would be obtained if the approach always selects the same set of
 variables, and the largest entropy would be observed if the approach
 would always select different set of variables.
-Figure \ref{fig:entropy} reports the entropy scores for the different
-methods compared. Lower entropy corresponds to a more stable
+Figure \ref{fig:entropy} reports the entropy scores for the different compared
+methods. Lower entropy corresponds to a more stable
 selection. Highly correlated predictive features may happen to be
 alternately selected, making the measure of the stability of the
-selection a non-trivial task. Entropy can not distinguish the interchangeability 
-due to correlation from instability, thus such a measure should be 
-consider as relative indicator and not as an absolute measure of stability.
-\hl{TODO: The above sentence should be clearer now}
+selection a non-trivial task. Entropy cannot distinguish the interchangeability 
+due to correlation from instability. Thus, such a measure should be 
+considerd as a relative and not as an absolute measure of stability.
 The use of a reference model
 improves slightly the stability of steplm in feature selection. The
 projection predictive approach results to be far more stable than all
