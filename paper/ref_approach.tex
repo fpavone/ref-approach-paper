@@ -19,15 +19,12 @@
 \fi
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={The reference model approach in feature selection problems},
+            pdftitle={The reference model approach in feature selection},
             pdfauthor={Federico Pavone, Juho Piironen, Paul-Christian B\"{u}rkner, Aki Vehtari},
             pdfkeywords={keywords},
             pdfborder={0 0 0},
@@ -132,7 +129,7 @@
 \DeclareMathOperator{\N}{N}
 \newcommand{\note}[1]{\textcolor{red}{#1}}
 
-\title{Using reference models in feature selection problems 
+\title{Using reference models in feature selection 
 	\vspace{.1in}}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
@@ -437,7 +434,8 @@ noisy data directly.
 
 \begin{figure}[tp]
   \centering
-  \includegraphics[width=0.3\textwidth]{graphics/correlation.pdf}
+  \vspace{-5mm}
+  \includegraphics[width=0.4\textwidth]{graphics/correlation.pdf}
   \caption{Sample correlation plot of each feature (relevant in red, 
   non-relevant in blue) with the target variable $y$ and the latent variable 
   $f$ respectively on the x and y axis. Data are generated according to 
@@ -986,9 +984,7 @@ enough information to identify the relevant covariates. The iterative
 projection predictive approach has good false discovery rate in all cases, and the sensitivity is good except when the number of observations and the correlation level
 are small. Tuning $\alpha$ might lead to improved selection, yet
 the main source of poor performance could well be the miscalibration of the uncertainty of the predictive
-utility score for misspecified models with cross-validation \hl{(maybe add some references? The last sentence 
-refers to the problem when comparing misspecified models using CV. Tuomas did a talk about this problem.
-Maybe Aki can check the content and add some references - not sure Tuomas' work is already available)}.
+utility score for misspecified models with cross-validation \citep{bengio2004no}.
 
 \begin{figure}[tp]
   \centering
@@ -1258,8 +1254,9 @@ using the same selection procedures. Other kinds of comparisons, as
 the one presented in Section \ref{intro-example}, work well as
 motivational examples but lack in terms of generality since the
 presence or absence of a reference model is not the only aspect
-differentiating the two procedures. We will come back to the more
-general comparison in Section \ref{comparison}.
+differentiating the two procedures.
+% We will come back to the more
+% general comparison in Section \ref{comparison}.
 
 As a motivational example to the implications of using a reference
 model in feature selection problems, we show its application in the
