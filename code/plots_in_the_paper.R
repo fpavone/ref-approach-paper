@@ -330,9 +330,24 @@ for(nn in c(50,70,100,251)){
                                    getStability(ebmt_X_data)$stability),
                      stab.up = c(getStability(ebmt_X_ref)$upper,
                                  getStability(ebmt_X_data)$upper)))
+
+  load(paste("bodyfat_type1_varyN_iteratedproj_n",nn,".Rdata",sep=""))
+## Iterative projection
+  data.plot <- data.plot %>%
+      bind_rows(tibble(n = n,
+                       method = "projpred.iter",
+                       approach = "ref",
+                       sensitivity =  avg.sensitivity(projpred_X),
+                       fdr = avg.fdr(projpred_X),
+                       stab.low = getStability(projpred_X)$lower,
+                       stab.mean = getStability(projpred_X)$stability,
+                       stab.up = getStability(projpred_X)$upper))
 }
 
-
+colors <- c('projpred.iter' = '#2E2E2E',
+            'loc.fdr' = '#819FF7',
+            'EB.med' = '#298A08',
+            'ci.90' = '#F78181')
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 
@@ -341,9 +356,10 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(~n, labeller=facet.labels) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
     scale_x_continuous(limits=c(0,0.6)) +
-    scale_y_continuous(limits=c(0.3,0.9)) +
+    scale_y_continuous(limits=c(0.3,0.99)) +
     geom_point(aes(shape=approach), size=2) +
     scale_shape_manual(values = shapes) +
+    scale_colour_manual(values = colors) +
     geom_line(aes(col=method)) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
    # theme_light() +
@@ -352,7 +368,7 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
    #       strip.text.y = element_text(color='black'))
 
 
-ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.1)
+ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
 
 ## Stability plot
 plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
