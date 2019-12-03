@@ -60,7 +60,7 @@ for(aaa in alpha_vec){
                   chains = 1, iter = 2000, seed = 4345342+k,refresh=0)
         draws <- as.matrix(fit_k) # posterior draws
         sigma <- draws[,'sigma'] # noise std
-        beta <- draws[,2:(nc+1)] # regression coefficients
+        beta <- draws[,2:(ncol(zz)+1)] # regression coefficients
         alpha <- draws[,'intercept'] # intercept
 
         predfun <- function(zt){
