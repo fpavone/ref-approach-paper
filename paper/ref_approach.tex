@@ -1220,9 +1220,15 @@ the experiments is available on GitHub
 
 \section*{Appendix}
 
-As an another example, let us consider a candidate submodel in a
-feature selection process and let us refer to the parameter
-distribution of the submodel by $\pi$ and to the induced predictive
+\subsection*{Appendix A: Projective Predictions}
+
+The projective prediction (projpred) approach was developed and is thoroughly
+ described in \cite{paper:projpred}. In this appendix, we provide a high level
+  description of the method so that readers do not need to study \cite{paper:projpred} in detail
+in order to understand the main ideas behind projpred.
+
+ Let us refer to the parameter
+distribution of a given candidate submodel by $\pi$ and to the induced predictive
 distribution by $q_{\pi}(\tilde{y})$. We would like to choose $\pi$ so
 that $q_{\pi}(\tilde{y})$ maximises some predictive performance
 utility, for example, the expected log-predictive density (elpd)
@@ -1236,53 +1242,20 @@ predictive distribution of a reference model with $p(\tilde{y}|D)$,
 where $D$ stands for the data on which we conditioned on, we can
 approximate \eqref{eq:elpd} using $p(\tilde{y}|D)$ instead of the true
 data generation mechanism $p_{t}(\tilde{y})$. The maximisation of the
-elpd using the reference model predictive distribution is equivalent
+elpd using the reference model's predictive distribution is equivalent
 to the minimisation of the Kullback-Leibler (KL) divergence from the
 reference model's predictive distribution to the submodel's predictive
 distribution: \
 \begin{equation} \label{proj_as_filter}
-\underset{\pi}{\text{max}} \; \int \text{log}\,q_{\pi}(\tilde{y})p(\tilde{y}|D)d\tilde{y} \leftrightarrow \underset{\pi}{\text{min}} \; \text{KL}[p(\tilde{y}|D)||q_{\pi}(\tilde{y})] 
+\underset{\pi}{\text{max}} \; \int \text{log}\,q_{\pi}(\tilde{y})p(\tilde{y}|D)
+\, \text{d} \tilde{y} 
+\quad \Leftrightarrow \quad 
+\underset{\pi}{\text{min}} \; \text{KL}[p(\tilde{y}|D) \; || \; q_{\pi}(\tilde{y})] 
 \end{equation}
 The term on the right-hand side of Equation \eqref{proj_as_filter}
 describes what is referred to as the projection of the predictive
 distribution, which is the general idea behind the projection
-predictive approach \cite[see][]{paper:projpred}. Again the reference
-model is acting as a filter, or substitute, on data.
-
-
-Relying on the idea of the reference model as a noise-filter, a
-generic reference model approach, which can be used on top of any
-feature selection procedure, consists of simply substituting the
-target observations with corresponding point predictions of the
-reference model, for instance, the posterior predictive
-means. Afterwards, any method for feature selection can be used. We do
-not argue that such a reference model approach should necessarily be
-used as is for feature selection in real applications. There are
-several more sophisticated reference model approaches available in the
-literature \cite[see,
-e.g.][]{paper:projpred,paananen2017variable,paul2008preconditioning},
-which are likely to yield even better results. Rather, the reason for
-focusing on this simple version is to enable a fair comparison between
-a reference model and a purely data based approach when otherwise
-using the same selection procedures. Other kinds of comparisons, as
-the one presented in Section \ref{intro-example}, work well as
-motivational examples but lack in terms of generality since the
-presence or absence of a reference model is not the only aspect
-differentiating the two procedures.
-% We will come back to the more
-% general comparison in Section \ref{comparison}.
-
-As a motivational example to the implications of using a reference
-model in feature selection problems, we show its application in the
-form of the projection predictive approach, which uses the reference
-model to project the posterior draws to the submodels
-\citep{paper:original_proj}. The \texttt{R}-package \texttt{projpred}
-(available at \url{https://CRAN.R-project.org/package=projpred})
-implements the projection in case of submodels in the family of the
-generalised linear models and, additionally, it provides a framework
-to choose the optimal submodel size through a predictive utility
-comparison between the submodels and the reference model.
-
+predictive approach \cite[see][]{paper:projpred}. 
 We now summarise the workflow of the projection predictive approach in
 the particular case of the draw-by-draw projection \cite[original
 formulation by][]{paper:original_proj}, following
@@ -1291,33 +1264,33 @@ with target values $\{y_{i}\}_{i=1}^{n}$ and a set of observed
 covariates for which we want to obtain a minimally relevant
 subset. Than, the main steps are the following:
 \begin{enumerate}
-\item Devise and fit a reference model. Let $\{\boldsymbol{\theta}_{*}^{s}\}_{s=1}^{S}$ be the set of $S$ draws from the reference model posterior.
+\item Devise and fit a reference model. Let $\{\boldsymbol{\theta}_{*}^{s}\}_{s=1}^{S}$ be the set of $S$ draws from the reference model's posterior.
 \item Rank the covariates according to their relevance using some
   heuristics and consider as candidate submodels only those which
   preserve this order, starting from including only the highest ranked
-  covariate (the submodels are then naturally identified by their
-  model size). This is not strictly necessary but reduces the number
-  of submodels to consider in the following steps.
-\item For each submodel, project the reference model posterior draws as follows:
+  covariate. The submodels are then naturally identified by their
+  model size. This step is not strictly necessary but reduces the number
+  of submodels to considered in the following steps and thus reduces computation time.
+\item For each submodel $\pi$ selected in Step 2, project each of the reference model's posterior draws $\boldsymbol{\theta}_{*}^{s}$ as follows:
 \begin{equation}\label{eq:draw_by_draw}
-\boldsymbol{\theta}_{\perp}^{s} = \underset{\boldsymbol{\theta^{s}}\in\Theta}{\text{argmin}} \frac{1}{n}\sum_{i=1}^{n}\text{KL} \left( p(\tilde{y}_{i}|\boldsymbol{\theta}_{*}^{s})\;||\;q(\tilde{y}_{i}|\boldsymbol{\theta}^{s}) \right), \quad s=1,\ldots,S \,,
+\boldsymbol{\theta}_{\perp}^{s} = \underset{\boldsymbol{\theta^{s}}\in\Theta}{\text{argmin}} \frac{1}{n}\sum_{i=1}^{n}\text{KL} \left[ p(\tilde{y}_{i}|\boldsymbol{\theta}_{*}^{s})\;||\;q_\pi(\tilde{y}_{i}|\boldsymbol{\theta}^{s}) \right],
 \end{equation}
 where $p(\tilde{y}_{i}|\boldsymbol{\theta}_{*}^{s})$ stands for the
 predictive distribution of the reference model with parameters fixed
 at $\boldsymbol{\theta}_{*}^{s}$ and conditioning on all the covariate
 values related to the statistical unit (identified by the subscript
-$i$), whereas $q(\tilde{y}_{i}|\boldsymbol{\theta}^{s})$ is the
+$i$), whereas $q_\pi(\tilde{y}_{i}|\boldsymbol{\theta}^{s})$ is the
 predictive distribution of the submodel. The projected draws
 $\boldsymbol{\theta}_{\perp}^{s}$ then present the projected posterior
 for the submodel.
-\item For each submodel (size), test the predictive performance, for example, via cross-validation.
+\item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation.
 \item Choose the smallest submodel (size) that is sufficiently close to the reference model's predictive utility score.
 \end{enumerate} 
 
-Expression \eqref{eq:draw_by_draw} is not an easy optimisation problem
-in general, but in the special case of submodels for the family of
-generalised linear models, \eqref{eq:draw_by_draw} reduces to a
-maximum likelihood estimation problem, which can be easily optimised
+In general, Expression \eqref{eq:draw_by_draw} is not an easy optimisation problem
+However, in the special case of the submodels being
+generalised linear models with a likelihood coming from the exponential family, \eqref{eq:draw_by_draw} reduces to a
+maximum likelihood estimation problem, which can be easily solved
 \citep{paper:original_proj}. For further details on the projective
 prediction workflow and implementation see \cite{paper:projpred}.
 
