@@ -569,8 +569,9 @@ Here we repeat the selection of Section \ref{intro-example} via
 stepwise backward regression. In this case, the overall number of
 covariates (original plus noisy) is 100, as it was in the last part of
 Section \ref{intro-example}. We compare results with and without using
-a reference model on top of the procedure following our simple
-reference model approach outlined in \eqref{eq:ref_mod}. Figure
+a reference model on top of the procedure following a simple
+reference model approach outlined in Equation \eqref{eq:ref_mod} 
+of Section \ref{simulations}. Figure
 \ref{fig:bodyfat_step_refvsdata} shows the number of irrelevant
 features included in the final model and the out-of-sample root mean
 square error (RMSE). Results are based on 100 bootstrap samples on the
@@ -589,17 +590,6 @@ prediction approach (see results of Section \ref{intro-example}).
   \caption{Stepwise backward selection with and without using a reference model. The x-axis denotes the number of selected irrelevant features on the left and the out-of-sample RMSE on the right-hand side based on 100 bootstrap samples.\\}
   \label{fig:bodyfat_step_refvsdata}
 \end{figure}
-
-In this example, we have used the reference model defined as a linear
-regression over some supervised principal components, because it is
-natural for a large number of correlating variables, has fairly good
-predictive performance and is computationally efficient. We do not
-argue that this is always the best choice and more sophisticated
-models can lead to even better results. Here the purpose of the
-experiments were to motivate the use of reference models in general,
-and as we needed to average results over a lot of repetitions per
-simulation condition, we preferred such a comparably simple and
-computationally fast reference model.
 
 % \hypertarget{comparison}{%
 %   \section{A comparison in the normal means problem framework}\label{comparison}}
@@ -1079,7 +1069,7 @@ projection does not perform well in the hardest scenarios.
 \subsection{Body fat example: Part 3}\label{real-world-data}}
 
 We conclude our complete selection experiments using the body fat dataset one
-more time, which was already described in Section \ref{intro-example}. We
+more time, which was initially described in Section \ref{intro-example}. We
 carry out two different analyses: one using the normal means problem
 framework and another one using selection via stepwise backward
 regression. In the former, we add noisy uncorrelated covariates to the
@@ -1131,6 +1121,16 @@ results using the measure by
 \cite{paper:stability}. The benefits of the reference model are here
 marginal with only small improvements.
 
+In this example, we have used the reference model defined as a linear
+regression over some supervised principal components, because it is
+natural for a large number of correlating variables, has fairly good
+predictive performance and is computationally efficient. We do not
+argue that this is always the best choice and more sophisticated
+models can lead to even better results. Here the purpose of the
+experiments were to motivate the use of reference models in general,
+and as we needed to average results over a lot of repetitions per
+simulation condition, we preferred such a comparably simple and
+computationally fast reference model.
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
