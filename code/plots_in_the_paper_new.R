@@ -41,83 +41,93 @@ colors <- c(
   'EB.med' = '#00BA38'
 )
 
-data.plot <- tibble(n = numeric(),
-                    rho = numeric(),
-                    method = character(),
-                    approach = character(),
-                    sensitivity = numeric(),
-                    sensitivity.sd = numeric(),
-                    fdr = numeric(),
-                    fdr.sd = numeric(),
-                    stab.low = numeric(),
-                    stab.mean = numeric(),
-                    stab.up = numeric())
+## If you want to run the script to create the data object
+## set TRUE, otherwise set FALSE to load the data.
+saveMode <- FALSE
 
-for(nn in c(50,70,100)){
-  for(rr in c(0.3,0.5)){
-    load(paste("ref_approach_n",nn,"rho",rr,".Rdata",sep=""))
+######################################################
+###### COMPLETE SELECTION (OLD VERSION) ##############
+######################################################
 
-    data.plot <- data.plot %>%
-      # Credibility intervals inclusion probabilities with regularized horseshoe prior
-      bind_rows(tibble(n = rep(n,2),
-              rho = rep(rho,2),
-              method = rep("ci.90",2),
-              approach = c("ref","data"),
-              sensitivity = c(avg.sensitivity(ci90_X_ref),
-                              avg.sensitivity(ci90_X_data)),
-              sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
-                                 sd.sensitivity(ci90_X_data)),
-              fdr = c(avg.fdr(ci90_X_ref),
-                      avg.fdr(ci90_X_data)),
-              fdr.sd = c(sd.fdr(ci90_X_ref),
-                         sd.fdr(ci90_X_data)),
-              stab.low = c(getStability(ci90_X_ref)$lower,
-                           getStability(ci90_X_data)$lower),
-              stab.mean = c(getStability(ci90_X_ref)$stability,
-                            getStability(ci90_X_data)$stability),
-              stab.up = c(getStability(ci90_X_ref)$upper,
-                          getStability(ci90_X_data)$upper))) %>%
-      # Control of the local false discovery rate
-      bind_rows(tibble(n = rep(n,2),
-              rho = rep(rho,2),
-              method = rep("loc.fdr",2),
-              approach = c("ref","data"),
-              sensitivity = c(avg.sensitivity(lfdr_X_ref),
-                              avg.sensitivity(lfdr_X_data)),
-              sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
-                                 sd.sensitivity(lfdr_X_data)),
-              fdr = c(avg.fdr(lfdr_X_ref),
-                      avg.fdr(lfdr_X_data)),
-              fdr.sd = c(sd.fdr(lfdr_X_ref),
-                         sd.fdr(lfdr_X_data)),
-              stab.low = c(getStability(lfdr_X_ref)$lower,
-                           getStability(lfdr_X_data)$lower),
-              stab.mean = c(getStability(lfdr_X_ref)$stability,
-                            getStability(lfdr_X_data)$stability),
-              stab.up = c(getStability(lfdr_X_ref)$upper,
-                          getStability(lfdr_X_data)$upper))) %>%
-      # Empirical Bayes median thresholding
-      bind_rows(tibble(n = rep(n,2),
-              rho = rep(rho,2),
-              method = rep("EB.med",2),
-              approach = c("ref","data"),
-              sensitivity = c(avg.sensitivity(ebmt_X_ref),
-                              avg.sensitivity(ebmt_X_data)),
-              sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
-                                 sd.sensitivity(ebmt_X_data)),
-              fdr = c(avg.fdr(ebmt_X_ref),
-                      avg.fdr(ebmt_X_data)),
-              fdr.sd = c(sd.fdr(ebmt_X_ref),
-                         sd.fdr(ebmt_X_data)),
-              stab.low = c(getStability(ebmt_X_ref)$lower,
-                           getStability(ebmt_X_data)$lower),
-              stab.mean = c(getStability(ebmt_X_ref)$stability,
-                            getStability(ebmt_X_data)$stability),
-              stab.up = c(getStability(ebmt_X_ref)$upper,
-                          getStability(ebmt_X_data)$upper)))
-
-  }
-}
+if(saveMode){
+    data.plot <- tibble(n = numeric(),
+                        rho = numeric(),
+                        method = character(),
+                        approach = character(),
+                        sensitivity = numeric(),
+                        sensitivity.sd = numeric(),
+                        fdr = numeric(),
+                        fdr.sd = numeric(),
+                        stab.low = numeric(),
+                        stab.mean = numeric(),
+                        stab.up = numeric())
+    for(nn in c(50,70,100)){
+        for(rr in c(0.3,0.5)){
+            load(paste("ref_approach_n",nn,"rho",rr,".Rdata",sep=""))
+            data.plot <- data.plot %>%
+                ## Credibility intervals inclusion probabilities
+                ## with regularized horseshoe prior
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 method = rep("ci.90",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(ci90_X_ref),
+                                                 avg.sensitivity(ci90_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
+                                                    sd.sensitivity(ci90_X_data)),
+                                 fdr = c(avg.fdr(ci90_X_ref),
+                                         avg.fdr(ci90_X_data)),
+                                 fdr.sd = c(sd.fdr(ci90_X_ref),
+                                            sd.fdr(ci90_X_data)),
+                                 stab.low = c(getStability(ci90_X_ref)$lower,
+                                              getStability(ci90_X_data)$lower),
+                                 stab.mean = c(getStability(ci90_X_ref)$stability,
+                                               getStability(ci90_X_data)$stability),
+                                 stab.up = c(getStability(ci90_X_ref)$upper,
+                                             getStability(ci90_X_data)$upper))) %>%
+                ## Control of the local false discovery rate
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 method = rep("loc.fdr",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(lfdr_X_ref),
+                                                 avg.sensitivity(lfdr_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
+                                                    sd.sensitivity(lfdr_X_data)),
+                                 fdr = c(avg.fdr(lfdr_X_ref),
+                                         avg.fdr(lfdr_X_data)),
+                                 fdr.sd = c(sd.fdr(lfdr_X_ref),
+                                            sd.fdr(lfdr_X_data)),
+                                 stab.low = c(getStability(lfdr_X_ref)$lower,
+                                              getStability(lfdr_X_data)$lower),
+                                 stab.mean = c(getStability(lfdr_X_ref)$stability,
+                                               getStability(lfdr_X_data)$stability),
+                                 stab.up = c(getStability(lfdr_X_ref)$upper,
+                                             getStability(lfdr_X_data)$upper))) %>%
+                ## Empirical Bayes median thresholding
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 method = rep("EB.med",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(ebmt_X_ref),
+                                                 avg.sensitivity(ebmt_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
+                                                    sd.sensitivity(ebmt_X_data)),
+                                 fdr = c(avg.fdr(ebmt_X_ref),
+                                         avg.fdr(ebmt_X_data)),
+                                 fdr.sd = c(sd.fdr(ebmt_X_ref),
+                                            sd.fdr(ebmt_X_data)),
+                                 stab.low = c(getStability(ebmt_X_ref)$lower,
+                                              getStability(ebmt_X_data)$lower),
+                                 stab.mean = c(getStability(ebmt_X_ref)$stability,
+                                               getStability(ebmt_X_data)$stability),
+                                 stab.up = c(getStability(ebmt_X_ref)$upper,
+                                             getStability(ebmt_X_data)$upper)))
+        }
+    }
+    save(data.plot, file='complete_selection_old_plot.RData')
+} else
+    load('complete_selection_old_plot.RData')
 
 data.plot <- data.plot %>%
   mutate(method = factor(method, levels = names(colors)))
@@ -163,6 +173,7 @@ ggsave("graphics/stability.pdf",plot2,width=10,height=3)
 
 #####################################################
 ###### BOOTSTRAP INCLUSION PROBABILITES PLOT ########
+#####################################################
 
 load("bodyfat_notebook.RData") # originally bodyfat_bootstrap.Rdata
 ordered <- boot_inclusion %>%
@@ -207,6 +218,8 @@ for(i in 1:min(10,nrow(models_proj))){
 
 #####################################################
 ################ CORRELATION PLOT  ##################
+#####################################################
+
 library(rstan)
 # remotes::install_github("jpiironen/dimreduce")
 library(dimreduce)
@@ -284,7 +297,7 @@ ggsave("graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 
 ##################################################
 ########## BODYFAT VARIABLE SELECTION ############
-
+##################################################
 k <- 13
 
 avg.sensitivity <- function(X){
@@ -297,70 +310,83 @@ avg.fdr <- function(X){
   return(mean(tmp, na.rm = TRUE))
 }
 
-data.plot <- tibble(n = numeric(),
-                    rho = numeric(),
-                    method = character(),
-                    approach = character(),
-                    recall = numeric(),
-                    fdr = numeric(),
-                    stab.low = numeric(),
-                    stab.mean = numeric(),
-                    stab.up = numeric())
+if(saveMode){
+    data.plot <- tibble(n = numeric(),
+                        rho = numeric(),
+                        method = character(),
+                        approach = character(),
+                        recall = numeric(),
+                        fdr = numeric(),
+                        stab.low = numeric(),
+                        stab.mean = numeric(),
+                        stab.up = numeric())
 
-for(nn in c(50,70,100,251)){
-  load(paste("bodyfat_type1_varyN_n",nn,".Rdata",sep=""))
+    for(nn in c(50,70,100,251)){
+        load(paste("bodyfat_type1_varyN_n",nn,".Rdata",sep=""))
+        data.plot <- data.plot %>%
+            ## Credibility intervals inclusion probabilities
+            ## with regularized horseshoe prior
+            bind_rows(tibble(n = rep(n,2),
+                             method = rep("ci.90",2),
+                             approach = c("ref","data"),
+                             sensitivity = c(avg.sensitivity(ci90_X_ref),
+                                             avg.sensitivity(ci90_X_data)),
+                             fdr = c(avg.fdr(ci90_X_ref),
+                                     avg.fdr(ci90_X_data)),
+                             stab.low = c(getStability(ci90_X_ref)$lower,
+                                          getStability(ci90_X_data)$lower),
+                             stab.mean = c(getStability(ci90_X_ref)$stability,
+                                           getStability(ci90_X_data)$stability),
+                             stab.up = c(getStability(ci90_X_ref)$upper,
+                                         getStability(ci90_X_data)$upper))) %>%
+            ## Control of the local false discovery rate
+            bind_rows(tibble(n = rep(n,2),
+                             method = rep("loc.fdr",2),
+                             approach = c("ref","data"),
+                             sensitivity = c(avg.sensitivity(lfdr_X_ref),
+                                             avg.sensitivity(lfdr_X_data)),
+                             fdr = c(avg.fdr(lfdr_X_ref),
+                                     avg.fdr(lfdr_X_data)),
+                             stab.low = c(getStability(lfdr_X_ref)$lower,
+                                          getStability(lfdr_X_data)$lower),
+                             stab.mean = c(getStability(lfdr_X_ref)$stability,
+                                           getStability(lfdr_X_data)$stability),
+                             stab.up = c(getStability(lfdr_X_ref)$upper,
+                                         getStability(lfdr_X_data)$upper))) %>%
+            ## Empirical Bayes median thresholding
+            bind_rows(tibble(n = rep(n,2),
+                             method = rep("EB.med",2),
+                             approach = c("ref","data"),
+                             sensitivity = c(avg.sensitivity(ebmt_X_ref),
+                                             avg.sensitivity(ebmt_X_data)),
+                             fdr = c(avg.fdr(ebmt_X_ref),avg.fdr(ebmt_X_data)),
+                             stab.low = c(getStability(ebmt_X_ref)$lower,
+                                          getStability(ebmt_X_data)$lower),
+                             stab.mean = c(getStability(ebmt_X_ref)$stability,
+                                           getStability(ebmt_X_data)$stability),
+                             stab.up = c(getStability(ebmt_X_ref)$upper,
+                                         getStability(ebmt_X_data)$upper)))
+        ## Iterative projection
+        load(paste("bodyfat_type1_varyN_iteratedproj_n",nn,".Rdata",sep=""))
+        data.plot <- data.plot %>%
+            bind_rows(tibble(n = n,
+                             method = "projpred.iter",
+                             approach = "ref",
+                             sensitivity =  avg.sensitivity(projpred_X),
+                             fdr = avg.fdr(projpred_X),
+                             stab.low = getStability(projpred_X)$lower,
+                             stab.mean = getStability(projpred_X)$stability,
+                             stab.up = getStability(projpred_X)$upper))
+    }
+    save(data.plot, file='bodyfat_complete_selection_plot.RData')
+} else
+    load('bodyfat_complete_selection_plot.RData')
 
-  data.plot <- data.plot %>%
-    # Credibility intervals inclusion probabilities with regularized horseshoe prior
-    bind_rows(tibble(n = rep(n,2),
-                     method = rep("ci.90",2),
-                     approach = c("ref","data"),
-                     sensitivity = c(avg.sensitivity(ci90_X_ref),
-                                     avg.sensitivity(ci90_X_data)),
-                     fdr = c(avg.fdr(ci90_X_ref),
-                             avg.fdr(ci90_X_data)),
-                     stab.low = c(getStability(ci90_X_ref)$lower,
-                                  getStability(ci90_X_data)$lower),
-                     stab.mean = c(getStability(ci90_X_ref)$stability,
-                                   getStability(ci90_X_data)$stability),
-                     stab.up = c(getStability(ci90_X_ref)$upper,
-                                 getStability(ci90_X_data)$upper))) %>%
-    # Control of the local false discovery rate
-    bind_rows(tibble(n = rep(n,2),
-                     method = rep("loc.fdr",2),
-                     approach = c("ref","data"),
-                     sensitivity = c(avg.sensitivity(lfdr_X_ref),
-                                     avg.sensitivity(lfdr_X_data)),
-                     fdr = c(avg.fdr(lfdr_X_ref),
-                             avg.fdr(lfdr_X_data)),
-                     stab.low = c(getStability(lfdr_X_ref)$lower,
-                                  getStability(lfdr_X_data)$lower),
-                     stab.mean = c(getStability(lfdr_X_ref)$stability,
-                                   getStability(lfdr_X_data)$stability),
-                     stab.up = c(getStability(lfdr_X_ref)$upper,
-                                 getStability(lfdr_X_data)$upper))) %>%
-    # Empirical Bayes median thresholding
-    bind_rows(tibble(n = rep(n,2),
-                     method = rep("EB.med",2),
-                     approach = c("ref","data"),
-                     sensitivity = c(avg.sensitivity(ebmt_X_ref),
-                                     avg.sensitivity(ebmt_X_data)),
-                     fdr = c(avg.fdr(ebmt_X_ref),avg.fdr(ebmt_X_data)),
-                     stab.low = c(getStability(ebmt_X_ref)$lower,
-                                  getStability(ebmt_X_data)$lower),
-                     stab.mean = c(getStability(ebmt_X_ref)$stability,
-                                   getStability(ebmt_X_data)$stability),
-                     stab.up = c(getStability(ebmt_X_ref)$upper,
-                                 getStability(ebmt_X_data)$upper)))
-}
-
-# colors <- c('loc.fdr' = '#819FF7',
-#             'ci.90' = '#F78181',
-#             'EB.med' = '#298A08')
+## colors <- c('loc.fdr' = '#819FF7',
+##             'ci.90' = '#F78181',
+##             'EB.med' = '#298A08')
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
-
-
 
 ## Sensitivity vs False discovery rate plot
 plot1 <- data.plot %>%
@@ -369,7 +395,7 @@ plot1 <- data.plot %>%
     facet_grid(~n, labeller=facet.labels) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
     scale_x_continuous(limits=c(0,0.6)) +
-    scale_y_continuous(limits=c(0.3,0.9)) +
+    scale_y_continuous(limits=c(0.3,0.99)) +
     geom_point(aes(shape=approach), size=2) +
     scale_shape_manual(values = shapes) +
     scale_color_manual(values = colors) +
@@ -405,16 +431,18 @@ ggsave("graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 
 #################################################
 ###### BODYFAT STEPWISE w/wout REF APPROACH #####
+#################################################
+
 
 # TODO: add new data to the plot
 # load('bodyfat_step.Rdata')
-# 
+#
 # data.plot <- data.frame(stat=c(noisy_ref,noisy_data,rmse_ref,rmse_data),
 #                         method=rep(c(rep('ref',100),rep('data',100)),2),
 #                         type=c(rep('noisy',200),rep('rmse',200)))
-# 
+#
 # facet.labels <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
-# 
+#
 # plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
 #     facet_grid(~type, scales='free', labeller=facet.labels) +
 #     geom_histogram(position = "identity", alpha=0.7, bins=30) +
@@ -425,7 +453,7 @@ ggsave("graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 #     theme(axis.text.y = element_blank(),
 #           axis.ticks.y = element_blank())
 # #    theme_light()
-# 
+#
 # ggsave("graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
 
 
@@ -435,84 +463,90 @@ ggsave("graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 ####### MINIMAL SUBSET SELECTION PARALLEL #########
 ##++++++++++++++++++++++++++++++++++++++++++++++++#
 ##++++++++++++++++++++++++++++++++++++++++++++++++#
-
-data.plot <- tibble(n = numeric(),
-                    rho = numeric(),
-                    method = character(),
-                    fdr = numeric(),
-                    rmse = numeric(),
-                    entropy = numeric())
-
 library(entropy)
 
-intervals <- matrix(1:100,nrow=25,ncol=4)
+if(saveMode){
+    data.plot <- tibble(n = numeric(),
+                        rho = numeric(),
+                        method = character(),
+                        fdr = numeric(),
+                        rmse = numeric(),
+                        entropy = numeric())
 
-for(nn in c(80,100,150)){
-    for(rr in c(0.3,0.5)){
-        X.projpred.tot <- numeric()
-        X.step.data.tot <- numeric()
-        X.step.ref.tot <- numeric()
-        X.bayes.step.data.tot <- numeric()
-        X.bayes.step.ref.tot <- numeric()
-        rmse.projpred.tot <- numeric()
-        rmse.step.data.tot <- numeric()
-        rmse.step.ref.tot <- numeric()
-        rmse.bayes.step.data.tot <- numeric()
-        rmse.bayes.step.ref.tot <- numeric()
-        for(ii in seq(1,25)){
-            load(paste('minimal_subset_parallel/minimal_subset_final_n',nn,'_rho',rr,'_inter',ii,'.RData',sep=''))
-            which.intervals <- intervals[ii,]
-            X.projpred.tot <- rbind(X.projpred.tot,
-                                    X.projpred[which.intervals,])
-            X.step.data.tot <- rbind(X.step.data.tot,
-                                     X.step.data[which.intervals,])
-            X.step.ref.tot <- rbind(X.step.ref.tot,
-                                    X.step.ref[which.intervals,])
-            X.bayes.step.data.tot <- rbind(X.bayes.step.data.tot,
-                                       X.bayes.step.data[which.intervals,])
-            X.bayes.step.ref.tot <- rbind(X.bayes.step.ref.tot,
-                                      X.bayes.step.ref[which.intervals,])
-            rmse.projpred.tot <- c(rmse.projpred.tot,
-                                   rmse.projpred[which.intervals])
-            rmse.step.data.tot <- c(rmse.step.data.tot,
-                                    rmse.step.data[which.intervals])
-            rmse.step.ref.tot <- c(rmse.step.ref.tot,
-                                   rmse.step.ref[which.intervals])
-            rmse.bayes.step.data.tot <- c(rmse.bayes.step.data.tot,
-                                          rmse.bayes.step.data[which.intervals])
-            rmse.bayes.step.ref.tot <- c(rmse.bayes.step.ref.tot,
-                                         rmse.bayes.step.ref[which.intervals])
+    intervals <- matrix(1:100,nrow=25,ncol=4)
+
+    for(nn in c(80,100,150)){
+        for(rr in c(0.3,0.5)){
+            X.projpred.tot <- numeric()
+            X.step.data.tot <- numeric()
+            X.step.ref.tot <- numeric()
+            X.bayes.step.data.tot <- numeric()
+            X.bayes.step.ref.tot <- numeric()
+            rmse.projpred.tot <- numeric()
+            rmse.step.data.tot <- numeric()
+            rmse.step.ref.tot <- numeric()
+            rmse.bayes.step.data.tot <- numeric()
+            rmse.bayes.step.ref.tot <- numeric()
+            for(ii in seq(1,25)){
+                load(paste('minimal_subset_parallel/minimal_subset_final_n',
+                           nn,'_rho',rr,'_inter',ii,'.RData',sep=''))
+                which.intervals <- intervals[ii,]
+                X.projpred.tot <- rbind(X.projpred.tot,
+                                        X.projpred[which.intervals,])
+                X.step.data.tot <- rbind(X.step.data.tot,
+                                         X.step.data[which.intervals,])
+                X.step.ref.tot <- rbind(X.step.ref.tot,
+                                        X.step.ref[which.intervals,])
+                X.bayes.step.data.tot <- rbind(X.bayes.step.data.tot,
+                                               X.bayes.step.data[which.intervals,])
+                X.bayes.step.ref.tot <- rbind(X.bayes.step.ref.tot,
+                                              X.bayes.step.ref[which.intervals,])
+                rmse.projpred.tot <- c(rmse.projpred.tot,
+                                       rmse.projpred[which.intervals])
+                rmse.step.data.tot <- c(rmse.step.data.tot,
+                                        rmse.step.data[which.intervals])
+                rmse.step.ref.tot <- c(rmse.step.ref.tot,
+                                       rmse.step.ref[which.intervals])
+                rmse.bayes.step.data.tot <- c(rmse.bayes.step.data.tot,
+                                              rmse.bayes.step.data[which.intervals])
+                rmse.bayes.step.ref.tot <- c(rmse.bayes.step.ref.tot,
+                                             rmse.bayes.step.ref[which.intervals])
+            }
+            data.plot <- data.plot %>%
+                bind_rows(tibble(n = rep(n,5),
+                                 rho = rep(rho,5),
+                                 approach = c('ref',
+                                              'data',
+                                              'ref',
+                                              'data',
+                                              'ref'),
+                                 method = c('projpred',
+                                            'step.lm',
+                                            'step.lm',
+                                            'step.bayes',
+                                            'step.bayes'),
+                                 fdr = c(avg.fdr(X.projpred.tot),
+                                         avg.fdr(X.step.data.tot),
+                                         avg.fdr(X.step.ref.tot),
+                                         avg.fdr(X.bayes.step.data.tot),
+                                         avg.fdr(X.bayes.step.ref.tot)),
+                                 rmse = c(mean(rmse.projpred.tot),
+                                          mean(rmse.step.data.tot),
+                                          mean(rmse.step.ref.tot),
+                                          mean(rmse.bayes.step.data.tot),
+                                          mean(rmse.bayes.step.ref.tot)),
+                                 entropy = c(entropy(y=apply(X.projpred.tot,2,sum)),
+                                             entropy(apply(X.step.data.tot,2,sum)),
+                                             entropy(apply(X.step.ref.tot,2,sum)),
+                                             entropy(apply(X.bayes.step.data.tot,2,
+                                                           sum)),
+                                             entropy(apply(X.bayes.step.ref.tot,2,
+                                                           sum)))))
         }
-        data.plot <- data.plot %>%
-            bind_rows(tibble(n = rep(n,5),
-                             rho = rep(rho,5),
-                             approach = c('ref',
-                                          'data',
-                                          'ref',
-                                          'data',
-                                          'ref'),
-                             method = c('projpred',
-                                        'step.lm',
-                                        'step.lm',
-                                        'step.bayes',
-                                        'step.bayes'),
-                             fdr = c(avg.fdr(X.projpred.tot),
-                                     avg.fdr(X.step.data.tot),
-                                     avg.fdr(X.step.ref.tot),
-                                     avg.fdr(X.bayes.step.data.tot),
-                                     avg.fdr(X.bayes.step.ref.tot)),
-                             rmse = c(mean(rmse.projpred.tot),
-                                      mean(rmse.step.data.tot),
-                                      mean(rmse.step.ref.tot),
-                                      mean(rmse.bayes.step.data.tot),
-                                      mean(rmse.bayes.step.ref.tot)),
-                             entropy = c(entropy(y=apply(X.projpred.tot,2,sum)),
-                                         entropy(apply(X.step.data.tot,2,sum)),
-                                         entropy(apply(X.step.ref.tot,2,sum)),
-                                         entropy(apply(X.bayes.step.data.tot,2,sum)),
-                                         entropy(apply(X.bayes.step.ref.tot,2,sum)))))
     }
-}
+    save(data.plot,file='minimal_subset_selection_parallel_plot.RData')
+} else
+    load('minimal_subset_selection_parallel_plot.RData')
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
@@ -549,120 +583,123 @@ ggsave('graphics/entropy_parallel.pdf',plot2,width=10,height=3)
 ####### COMPLETE SELECTION WITH ITERATED PROJ ##################
 ################################################################
 
-data.plot <- tibble(n = numeric(),
-                    rho = numeric(),
-                    alpha = numeric(),
-                    method = character(),
-                    approach = character(),
-                    sensitivity = numeric(),
-                    ## sensitivity.sd = numeric(),
-                    fdr = numeric(),
-                    ## fdr.sd = numeric(),
-                    stab.low = numeric(),
-                    stab.mean = numeric(),
-                    stab.up = numeric())
+if(saveMode){
+    data.plot <- tibble(n = numeric(),
+                        rho = numeric(),
+                        alpha = numeric(),
+                        method = character(),
+                        approach = character(),
+                        sensitivity = numeric(),
+                        ## sensitivity.sd = numeric(),
+                        fdr = numeric(),
+                        ## fdr.sd = numeric(),
+                        stab.low = numeric(),
+                        stab.mean = numeric(),
+                        stab.up = numeric())
 
-
-for(nn in c(50,70,100)){
-  for(rr in c(0.3,0.5)){
-      load(paste('iterated_n',
-                 nn,'_rho',rr,'_3alphas_suponlyT.Rdata',sep = ''))
-      aa <- 2 ## correspond to alpha = 0.16, default value ## for(aa in 1:length(alpha_vec)){
-          X_ref_test <- X_proj_test_list[[aa]]
-          X_ref_cv <- X_proj_cv_list[[aa]]
-          X_data_test <- X_lasso_test_list[[aa]]
-          X_data_cv <- X_lasso_cv_list[[aa]]
-          ## Stability
-          stab_ref_test <- getStability(X_ref_test)
-          stab_ref_cv <- getStability(X_ref_cv)
-          stab_data_test <- getStability(X_data_test)
-          stab_data_cv <- getStability(X_data_cv)
-          ## Save the data
-          data.plot <- data.plot %>%
-              bind_rows(tibble(n = rep(n,4),
-                               rho = rep(rho,4),
-                               alpha = rep(alpha_vec[aa],4),
-                               method = c('test.iter',
-                                          'test.iter',
-                                          'projpred.iter',
-                                          'projpred.iter'),
-                               approach = rep(c('ref','data'),2),
-                               sensitivity = c(avg.sensitivity(X_ref_test),
-                                               avg.sensitivity(X_data_test),
-                                               avg.sensitivity(X_ref_cv),
-                                               avg.sensitivity(X_data_cv)),
-                               fdr = c(avg.fdr(X_ref_test),
-                                   avg.fdr(X_data_test),
-                                   avg.fdr(X_ref_cv),
-                                   avg.fdr(X_data_cv)),
-                               stab.low = c(stab_ref_test$lower,
-                                            stab_data_test$lower,
-                                            stab_ref_cv$lower,
-                                            stab_data_cv$lower),
-                               stab.mean = c(stab_ref_test$stability,
-                                             stab_data_test$stability,
-                                             stab_ref_cv$stability,
-                                             stab_data_cv$stability),
-                               stab.up = c(stab_ref_test$upper,
-                                           stab_data_test$upper,
-                                           stab_ref_cv$upper,
-                                           stab_data_cv$upper)))
-      ## }
-      load(paste("ref_approach_n",
-                 nn,"rho",rr,".Rdata",sep=""))
-      ## Save the data
-      data.plot <- data.plot %>%
-          ## Credibility intervals inclusion probabilities
-          ## with regularized horseshoe prior
-          bind_rows(tibble(n = rep(n,2),
-                           rho = rep(rho,2),
-                           alpha = rep(NA,2),
-                           method = rep("ci.90",2),
-                           approach = c("ref","data"),
-                           sensitivity = c(avg.sensitivity(ci90_X_ref),
-                                           avg.sensitivity(ci90_X_data)),
-                           fdr = c(avg.fdr(ci90_X_ref),
-                                   avg.fdr(ci90_X_data)),
-                           stab.low = c(getStability(ci90_X_ref)$lower,
-                                        getStability(ci90_X_data)$lower),
-                           stab.mean = c(getStability(ci90_X_ref)$stability,
-                                         getStability(ci90_X_data)$stability),
-                           stab.up = c(getStability(ci90_X_ref)$upper,
-                                       getStability(ci90_X_data)$upper))) %>%
-          ## Control of the local false discovery rate
-          bind_rows(tibble(n = rep(n,2),
-                           rho = rep(rho,2),
-                           alpha = rep(NA,2),
-                           method = rep("loc.fdr",2),
-                           approach = c("ref","data"),
-                           sensitivity = c(avg.sensitivity(lfdr_X_ref),
-                                           avg.sensitivity(lfdr_X_data)),
-                           fdr = c(avg.fdr(lfdr_X_ref),
-                                   avg.fdr(lfdr_X_data)),
-                           stab.low = c(getStability(lfdr_X_ref)$lower,
-                                        getStability(lfdr_X_data)$lower),
-                           stab.mean = c(getStability(lfdr_X_ref)$stability,
-                                         getStability(lfdr_X_data)$stability),
-                           stab.up = c(getStability(lfdr_X_ref)$upper,
-                                       getStability(lfdr_X_data)$upper))) %>%
-          ## Empirical Bayes median thresholding
-          bind_rows(tibble(n = rep(n,2),
-                           rho = rep(rho,2),
-                           alpha = rep(NA,2),
-                           method = rep("EB.med",2),
-                           approach = c("ref","data"),
-                           sensitivity = c(avg.sensitivity(ebmt_X_ref),
-                                           avg.sensitivity(ebmt_X_data)),
-                           fdr = c(avg.fdr(ebmt_X_ref),
-                                   avg.fdr(ebmt_X_data)),
-                           stab.low = c(getStability(ebmt_X_ref)$lower,
-                                        getStability(ebmt_X_data)$lower),
-                           stab.mean = c(getStability(ebmt_X_ref)$stability,
-                                         getStability(ebmt_X_data)$stability),
-                           stab.up = c(getStability(ebmt_X_ref)$upper,
-                                       getStability(ebmt_X_data)$upper)))
-  }
-}
+    for(nn in c(50,70,100)){
+        for(rr in c(0.3,0.5)){
+            load(paste('iterated_n',
+                       nn,'_rho',rr,'_3alphas_suponlyT.Rdata',sep = ''))
+            aa <- 2 ## correspond to alpha = 0.16, default value ## for(aa in 1:length(alpha_vec)){
+            X_ref_test <- X_proj_test_list[[aa]]
+            X_ref_cv <- X_proj_cv_list[[aa]]
+            X_data_test <- X_lasso_test_list[[aa]]
+            X_data_cv <- X_lasso_cv_list[[aa]]
+            ## Stability
+            stab_ref_test <- getStability(X_ref_test)
+            stab_ref_cv <- getStability(X_ref_cv)
+            stab_data_test <- getStability(X_data_test)
+            stab_data_cv <- getStability(X_data_cv)
+            ## Save the data
+            data.plot <- data.plot %>%
+                bind_rows(tibble(n = rep(n,4),
+                                 rho = rep(rho,4),
+                                 alpha = rep(alpha_vec[aa],4),
+                                 method = c('test.iter',
+                                            'test.iter',
+                                            'projpred.iter',
+                                            'projpred.iter'),
+                                 approach = rep(c('ref','data'),2),
+                                 sensitivity = c(avg.sensitivity(X_ref_test),
+                                                 avg.sensitivity(X_data_test),
+                                                 avg.sensitivity(X_ref_cv),
+                                                 avg.sensitivity(X_data_cv)),
+                                 fdr = c(avg.fdr(X_ref_test),
+                                         avg.fdr(X_data_test),
+                                         avg.fdr(X_ref_cv),
+                                         avg.fdr(X_data_cv)),
+                                 stab.low = c(stab_ref_test$lower,
+                                              stab_data_test$lower,
+                                              stab_ref_cv$lower,
+                                              stab_data_cv$lower),
+                                 stab.mean = c(stab_ref_test$stability,
+                                               stab_data_test$stability,
+                                               stab_ref_cv$stability,
+                                               stab_data_cv$stability),
+                                 stab.up = c(stab_ref_test$upper,
+                                             stab_data_test$upper,
+                                             stab_ref_cv$upper,
+                                             stab_data_cv$upper)))
+            ## }
+            load(paste("ref_approach_n",
+                       nn,"rho",rr,".Rdata",sep=""))
+            ## Save the data
+            data.plot <- data.plot %>%
+                ## Credibility intervals inclusion probabilities
+                ## with regularized horseshoe prior
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 alpha = rep(NA,2),
+                                 method = rep("ci.90",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(ci90_X_ref),
+                                                 avg.sensitivity(ci90_X_data)),
+                                 fdr = c(avg.fdr(ci90_X_ref),
+                                         avg.fdr(ci90_X_data)),
+                                 stab.low = c(getStability(ci90_X_ref)$lower,
+                                              getStability(ci90_X_data)$lower),
+                                 stab.mean = c(getStability(ci90_X_ref)$stability,
+                                               getStability(ci90_X_data)$stability),
+                                 stab.up = c(getStability(ci90_X_ref)$upper,
+                                             getStability(ci90_X_data)$upper))) %>%
+                ## Control of the local false discovery rate
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 alpha = rep(NA,2),
+                                 method = rep("loc.fdr",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(lfdr_X_ref),
+                                                 avg.sensitivity(lfdr_X_data)),
+                                 fdr = c(avg.fdr(lfdr_X_ref),
+                                         avg.fdr(lfdr_X_data)),
+                                 stab.low = c(getStability(lfdr_X_ref)$lower,
+                                              getStability(lfdr_X_data)$lower),
+                                 stab.mean = c(getStability(lfdr_X_ref)$stability,
+                                               getStability(lfdr_X_data)$stability),
+                                 stab.up = c(getStability(lfdr_X_ref)$upper,
+                                             getStability(lfdr_X_data)$upper))) %>%
+                ## Empirical Bayes median thresholding
+                bind_rows(tibble(n = rep(n,2),
+                                 rho = rep(rho,2),
+                                 alpha = rep(NA,2),
+                                 method = rep("EB.med",2),
+                                 approach = c("ref","data"),
+                                 sensitivity = c(avg.sensitivity(ebmt_X_ref),
+                                                 avg.sensitivity(ebmt_X_data)),
+                                 fdr = c(avg.fdr(ebmt_X_ref),
+                                         avg.fdr(ebmt_X_data)),
+                                 stab.low = c(getStability(ebmt_X_ref)$lower,
+                                              getStability(ebmt_X_data)$lower),
+                                 stab.mean = c(getStability(ebmt_X_ref)$stability,
+                                               getStability(ebmt_X_data)$stability),
+                                 stab.up = c(getStability(ebmt_X_ref)$upper,
+                                             getStability(ebmt_X_data)$upper)))
+        }
+    }
+    save(data.plot, file='complete_selection_plot.RData')
+} else
+    load('complete_selection_plot.RData')
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
