@@ -209,6 +209,11 @@ preconditioning, explore approximating models fitting Lasso or
 stepwise regression against consistent estimates $\hat{y}$ of a
 reference model instead of the observed responses $y$.
 
+\section{Reference models in feature selection}
+\label{intro-example}
+
+Blah blah
+
 \subsection{Example of model selection with or without reference model}
 \label{intro-example}
 
@@ -389,7 +394,7 @@ Finally, we end with a conclusion in Section \ref{conclusion}.
 
 
 \hypertarget{reference-model-approach}{%
-\section{Why the reference model helps}\label{reference-model-approach}}
+\subsection{Why the reference model helps}\label{reference-model-approach}}
  
 A good predictive model is able to filter part of the noise present in
 the data. The noise is the main source of the instability and tends to
@@ -459,6 +464,8 @@ performance. The usual reason for this is that the relevant features
 not in the minimal are subset highly correlated with features already in
 the minimal subset. We will return to a problem of finding all
 the features with some predictive power in Section~\ref{complete-selection}.
+
+\subsection{Simulation study}
 
 Using the data generating mechanism \eqref{eq:simulated_data}, we
 simulate data sets of different sizes with a relatively large number
@@ -548,6 +555,44 @@ simple refit of submodels.
 \end{figure}
 
 
+\hypertarget{real-world-data}{%
+\subsection{Body fat example part 2}\label{real-world-data}}
+
+Here we repeat the selection of Section \ref{intro-example} via
+stepwise backward regression. In this case, the overall number of
+covariates (original plus noisy) is 100, as it was in the last part of
+Section \ref{intro-example}. We compare results with and without using
+a reference model on top of the procedure following our simple
+reference model approach outlined in \eqref{eq:ref_mod}. Figure
+\ref{fig:bodyfat_step_refvsdata} shows the number of irrelevant
+features included in the final model and the out-of-sample root mean
+square error (RMSE). Results are based on 100 bootstrap samples on the
+whole dataset, and the predictive performance is tested on the
+observations excluded at each bootstrap sample. We observe that the
+reference model reduces the number of irrelevant features included in
+the final model. This leads to less overfitting and thus to improved
+out-of-sample predictive performance in terms of RMSE. The reference
+model approach applied to the stepwise backward regression achieves
+outstanding improvements considering its simplicity, yet it does not
+reach the goodness of the much more sophisticated projective
+prediction approach (see results of Section \ref{intro-example}).
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_step_refvsdata.pdf}
+  \caption{Stepwise backward selection with and without using a reference model. The x-axis denotes the number of selected irrelevant features on the left and the out-of-sample RMSE on the right-hand side based on 100 bootstrap samples.\\}
+  \label{fig:bodyfat_step_refvsdata}
+\end{figure}
+
+In this example, we have used the reference model defined as a linear
+regression over some supervised principal components, because it is
+natural for a large number of correlating variables, has fairly good
+predictive performance and is computationally efficient. We do not
+argue that this is always the best choice and more sophisticated
+models can lead to even better results. Here the purpose of the
+experiments were to motivate the use of reference models in general,
+and as we needed to average results over a lot of repetitions per
+simulation condition, we preferred such a comparably simple and
+computationally fast reference model.
 
 % \hypertarget{comparison}{%
 %   \section{A comparison in the normal means problem framework}\label{comparison}}
@@ -789,7 +834,7 @@ their mean predictions $\hat{y}$ based on the reference model.
 % \label{tab:comparison}
 % \end{table}
 
-\subsection{Simulations}
+\subsection{Simulation study}
 \label{simulations}
 
 To investigate the performance of the four complete selection procedures,
@@ -1024,9 +1069,9 @@ projection does not perform well in the hardest scenarios.
 
 
 \hypertarget{real-world-data}{%
-\section{Case study: Body fat data}\label{real-world-data}}
+\subsection{Body fat example part 3}\label{real-world-data}}
 
-We conclude our experiments using the body fat dataset one
+We conclude our complete selection experiments using the body fat dataset one
 more time, which was already described in Section \ref{intro-example}. We
 carry out two different analyses: one using the normal means problem
 framework and another one using selection via stepwise backward
@@ -1078,44 +1123,6 @@ observations). Figure \ref{fig:bodyfat_stability} shows the stability
 results using the measure by
 \cite{paper:stability}. The benefits of the reference model are here
 marginal with only small improvements.
-
-\begin{figure}[tp]
-  \centering
-  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_step_refvsdata.pdf}
-  \caption{Stepwise backward selection with and without using a reference model. The x-axis denotes the number of selected irrelevant features on the left and the out-of-sample RMSE on the right-hand side based on 100 bootstrap samples.\\}
-  \label{fig:bodyfat_step_refvsdata}
-\end{figure}
-
-In the second analysis, we repeat the selection of Section
-\ref{intro-example} via stepwise backward regression. In this case, the
-overall number of covariates (original plus noisy) is 100, as it was
-in the last part of Section \ref{intro-example}. We compare results with
-and without using a reference model on top of the procedure following
-our simple reference model approach outlined in
-\eqref{eq:ref_mod}. Figure \ref{fig:bodyfat_step_refvsdata} shows the
-number of irrelevant features included in the final model and the
-out-of-sample root mean square error (RMSE). Results are based on 100
-bootstrap samples on the whole dataset, and the predictive performance
-is tested on the observations excluded at each bootstrap sample. We
-observe that the reference model reduces the number of irrelevant
-features included in the final model. This leads to less overfitting
-and thus to improved out-of-sample predictive performance in terms of
-RMSE. The reference model approach applied to the stepwise backward
-regression achieves outstanding improvements considering its
-simplicity, yet it does not reach the goodness of the much
-more sophisticated projective prediction approach (see
-results of Section \ref{intro-example}).
-
-In this example, we have used the reference model defined as a linear
-regression over some supervised principal components, because it is
-natural for a large number of correlating variables, has fairly good
-predictive performance and is computationally efficient. We do not
-argue that this is always the best choice and more sophisticated
-models can lead to even better results. Here the purpose of the
-experiments were to motivate the use of reference models in general,
-and as we needed to average results over a lot of repetitions per
-simulation condition, we preferred such a comparably simple and
-computationally fast reference model.
 
 
 \hypertarget{conclusion}{%
