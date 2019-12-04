@@ -126,8 +126,9 @@ if(saveMode){
         }
     }
     save(data.plot, file='complete_selection_old_plot.RData')
-} else
+} else {
     load('complete_selection_old_plot.RData')
+}
 
 data.plot <- data.plot %>%
   mutate(method = factor(method, levels = names(colors)))
@@ -379,8 +380,9 @@ if(saveMode){
                              stab.up = getStability(projpred_X)$upper))
     }
     save(data.plot, file='bodyfat_complete_selection_plot.RData')
-} else
+} else {
     load('bodyfat_complete_selection_plot.RData')
+}
 
 ## colors <- c('loc.fdr' = '#819FF7',
 ##             'ci.90' = '#F78181',
@@ -411,7 +413,7 @@ plot1 <- data.plot %>%
    #       strip.text.y = element_text(color='black'))
 
 
-ggsave("graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.1)
+ggsave("graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
 
 ## Stability plot
 plot2 <- data.plot %>%
@@ -545,8 +547,9 @@ if(saveMode){
         }
     }
     save(data.plot,file='minimal_subset_selection_parallel_plot.RData')
-} else
+} else {
     load('minimal_subset_selection_parallel_plot.RData')
+}
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
@@ -698,9 +701,10 @@ if(saveMode){
         }
     }
     save(data.plot, file='complete_selection_plot.RData')
-} else
+} else {
     load('complete_selection_plot.RData')
-
+}
+  
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
 

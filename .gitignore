@@ -8,3 +8,4 @@ paper/*
 *.Rdata
 *.RData
 *.rds
+.Rproj.user
