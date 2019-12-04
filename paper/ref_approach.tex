@@ -208,13 +208,20 @@ terms of relevance.  \cite{paul2008preconditioning}, using the term
 preconditioning, explore approximating models fitting Lasso or
 stepwise regression against consistent estimates $\hat{y}$ of a
 reference model instead of the observed responses $y$.
+Whatever the terminology or applied statistical framework, reference
+models offer a powerful approach to improving feature selection as we
+will demonstrate in the present paper.
 
 \section{Reference models in feature selection}
 \label{intro-example}
 
-Blah blah
+In this section, we will provide an initial motivation and intuition 
+for the use of reference models to improve feature selection procedures.
+We will start with a case study that is repeatedly used throughout
+the paper to illustrate the benefits of reference models before we dive deeper
+into the theoretical reasons why reference models help in feature selection.
 
-\subsection{Example of model selection with or without reference model}
+\subsection{Bodyfat example: Part 1}
 \label{intro-example}
 
 To motivate the further discussion and experiments, we start by simple
@@ -556,7 +563,7 @@ simple refit of submodels.
 
 
 \hypertarget{real-world-data}{%
-\subsection{Body fat example part 2}\label{real-world-data}}
+\subsection{Body fat example: Part 2}\label{real-world-data}}
 
 Here we repeat the selection of Section \ref{intro-example} via
 stepwise backward regression. In this case, the overall number of
@@ -1069,7 +1076,7 @@ projection does not perform well in the hardest scenarios.
 
 
 \hypertarget{real-world-data}{%
-\subsection{Body fat example part 3}\label{real-world-data}}
+\subsection{Body fat example: Part 3}\label{real-world-data}}
 
 We conclude our complete selection experiments using the body fat dataset one
 more time, which was already described in Section \ref{intro-example}. We
