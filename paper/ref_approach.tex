@@ -153,7 +153,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Feature selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper we discuss and demonstrate the benefits of using a reference model in feature selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common feature selection methods.  In several numerical experiments, we demonstrate superior performance of projection predictive approach and show how use of a reference model translates into better and more stable feature selection independently of the specific selection procedure. 
+  Feature selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper we discuss and demonstrate the benefits of using a reference model in feature selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common feature selection methods.  In several numerical experiments, we demonstrate superior performance of projection predictive approach and show how use of a reference model translates into better and more stable feature selection independently of the specific selection method. 
 % These benefits are also illustrated on a real-world example of predicting the amount of body fat for which we compare a reference model based selection method to a purely data driven approach.
 \end{abstract}
 
@@ -162,7 +162,7 @@
 
 In statistical applications, one of the main steps in the modelling
 workflow is covariate or feature selection, which is a special case of
-model reduction. Variable selection may have multiple goals.  First,
+model reduction. Feature (variable) selection may have multiple goals.  First,
 if the covariates themselves are of interest, we can use variable
 selection to infer which variables contain predictive information
 about the target variable.  Second, as simpler models come with the
@@ -195,7 +195,7 @@ has been used in Bayesian statistics at least since the seminal
 work of \citet{paper:reference_lindley}. For more historical
 references, see the papers by \citet{vehtari2012survey} and
 \citet{paper:model_selection}, and for most recent methodological
-development see \citet{paper:projpred}.
+development see a paper by \citet{paper:projpred}.
 
 Reference models have been also used in non-Bayesian contexts, where
 \cite{harrell2015regression} describes them as full models that can be
@@ -216,7 +216,7 @@ will demonstrate in the present paper.
 \label{intro-example}
 
 In this section, we will provide an initial motivation and intuition 
-for the use of reference models to improve feature selection procedures.
+for the use of reference models to improve feature selection methods.
 We will start with a case study that is repeatedly used throughout
 the paper to illustrate the benefits of reference models before we dive deeper
 into the theoretical reasons why reference models help in feature selection.
@@ -237,11 +237,11 @@ The target variable of interest is the amount of body fat, which is
 measured by immersing a person in water tank which is a complex and
 expensive procedure. Additionally, we have information about 13
 covariates which are anthropometric measurements (e.g., height, weight
-and thicknes of skin and fat in different body locations). The
-covariates are are highly correlated which causes additional
+and circumference of different body parts). The
+covariates are highly correlated which causes additional
 challenge in the feature selection. In total, we have 251
 observations. The goal is to find the model which is able to predict
-the amount of fat well while requiring least amount of
+the amount of body fat well while requiring least amount of
 measurements for a new person.
 
 \cite{paper:bodyfat} report results using \emph{steplm} with a significance
@@ -259,22 +259,23 @@ log-predictive density (elpd) estimated using approximate leave-one-out cross-va
 \citep[PSIS-LOO-CV; ][]{paper:psis_loo}.  We select the smallest  submodel with an elpd score similar to the reference model
 when taking into account the uncertainty in estimating the predictive
 model performance. See Appendix A for brief review of projection
-predictive approach and \citet{paper:model_selection} and
-\citet{paper:projpred} for more details. The complete projpred procedure is implemented in the \texttt{projpred} R package.
+predictive approach, and papers by \citet{paper:model_selection} and
+\citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} R package.
 
 The inclusion frequencies of each feature in the final model given 100
-bootstrap samples are depicted in Figure
-\ref{fig:inclusion_frequencies}. The projpred approach has only two
-variables, `abdomen' and `weight', with inclusion frequencies above
-50\% (`abdomen' is the only one included always), the third most
-included is `wrist' at 44\%, and the fourth is `height' at 35\%, while
-steplm has seven features above 50\%. Such a higher variability and
-lower stability of steplm can be observed also in the bootstrap model
-selection frequencies reported in Table
-\ref{tab:model_frequencies}. For example, the first five selected
-models have a cumulative frequency of 76\% with projpred, but only of
-14\% with steplm. In addition, the size of the selected model is much
-smaller when using projpred.
+bootstrap samples are shown in Figure
+\ref{fig:inclusion_frequencies}. In case of projpred there are two
+variables, `abdomen' and `weight', which have inclusion frequencies
+above 50\% (`abdomen' is the only one included always), the third most
+frequently included is `wrist' at 44\%, and the fourth one is `height'
+at 35\%.  The steplm approach has seven features with inclusion
+frequencies above 50\%. Such a higher variability and lower stability
+of steplm can be observed also in the bootstrap model selection
+frequencies reported in Table \ref{tab:model_frequencies}. For
+example, the first five selected models have a cumulative frequency of
+76\% with projpred, but only of 14\% with steplm. In addition, the
+sizes of the selected models with projpred are much smaller with
+steplm.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/inc_prob.pdf}
@@ -290,16 +291,16 @@ smaller when using projpred.
 %  \hline
 M & projpred & Freq \% & steplm & Freq \%  \\ 
   \hline
-1 & abdom, weight & 39 & abdom, age, forearm, height, hip, neck, thigh, wrist & 4 \\
-2 & abdom, wrist & 10 & abdom, age, chest, forearm, height, neck, thigh, wrist & 4 \\
-3 & abdom, height & 10 & abdom, forearm, height, neck, wrist & 2 \\
-4 & abdom, height, wrist & 9 & abdom, forearm, neck, weight, wrist & 2 \\
-5 & abdom, weight, wrist & 8 & abdom, age, height, hip, thigh, wrist & 2 \\
-6 & abdom, chest, height, wrist & 2 & abdom, age, height, hip, neck, thigh, wrist & 2 \\
-7 & abdom, biceps, weight, wrist & 2 & abdom, age, ankle, forearm, height, hip, neck, thigh, wrist & 2 \\
-8 & abdom, height, weight, wrist & 2 & abdom, age, biceps, chest, height, neck, wrist & 2 \\
-9 & abdom, age, wrist & 2 & abdom, age, biceps, chest, forearm, height, neck, thigh, wrist & 2 \\
-10 & abdom, age, height, neck, thigh, wrist & 2 & abdom, age, ankle, biceps, weight, wrist & 2 \\
+1 & abdom., weight & 39 & abdom., age, forearm, height, hip, neck, thigh, wrist & 4 \\
+2 & abdom., wrist & 10 & abdom., age, chest, forearm, height, neck, thigh, wrist & 4 \\
+3 & abdom., height & 10 & abdom., forearm, height, neck, wrist & 2 \\
+4 & abdom., height, wrist & 9 & abdom., forearm, neck, weight, wrist & 2 \\
+5 & abdom., weight, wrist & 8 & abdom., age, height, hip, thigh, wrist & 2 \\
+6 & abdom., chest, height, wrist & 2 & abdom., age, height, hip, neck, thigh, wrist & 2 \\
+7 & abdom., biceps, weight, wrist & 2 & abdom., age, ankle, forearm, height, hip, neck, thigh, wrist & 2 \\
+8 & abdom., height, weight, wrist & 2 & abdom., age, biceps, chest, height, neck, wrist & 2 \\
+9 & abdom., age, wrist & 2 & abdom., age, biceps, chest, forearm, height, neck, thigh, wrist & 2 \\
+10 & abdom., age, height, neck, thigh, wrist & 2 & abdom., age, ankle, biceps, weight, wrist & 2 \\
 %   \hline
 \end{tabular}
 \caption{Bootstrap model selection frequencies after 100 bootstrap samples.}
@@ -307,24 +308,24 @@ M & projpred & Freq \% & steplm & Freq \%  \\
 \end{table}
 
 
-In the first two rows of Table \ref{tab:model_performances}, we report the
+The first two rows of Table \ref{tab:model_performances} show the
 predictive performances, in terms of cross-validated root mean square
-error (RMSE), of the full model and the selected models using either
-the projection predictive approach or the stepwise backward
-elimination.  There is no difference in predictive performance of the
-selected models by different approaches even if there is difference in
-the selected features.
+error (RMSE), of the full model and the selected models using projpred
+or steplm.  There is no signfiant difference in predictive performance
+of the selected models by different approaches even if there is
+difference in the selected features. This can be explained by high
+correlation between the features and different combinations can
+provide similar predictive accuracy.
 
 We repeat the experiment with a modified data set by adding 84
-unrelated noisy features. In the last two rows of Table
-\ref{tab:model_performances}, we report the cross-validated RMSE, the size of
-the selected model and the number of selected noisy features using
-either the projection predictive approach or the stepwise backward
-elimination.  The projection predictive approach has similar
-predictive performance and the same submodel size as in the first
-experiment, whereas the stepwise regression has worse predictive
-performance and selects a much larger submodel including a large
-number of irrelevant features.
+unrelated noisy features. The last two rows of Table
+\ref{tab:model_performances} show the cross-validated RMSE, the size
+of the selected model and the number of selected noisy features using
+projpred or steplm.  The projection predictive approach has similar
+predictive performance and the same number of selected features as
+with the original data, whereas the stepwise regression has worse
+predictive performance and the number of selected features is much
+higher and include a large number of irrelevant features.
 
 \begin{table}[tp]
 \footnotesize
@@ -333,18 +334,18 @@ number of irrelevant features.
 %  \hline
 Data  & Method & RMSE Full & RMSE Selected & \# Selected & \# Selected noisy \\ 
   \hline
-original & projpred & 4.35 & 4.47 & 2 &   \\
+bodyfat & projpred & 4.35 & 4.47 & 2 &   \\
 & steplm & 4.38 & 4.47 & 7 &  \\
 \hline
 + noisy features & projpred & 4.58 & 4.54 & 2 & 0  \\
 & steplm & 5.89 & 5.43 & 19 & 13 \\
 %   \hline
 \end{tabular}
-\caption{Model predictive performances with original data (first two
+\caption{Predictive performances with original bodyfat data (first two
   rows) and with extra noisy features (last two rows) estimated with
   10-fold cross-validation. Abbreviations: Full = full model; Selected =
-  selected submodel; \# Selected = total number of features selected;
-  \# Selected noisy = number of extra noisy features selected.}
+  selected submodel; \# Selected = selected number of features;
+  \# Selected noisy = selected number of extra noisy features.}
 \label{tab:model_performances}
 \end{table}
 
@@ -383,7 +384,7 @@ feature selection.
 If one of the models to be compared is the full model which can be
 used as a reference model, there is no additional cost of using a
 reference model. Sometimes including all the available features in an
-elaborate model can often be computationally demanding.  In such a
+elaborate model can be computationally demanding.  In such a
 case, even simpler screening or dimensionality reduction techniques,
 as for example the supervised principal components
 \citep{bair2006prediction,piironen2018} can produce useful reference
@@ -406,7 +407,7 @@ Finally, we end with a conclusion in Section \ref{conclusion}.
 A good predictive model is able to filter part of the noise present in
 the data. The noise is the main source of the instability and tends to
 obscure the relevance of the covariates in relation to the target
-variable of interest. Let us consider the following simple
+variable of interest. We demonstrate with the following simple
 explanatory example taken from \cite{paper:projpred}. The data
 generation mechanism is
 \begin{alignat}{2} \label{eq:simulated_data}
@@ -451,7 +452,7 @@ noisy data directly.
   \caption{Sample correlation plot of each feature (relevant in red, 
   non-relevant in blue) with the target variable $y$ and the latent variable 
   $f$ respectively on the x and y axis. Data are generated according to 
-  procedure \eqref{eq:simulated_data} with parameters $n=70$, $\rho=0.3$,
+  \eqref{eq:simulated_data} with parameters $n=70$, $\rho=0.3$,
   $k=100$, $p=1000$.\\}
   \label{fig:correlation}
 \end{figure}
@@ -467,8 +468,8 @@ which have similar predictive performance as the full model, we call it
 exclude features which have some predictive information about the
 target, but given the minimal subset these features are not able to
 provide such additional information that would improve predictive
-performance. The usual reason for this is that the relevant features
-not in the minimal are subset highly correlated with features already in
+performance significantly. The usual reason for this is that the relevant features
+which are not in the minimal subset are highly correlated with features already in
 the minimal subset. We will return to a problem of finding all
 the features with some predictive power in Section~\ref{complete-selection}.
 
@@ -521,13 +522,13 @@ than steplm without a reference model, but the minimal subset feature
 selection is unreliable.
 
 When the variable selection is repeated with different simulated data
-sets, there is some variability in which variables are selected. We
+sets, there is some variability in selected variables. We
 measure the stability of variable selection by computing the entropy
 of observed distribution over different models. The smallest entropy
 would be obtained if the approach always selects the same set of
 variables, and the largest entropy would be observed if the approach
 would always select different set of variables.
-Figure \ref{fig:entropy} reports the entropy scores for the different compared
+Figure \ref{fig:entropy} shows the entropy scores for the different compared
 methods. Lower entropy corresponds to a more stable
 selection. Highly correlated predictive features may happen to be
 alternately selected, making the measure of the stability of the
@@ -569,20 +570,18 @@ Here we repeat the selection of Section \ref{intro-example} via
 stepwise backward regression. In this case, the overall number of
 covariates (original plus noisy) is 100, as it was in the last part of
 Section \ref{intro-example}. We compare results with and without using
-a reference model on top of the procedure following a simple
-reference model approach outlined in Equation \eqref{eq:ref_mod} 
-of Section \ref{simulations}. Figure
-\ref{fig:bodyfat_step_refvsdata} shows the number of irrelevant
-features included in the final model and the out-of-sample root mean
-square error (RMSE). Results are based on 100 bootstrap samples on the
-whole dataset, and the predictive performance is tested on the
-observations excluded at each bootstrap sample. We observe that the
-reference model reduces the number of irrelevant features included in
-the final model. This leads to less overfitting and thus to improved
-out-of-sample predictive performance in terms of RMSE. The reference
-model approach applied to the stepwise backward regression achieves
-outstanding improvements considering its simplicity, yet it does not
-reach the goodness of the much more sophisticated projective
+a simple reference model approach outlined in \eqref{eq:ref_mod} with
+steplm. Figure \ref{fig:bodyfat_step_refvsdata} shows the number of
+irrelevant features included in the final model and the out-of-sample
+root mean square error (RMSE). Results are based on 100 bootstrap
+samples on the whole dataset, and the predictive performance is tested
+on the observations excluded at each bootstrap sample. We observe that
+the reference model reduces the number of irrelevant features included
+in the final model. This leads to less overfitting and thus to
+improved out-of-sample predictive performance in terms of RMSE. The
+reference model approach applied to the stepwise backward regression
+achieves outstanding improvements considering its simplicity, yet it
+does not reach the goodness of the much more sophisticated projective
 prediction approach (see results of Section \ref{intro-example}).
 \begin{figure}[tp]
   \centering
@@ -602,12 +601,12 @@ features that have some predictive information about the target. In
 complete feature selection, it is possible that there are theoretically
 relevant features, but given finite noisy data we are not able infer their relevance.
 The projection predictive approach was originally designed for the minimal subset
-feature selection, but we generalize it here for the complete
+feature selection, but we test here a simple iterative variant for the complete
 feature selection case. In addition, we analyse the benefits of the reference
-model approach in combination with three other complete feature
-selection approaches. 
+model approach in combination with three other
+methods which have been originally designed for complete feature selection. 
 
-As criteria of selection performance, we evaluate the average false
+As the criteria of selection performance, we evaluate the average false
 discovery rate and the average
 sensitivity (i.e., the ratio of the number of relevant selected
 features over the total number of relevant features). We also provide
@@ -618,7 +617,7 @@ measure proposed by \citet{paper:stability}.
 
 \subsection{Iterative projections}
 
-We can use the projection predictive approach for complete feature
+We modify the projection predictive approach for complete feature
 selection by using it iteratively.  Applying the straightforward
 implementation of projpred, we are able to select a minimal subset of
 features, which yield to a model with a predictive performance
@@ -637,7 +636,7 @@ stopping rule that we adopted is the following:
 where $i$ indexes the submodel size and ``best'' stays for the best predictive explored submodel
 at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
 the stopping rule (see Algorithm \ref{alg:iterated_proj}).
-The choice of the hyperparameter $\alpha$ can be non-trivial, we have 
+The choice of the hyperparameter $\alpha$ is non-trivial, and we have 
 observed sensitivity of the selection to such a choice mainly when using cross-validation with a small
 number of observations or not very predictive features. 
 In our experiments we chose the default value used in the \texttt{projpred} 
@@ -668,7 +667,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
 \end{algorithm}
 \end{center}
 
-\subsection{Alternative complete feature selection approaches}
+\subsection{Alternative complete feature selection methods}
 
 % Many Bayesian approaches for complete feature selection first fit a
 % Bayesian regression model using some sparsifying prior on the
@@ -759,7 +758,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
 %prior in which we select covariates whose 90\% credible intervals
 %excludes zero (\emph{ci.90}) \note{Reference for this?}.
 
-We consider three alternative complete selection procedures,
+We consider three alternative complete selection methods,
  the control of the local
 false discovery rate \citep{paper:efron, efron2012large}, the
 empirical Bayes median \citep{johnstone2004needles}, and the selection
@@ -787,7 +786,7 @@ sensitive to the specific value. To estimate $\pi_{0}$ from the data,
 we use the default setting provided by the \texttt{R}-package
 \texttt{locfdr} \citep{Efron+Turnbull+Narasimhan:2015:locfdr}.
 
-The empirical Bayes median procedure consists of fitting a Bayesian
+The empirical Bayes median approach consists of fitting a Bayesian
 model with a prior composed by a mixture of a delta spike in zero and
 a heavy-tailed distribution. We use the implementation in the
 \texttt{R}-package \texttt{EbayesThresh}
@@ -806,7 +805,7 @@ horseshoe prior and selecting those features whose posterior
 distribution does not include zero in the interval between the 5\% and
 the 95\% quantiles (cite).
 
-All of these methods provide a complete selection procedure and we
+All of these methods provide a complete selection approach and we
 compare their performance with and without using a reference model.
 That is, in the data condition, we apply the method on the original
 data $y$ while, in the referece model condition, we replace $y$ by
@@ -834,7 +833,7 @@ their mean predictions $\hat{y}$ based on the reference model.
 \subsection{Simulation study}
 \label{simulations}
 
-To investigate the performance of the four complete selection procedures,
+To investigate the performance of the four complete selection approaches,
 we are going to use simulations based on the normal means problem.
 The normal means problem consists of estimating the (usually
 sparse) vector of means of a vector of normally distributed
@@ -872,7 +871,7 @@ $T_{F}(\cdot)$. Assuming each pair $(Y,X_{j})$ to be bivariate
 normally distributed, the corresponding transformed correlations are
 approximately normally distributed with known variance: \
 \begin{equation} \label{eq:fisher_transformation}
-T_{F}(r_{j})\overset{ind}{\sim} \N(T_{F}(\rho_{j}),\frac{1}{n-3}), \quad j=1,\ldots,p.
+T_{F}(r_{j})\overset{ind}{\sim} \N\left(T_{F}(\rho_{j}),\frac{1}{n-3}\right), \quad j=1,\ldots,p.
 \end{equation}
 Therefore, rescaling the quantities $T_{F}(r_{j})$ by $\sqrt{n-3}$ and
 denoting the results as $z_{j}$, we have the formulation
@@ -909,7 +908,7 @@ of the largest SPC.  The SPCs are computed using the
 parameter at $0.6s_{max}$.  In our experiments, the results are not
 sensitive to the specific choice of the screening threshold, yet a more
 principled approach would be to use cross-validation to select the
-threshold as done in \cite{paper:projpred}.
+threshold as done by \citet{paper:projpred}.
 
 % The normal means problem formulation is obtained as explained in
 % Section \ref{comparison} by applying the Fisher-z-transformation to
@@ -1023,10 +1022,12 @@ accordance with what can be expected, the larger data set size ($n$) and the hig
 selection is. Thus, for easier selection scenarios, the benefits of
 the reference model are smaller since the raw data already provide
 enough information to identify the relevant covariates. The iterative
-projection predictive approach has good false discovery rate in all cases, and the sensitivity is good except when the number of observations and the correlation level
-are small. Tuning $\alpha$ might lead to improved selection, yet
-the main source of poor performance could well be the miscalibration of the uncertainty of the predictive
-utility score for misspecified models with cross-validation \citep{bengio2004no}.
+projpred has good false discovery rate in all cases, and the
+sensitivity is good except when the number of observations and the
+correlation level are small. Tuning $\alpha$ might lead to improved
+selection, yet the main source of poor performance could well be the
+miscalibration of the uncertainty of the predictive utility score for
+misspecified models with cross-validation \citep{bengio2004no}.
 
 \begin{figure}[tp]
   \centering
@@ -1068,13 +1069,14 @@ projection does not perform well in the hardest scenarios.
 \hypertarget{real-world-data}{%
 \subsection{Body fat example: Part 3}\label{real-world-data}}
 
-We conclude our complete selection experiments using the body fat dataset one
-more time, which was initially described in Section \ref{intro-example}. We
-carry out two different analyses: one using the normal means problem
-framework and another one using selection via stepwise backward
-regression. In the former, we add noisy uncorrelated covariates to the
-original data up to a total of 100 features. These covariates are
-normally distributed and scaled as the original covariates. We compute
+We conclude our complete selection experiments using the body fat
+dataset one more time. As earlier we add noisy uncorrelated covariates
+to the original data to get a total of 100 features.
+Since we do not have a ground truth available with regard the original
+covariates of the data, we assume it is reasonable to consider all of
+them relevant, at least to some degree. The artificially added
+features are naturally irrelevant by construction.
+We compute
 correlations between each variable and the target variable, that is
 the amount of fat, and transform them by Fisher-Z-transformation. The
 original assumption in order for \eqref{eq:fisher_transformation} to
@@ -1082,8 +1084,7 @@ hold is that the variables are jointly normally distributed. In our
 experience the normal approximation in
 \eqref{eq:fisher_transformation} is still reasonable, but after
 rescaling by $\sqrt{n-3}$ we do not fix the variance to be one, and
-instead estimate it from the data. The methods we compare are those
-used in Section \ref{complete-selection}: the control of the local
+instead estimate it from the data. We compare the control of the local
 false discovery rate (loc.fdr), the empirical Bayes median (EB.med)
 and the selection by posterior credible intervals at level 90\%
 (ci.90).  In order to vary the difficulty of the selection, we
@@ -1106,17 +1107,19 @@ are averaged over 100 bootstrap samples of the respective size.
 \end{figure}
 
 Figure \ref{fig:bodyfat_sensitivity_vs_fdr} shows the sensitivity
-against the false discovery rate. Since we do not have a ground truth
-available with regard the original covariates of the data, we believe
-it is reasonable to consider all of them relevant, at least to some
-degree. The artificially added features are naturally irrelevant by
-construction. In almost all of the bootstrapped subsamples, the reference
+against the false discovery rate.  In almost all of the bootstrapped
+subsamples, the reference
 model improves the selection both in terms of sensitivity and false
 discovery rate. When $n=50$, we observe worse false
 discovery rates, yet by a lower amount compared to the gain in
 sensitivity. Again, we observe that the benefits are more evident as
 the selection becomes more challenging (i.e., lower number of
-observations). Figure \ref{fig:bodyfat_stability} shows the stability
+observations).
+The great performance of projpred in minimal subset selection is not
+carried over for the complete feature selection with iterative
+projpred, and the methods designed for the complete feature selection
+perform better.
+Figure \ref{fig:bodyfat_stability} shows the stability
 results using the measure by
 \cite{paper:stability}. The benefits of the reference model are here
 marginal with only small improvements.
@@ -1149,7 +1152,7 @@ filter on the observed target values on top of different widely used
 variable selection methods. Overall, using a reference model leads to
 more accurate and stable selection results independently of the
 specific selection method. These benefits apply to a large family of
-different approaches all involving a reference model in one way or the
+different methods all involving a reference model in one way or the
 other. Some of these approaches have been present in the literature
 \cite[e.g., see references in][]{vehtari2012survey,paper:projpred}
 but often without a clear explanation of {why} they are actually
@@ -1188,12 +1191,13 @@ if possible and feasible. However, if this is not an option in a given
 situation, we would in any case recommend using a reference model on
 top of the chosen feature selection method.
 
-While the projective prediction approach was not designed for the
-complete feature selection, the iterative version retains the
-excellent false discovery rate property. The iterative projection
-predictive approach had lower sensitivity than the other methods, and
-it is left for future resarch whether it is possible to improve
-sensitivity without sacrifying the good false discovery rate.
+The projective prediction approach was not designed for the complete
+feature selection. We tested a simple iterative version of projpred,
+with mixed results and the methds specifically designed for complete
+feature selection (especially loc.fdr) performed better in the
+experiments. It is left for future resarch whether it is possible to
+design a better projection predictive approach based complete feature
+selection method.
 
 All Bayesian models used in the this paper have been implemented in
 the probabilistic programming language \texttt{Stan}
@@ -1223,12 +1227,12 @@ the experiments is available on GitHub
 \subsection*{Appendix A: Projective Predictions}
 
 The projective prediction (projpred) approach was developed and is thoroughly
- described in \cite{paper:projpred}. In this appendix, we provide a high level
-  description of the method so that readers do not need to study \cite{paper:projpred} in detail
-in order to understand the main ideas behind projpred.
+ described by \cite{paper:projpred}. In this appendix, we provide a high level
+  description of the method so that readers do not need to study paper by \cite{paper:projpred} in detail
+to understand the main ideas behind projpred.
 
- Let us refer to the parameter
-distribution of a given candidate submodel by $\pi$ and to the induced predictive
+The parameter
+distribution of a given candidate submodel is denoted by $\pi$ and the induced predictive
 distribution by $q_{\pi}(\tilde{y})$. We would like to choose $\pi$ so
 that $q_{\pi}(\tilde{y})$ maximises some predictive performance
 utility, for example, the expected log-predictive density (elpd)
@@ -1283,7 +1287,8 @@ $i$), whereas $q_\pi(\tilde{y}_{i}|\boldsymbol{\theta}^{s})$ is the
 predictive distribution of the submodel. The projected draws
 $\boldsymbol{\theta}_{\perp}^{s}$ then present the projected posterior
 for the submodel.
-\item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation.
+\item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation. Fast cross-validation can be performed using using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
+\citep[PSIS-LOO-CV; ][]{paper:psis_loo}.
 \item Choose the smallest submodel (size) that is sufficiently close to the reference model's predictive utility score.
 \end{enumerate} 
 
@@ -1292,7 +1297,7 @@ However, in the special case of the submodels being
 generalised linear models with a likelihood coming from the exponential family, \eqref{eq:draw_by_draw} reduces to a
 maximum likelihood estimation problem, which can be easily solved
 \citep{paper:original_proj}. For further details on the projective
-prediction workflow and implementation see \cite{paper:projpred}.
+prediction workflow and implementation see paper by \citet{paper:projpred}.
 
 \end{document}
 
