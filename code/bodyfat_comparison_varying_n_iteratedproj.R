@@ -19,7 +19,7 @@ formula <- paste("siri~", paste(pred, collapse = "+"))
 p <- length(pred)
 df <- df[,c(target,pred)]
 
-p <- 1000
+p <- 100
 n <- as.numeric(args[1])
 times <- 100
 
@@ -106,4 +106,4 @@ for(i in 1:times){
 }
 
 
-save.image(file=paste("bodyfat_type1_varyN_iteratedproj_n",n,".Rdata",sep=""))
+save.image(file=paste("bodyfat_type1_varyN_p100_iteratedproj_n",n,".Rdata",sep=""))
