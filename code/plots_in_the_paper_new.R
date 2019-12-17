@@ -436,28 +436,30 @@ ggsave("graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 #################################################
 
 
-# TODO: add new data to the plot
-# load('bodyfat_step.Rdata')
-#
-# data.plot <- data.frame(stat=c(noisy_ref,noisy_data,rmse_ref,rmse_data),
-#                         method=rep(c(rep('ref',100),rep('data',100)),2),
-#                         type=c(rep('noisy',200),rep('rmse',200)))
-#
-# facet.labels <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
-#
-# plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
-#     facet_grid(~type, scales='free', labeller=facet.labels) +
-#     geom_histogram(position = "identity", alpha=0.7, bins=30) +
-#     labs(x='',y='',fill='Approach') +
-#     guides(color=FALSE) +
-#     scale_fill_manual(values=c("#819FF7","#FAAC58")) +
-#     scale_color_manual(values=c("#819FF7","#FAAC58")) +
-#     theme(axis.text.y = element_blank(),
-#           axis.ticks.y = element_blank())
-# #    theme_light()
-#
-# ggsave("graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
+load('bodyfat_step.Rdata')
 
+data.plot <- data.frame(stat=c(noisy_ref,noisy_data,rmse_ref,rmse_data),
+                        method=rep(c(rep('ref',100),rep('data',100)),2),
+                        type=c(rep('noisy',200),rep('rmse',200)))
+
+facet.labels <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
+
+plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
+    facet_grid(~type, scales='free', labeller=facet.labels) +
+    geom_histogram(position = "identity", alpha=0.7, bins=30) +
+    labs(x='',y='',fill='Approach') +
+    guides(color=FALSE) +
+    scale_fill_manual(values=c("#819FF7","#FAAC58")) +
+    scale_color_manual(values=c("#819FF7","#FAAC58")) +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank())
+
+ggsave("graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
+
+# Table
+data.plot %>%
+  group_by(method,type) %>%
+  summarise(avg=mean(stat))
 
 
 ##++++++++++++++++++++++++++++++++++++++++++++++++#
