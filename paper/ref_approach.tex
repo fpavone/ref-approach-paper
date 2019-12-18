@@ -237,7 +237,7 @@ To motivate the further discussion and experiments, we start by simple
 variable selection example using body fat data by \citet{johnson1996fitting}.
 We compare the projective prediction approach (\emph{projpred},
 \citet{paper:projpred}) which uses a reference model, and classic
-stepwise backward regression (steplm).
+stepwise backward regression (\emph{steplm}).
 % \footnote{The analysis is based on \texttt{R}-notebook by Vehtari available at
 %   \url{https://avehtari.github.io/modelselection/bodyfat.html}.}.
 The experiments are implemented in \texttt{R} \citep{Rcore2018}.
@@ -250,10 +250,10 @@ and circumference of different body parts). The
 variables are highly correlated which causes additional
 challenge in the variable selection. In total, we have 251
 observations. The goal is to find the model which is able to predict
-the amount of body fat well while requiring least amount of
+the amount of body fat well while requiring the least amount of
 measurements for a new person.
 
-\cite{paper:bodyfat} report results using \emph{steplm} with a significance
+\cite{paper:bodyfat} report results using steplm with a significance
 level of 0.157 with AIC selection \citep{akaike1974new}, fixing
 abdomen and height to be always included in the model. For better
 comparison we don't fix any of the variables.  The steplm approach is
