@@ -136,7 +136,7 @@
   \author{Federico Pavone, Juho Piironen, Paul-Christian B\"{u}rkner and Aki Vehtari}
     
     \author{
-    Federico Pavone \footnote{Department of Computer Science, Aalto University, Finland.} $\,$\footnote{Correspondence concerning this article should be addressed to TODO.}, 
+    Federico Pavone \footnote{Department of Computer Science, Aalto University, Finland.} $\,$\footnote{Correspondence concerning this article should be addressed to Federico Pavone, Department of Decision Sciences, Bocconi University, Via R\"{o}ntgen 1, 20136 Milano, Italy. E-mail: federicopavone01@gmail.com.}, 
   Juho Piironen$^*$,
   Paul-Christian B\"{u}rkner$^*$
   and Aki Vehtari$^*$
@@ -256,7 +256,7 @@ measurements for a new person.
 \cite{paper:bodyfat} report results using steplm with a significance
 level of 0.157 with AIC selection \citep{akaike1974new}, fixing
 abdomen and height to be always included in the model. For better
-comparison we don't fix any of the variables.  The steplm approach is
+comparison we do not fix any of the variables.  The steplm approach is
 carried out combining the \texttt{step} and \texttt{lm} functions in R.
 
 For the selection via projpred, the Bayesian reference model includes
@@ -283,8 +283,8 @@ of steplm can be observed also in the bootstrap model selection
 frequencies reported in Table \ref{tab:model_frequencies}. For
 example, the first five selected models have a cumulative frequency of
 76\% with projpred, but only of 14\% with steplm. In addition, the
-sizes of the selected models with projpred are much smaller with
-steplm.
+sizes of the selected models with projpred are much smaller than the ones 
+selected with steplm.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/inc_prob.pdf}
@@ -1139,7 +1139,7 @@ the selection becomes more challenging (i.e., lower number of
 observations).
 The great performance of projpred in minimal subset selection is not
 carried over for the complete variable selection with iterative
-projpred (even when changing the reference model into an full encompassing 
+projpred (even changing the reference model with a full encompassing 
 linear regression with regularised horseshoe prior), and the methods 
 specifically designed for the complete variable selection perform better. 
 Figure \ref{fig:bodyfat_stability} shows the stability
@@ -1219,7 +1219,7 @@ The projective prediction approach was not designed for the complete
 variable selection. We tested a simple iterative version of projpred,
 with mixed results and the methods specifically designed for complete
 variable selection (especially loc.fdr) performed better in our
-experiments. It is left for future resarch to develop 
+experiments. It is left for future research to develop 
 a better projective prediction approach for complete variable
 selection problems.
 
