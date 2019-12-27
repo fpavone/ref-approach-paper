@@ -153,7 +153,7 @@ plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
   labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 #  theme_light()
 
-ggsave("graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
+ggsave("../paper/graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
 
 ## Stability plot
 plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
@@ -165,7 +165,7 @@ plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
   scale_color_manual(values=c("#819FF7","#FAAC58"))
 #  theme_light()
 
-ggsave("graphics/stability.pdf",plot2,width=10,height=3)
+ggsave("../paper/graphics/stability.pdf",plot2,width=10,height=3)
 
 
 
@@ -190,7 +190,7 @@ inc_prob <- boot_inclusion %>%
   scale_fill_manual(values=c('steplm'="#819FF7",'projpred'="#FAAC58"))
 #  theme_light()
 
-ggsave("graphics/inc_prob.pdf",inc_prob,width=10,height=3)
+ggsave("../paper/graphics/inc_prob.pdf",inc_prob,width=10,height=3)
 
 
 # Model selection frequencies
@@ -293,7 +293,7 @@ cor_plot_final <- ggExtra::ggMarginal(cor_plot,
                                       type = 'density',
                                       xparams = list(size=0.5),
                                       yparams = list(size=0.5))
-ggsave("graphics/correlation.pdf",cor_plot_final, width=4, height=4)
+ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 
 
 ##################################################
@@ -413,7 +413,7 @@ plot1 <- data.plot %>%
    #       strip.text.y = element_text(color='black'))
 
 
-ggsave("graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
+ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
 
 ## Stability plot
 plot2 <- data.plot %>%
@@ -427,7 +427,7 @@ plot2 <- data.plot %>%
   scale_color_manual(values=c("#819FF7","#FAAC58"))
 #  theme_light()
 
-ggsave("graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
+ggsave("../paper/graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 
 
 
@@ -454,7 +454,7 @@ plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
     theme(axis.text.y = element_blank(),
           axis.ticks.y = element_blank())
 
-ggsave("graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
+ggsave("../paper/graphics/bodyfat_step_refvsdata.pdf",plot1,width=10,height=2)
 
 # Table
 data.plot %>%
@@ -571,7 +571,7 @@ plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
     ) +
     labs(x='False discovery rate', y='RMSE',color='Method', shape='Approach')
 
-ggsave('graphics/rmse_vs_fdr_parallel.pdf',plot1,width=10,height=3)
+ggsave('../paper/graphics/rmse_vs_fdr_parallel.pdf',plot1,width=10,height=3)
 
 plot2 <- data.plot %>%
     mutate(method = factor(method, levels = c("step.lm", "step.bayes", "projpred"))) %>%
@@ -581,7 +581,7 @@ plot2 <- data.plot %>%
     scale_color_manual(values=c("#819FF7","#FAAC58")) +
     labs(x='Entropy',y='',color='Approach')
 
-ggsave('graphics/entropy_parallel.pdf',plot2,width=10,height=3)
+ggsave('../paper/graphics/entropy_parallel.pdf',plot2,width=10,height=3)
 
 
 ################################################################
@@ -718,7 +718,7 @@ facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
 ## Sensitivity vs False discovery rate plot
 data.plot.clean <- data.plot %>%
   filter(method != 'test.iter') %>%
-  filter(!(method=='projpred.iter' & approach=='data')) %>%
+  #filter(!(method=='projpred.iter' & approach=='data')) %>%
   mutate(method = factor(method, levels = names(colors)))
 
 
@@ -736,11 +736,12 @@ plot1 <- ggplot(data.plot.clean,aes(x=fdr,y=sensitivity,col=method)) +
       shape = guide_legend(order = 1),
       colour = guide_legend(order = 2)
     ) +
-    geom_line(data=filter(data.plot.clean,method!='projpred.iter'),aes(col=method)) +
+    ## geom_line(data=filter(data.plot.clean,method!='projpred.iter'),aes(col=method)) +
+    geom_line(data=filter(data.plot.clean),aes(col=method)) +
     guides(label=FALSE) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 
-ggsave(filename='graphics/sensitivity_vs_fdr_iterated.pdf',plot1,width=10,height=3)
+ggsave(filename='../paper/graphics/sensitivity_vs_fdr_iterated.pdf',plot1,width=10,height=3)
 
 plot2 <- data.plot.clean %>%
   mutate(method = factor(method, levels = rev(names(colors)))) %>%
@@ -752,6 +753,6 @@ plot2 <- data.plot.clean %>%
   labs(x="",y="Stability", col="Approach") +
   scale_color_manual(values=c("#819FF7","#FAAC58"))
 
-ggsave(filename='graphics/stability_iterated.pdf',plot2, width=10,height=3)
+ggsave(filename='../paper/graphics/stability_iterated.pdf',plot2, width=10,height=3)
 
 
