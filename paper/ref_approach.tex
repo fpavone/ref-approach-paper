@@ -628,7 +628,8 @@ discovery rate and the average
 sensitivity (i.e., the ratio of the number of relevant selected
 variables over the total number of relevant variables). We also provide
 a comparison of the stability of the selection by means of a stability
-measure proposed by \citet{paper:stability}. 
+measure proposed by \citet{paper:stability}, which goes from 0 to 1 and a higher value 
+means a more stable selection. 
 
 %Table \ref{tab:comparison} summarises the methods used in the numerical experiments.
 
@@ -925,7 +926,7 @@ their coefficients:
 In the above, $u_{ij}$ represents the $j$-th SPC evaluated at
 observation $i$, and $s_{max}$ denotes the sample standard deviation
 of the largest SPC.  The SPCs are computed using the
-\texttt{R}-package \texttt{dimreduce} setting the screening threshold
+\texttt{R}-package \texttt{dimreduce} (\url{https://github.com/jpiironen/dimreduce}) setting the screening threshold
 parameter at $0.6s_{max}$.  In our experiments, the results are not
 sensitive to the specific choice of the screening threshold, yet a more
 principled approach would be to use cross-validation to select the
