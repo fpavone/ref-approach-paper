@@ -624,7 +624,7 @@ if(saveMode){
                                  method = c('test.iter',
                                             'test.iter',
                                             'projpred.iter',
-                                            'projpred.iter'),
+                                            'lasso.iter'),
                                  approach = rep(c('ref','data'),2),
                                  sensitivity = c(avg.sensitivity(X_ref_test),
                                                  avg.sensitivity(X_data_test),
@@ -706,14 +706,20 @@ if(saveMode){
 } else {
     load('complete_selection_plot.RData')
 }
-  
+
+
+colors <- c(
+  'projpred.iter' = '#2E2E2E',
+  'lasso.iter' = '#2E2E2E',
+  'loc.fdr' = '#619CFF',
+  'ci.90' = '#F8766D',
+  'EB.med' = '#00BA38'
+)
+
+shapes <- c('ref'=8, 'data'=20, 'data.lasso'=9)
+
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
-
-# colors <- c('projpred.iter' = '#2E2E2E',
-#             'loc.fdr' = '#819FF7',
-#             'ci.90' = '#F78181',
-#             'EB.med' = '#298A08')
 
 ## Sensitivity vs False discovery rate plot
 data.plot.clean <- data.plot %>%
@@ -721,8 +727,12 @@ data.plot.clean <- data.plot %>%
   #filter(!(method=='projpred.iter' & approach=='data')) %>%
   mutate(method = factor(method, levels = names(colors)))
 
+## Specific approach label for iterative lasso
+data.plot.clean.plot1 <- data.plot.clean
+data.plot.clean.plot1[data.plot.clean.plot1$method=='lasso.iter',]$approach <- 'data.lasso'
 
-plot1 <- ggplot(data.plot.clean,aes(x=fdr,y=sensitivity,col=method)) +
+
+plot1 <- ggplot(data.plot.clean.plot1,aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
     geom_point(aes(shape=approach),size=2) +
     ## geom_label_repel(data=filter(data.plot.clean,!is.na(alpha)),
@@ -738,6 +748,8 @@ plot1 <- ggplot(data.plot.clean,aes(x=fdr,y=sensitivity,col=method)) +
     ) +
     ## geom_line(data=filter(data.plot.clean,method!='projpred.iter'),aes(col=method)) +
     geom_line(data=filter(data.plot.clean),aes(col=method)) +
+    geom_line(data=filter(data.plot.clean,method%in%c('projpred.iter','lasso.iter')),
+            aes(group=1), linetype='dashed') +
     guides(label=FALSE) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 
