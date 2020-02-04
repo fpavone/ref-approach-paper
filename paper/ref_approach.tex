@@ -687,6 +687,8 @@ In our experiments we chose the default value used in the \texttt{projpred}
 \end{algorithm}
 \end{center}
 
+In the experiments in the next Sections we include a method which we refer to as iterative lasso. It consists in the same algorithm of the iterative projection, expect for not using any reference model. Given the implementation of projpred in the R-package, it means that the predictions of the reference model consist simply on the observed target values. Iterative lasso is therefore used as the free-reference-model comparison baseline of the iterative projection. 
+
 \subsection{Alternative complete variable selection methods}
 
 % Many Bayesian approaches for complete variable selection first fit a
@@ -1046,7 +1048,8 @@ the reference model are smaller since the raw data already provide
 enough information to identify the relevant variables. The iterative
 projpred has good false discovery rate in all cases, and the
 sensitivity is good except when the number of observations and the
-correlation level are small. Tuning $\alpha$ might lead to improved
+correlation level are small. It performs better than the iterative lasso 
+selection in any of the simulated scenarios. Tuning $\alpha$ might lead to improved
 selection, yet the main source of poor performance could well be the
 miscalibration of the uncertainty of the predictive utility score for
 misspecified models with cross-validation \citep{bengio2004no}.
@@ -1143,6 +1146,8 @@ carried over for the complete variable selection with iterative
 projpred (even changing the reference model with a full encompassing 
 linear regression with regularised horseshoe prior), and the methods 
 specifically designed for the complete variable selection perform better. 
+However we still observe a better selection with respect to iterative lasso
+in any of the examined scenarios, mainly in terms of false discovery rate.
 Figure \ref{fig:bodyfat_stability} shows the stability
 results using the measure by
 \cite{paper:stability}. The benefits of the reference model are here
