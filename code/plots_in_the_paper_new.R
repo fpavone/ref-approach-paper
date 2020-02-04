@@ -301,29 +301,29 @@ ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 ##################################################
 k <- 13
 
-avg.sensitivity <- function(X){
-  tmp <- apply(X,1,function(x){sum(which(x==1)<=k)/k})
-  return(mean(tmp, na.rm = TRUE))
-}
-
-avg.fdr <- function(X){
-  tmp <- apply(X,1,function(x){sum(which(x==1)>k)/sum(x)})
-  return(mean(tmp, na.rm = TRUE))
-}
+# avg.sensitivity <- function(X){
+#   tmp <- apply(X,1,function(x){sum(which(x==1)<=k)/k})
+#   return(mean(tmp, na.rm = TRUE))
+# }
+# 
+# avg.fdr <- function(X){
+#   tmp <- apply(X,1,function(x){sum(which(x==1)>k)/sum(x)})
+#   return(mean(tmp, na.rm = TRUE))
+# }
 
 if(saveMode){
     data.plot <- tibble(n = numeric(),
                         rho = numeric(),
                         method = character(),
                         approach = character(),
-                        recall = numeric(),
+                        sensitivity = numeric(),
                         fdr = numeric(),
                         stab.low = numeric(),
                         stab.mean = numeric(),
                         stab.up = numeric())
 
     for(nn in c(50,70,100,251)){
-        load(paste("bodyfat_type1_varyN_n",nn,".Rdata",sep=""))
+        load(paste("bodyfat_type1_varyN_p100_n",nn,".Rdata",sep=""))
         data.plot <- data.plot %>%
             ## Credibility intervals inclusion probabilities
             ## with regularized horseshoe prior
@@ -368,7 +368,7 @@ if(saveMode){
                              stab.up = c(getStability(ebmt_X_ref)$upper,
                                          getStability(ebmt_X_data)$upper)))
         ## Iterative projection
-        load(paste("bodyfat_type1_varyN_iteratedproj_n",nn,".Rdata",sep=""))
+        load(paste("bodyfat_type1_varyN_p100_iteratedproj_n",nn,".Rdata",sep=""))
         data.plot <- data.plot %>%
             bind_rows(tibble(n = n,
                              method = "projpred.iter",
@@ -378,30 +378,53 @@ if(saveMode){
                              stab.low = getStability(projpred_X)$lower,
                              stab.mean = getStability(projpred_X)$stability,
                              stab.up = getStability(projpred_X)$upper))
+        ## Iterative lasso
+        load(paste("bodyfat_type1_varyN_p100_iteratedlasso_n",nn,".Rdata",sep=""))
+        data.plot <- data.plot %>%
+          bind_rows(tibble(n = n,
+                           method = "lasso.iter",
+                           approach = "data",
+                           sensitivity =  avg.sensitivity(lasso_X),
+                           fdr = avg.fdr(lasso_X),
+                           stab.low = getStability(lasso_X)$lower,
+                           stab.mean = getStability(lasso_X)$stability,
+                           stab.up = getStability(lasso_X)$upper))
     }
     save(data.plot, file='bodyfat_complete_selection_plot.RData')
 } else {
     load('bodyfat_complete_selection_plot.RData')
 }
 
-## colors <- c('loc.fdr' = '#819FF7',
-##             'ci.90' = '#F78181',
-##             'EB.med' = '#298A08')
+colors <- c(
+  'projpred.iter' = '#2E2E2E',
+  'lasso.iter' = '#2E2E2E',
+  'loc.fdr' = '#619CFF',
+  'ci.90' = '#F8766D',
+  'EB.med' = '#00BA38'
+)
+
+shapes <- c('ref'=8, 'data'=20, 'data.lasso'=9)
 
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
 
 ## Sensitivity vs False discovery rate plot
-plot1 <- data.plot %>%
-    mutate(method = factor(method, levels = names(colors))) %>%
-    ggplot(aes(x=fdr,y=sensitivity,col=method)) +
+data.plot.fixed <- data.plot
+data.plot.fixed[data.plot.fixed$method=='lasso.iter',]$approach <- 'data.lasso'
+data.plot.fixed <- data.plot.fixed %>%
+    mutate(method = factor(method, levels = names(colors)))
+
+plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(~n, labeller=facet.labels) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
-    scale_x_continuous(limits=c(0,0.6)) +
+    scale_x_continuous(limits=c(0,0.65)) +
     scale_y_continuous(limits=c(0.3,0.99)) +
     geom_point(aes(shape=approach), size=2) +
     scale_shape_manual(values = shapes) +
     scale_color_manual(values = colors) +
-    geom_line(aes(col=method)) +
+    #geom_line(aes(col=method)) +
+    geom_line(data=data.plot.fixed,aes(col=method)) +
+    geom_line(data=filter(data.plot.fixed,method%in%c('projpred.iter','lasso.iter')),
+            aes(group=1), linetype='dashed') +
     guides(
       shape = guide_legend(order = 1),
       colour = guide_legend(order = 2)
@@ -475,7 +498,8 @@ if(saveMode){
                         method = character(),
                         fdr = numeric(),
                         rmse = numeric(),
-                        entropy = numeric())
+                        entropy = numeric(),
+                        entropy.sd = numeric())
 
     intervals <- matrix(1:100,nrow=25,ncol=4)
 
@@ -539,7 +563,7 @@ if(saveMode){
                                           mean(rmse.step.ref.tot),
                                           mean(rmse.bayes.step.data.tot),
                                           mean(rmse.bayes.step.ref.tot)),
-                                 entropy = c(entropy(y=apply(X.projpred.tot,2,sum)),
+                                 entropy = c(entropy(apply(X.projpred.tot,2,sum)),
                                              entropy(apply(X.step.data.tot,2,sum)),
                                              entropy(apply(X.step.ref.tot,2,sum)),
                                              entropy(apply(X.bayes.step.data.tot,2,
