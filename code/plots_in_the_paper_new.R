@@ -49,123 +49,123 @@ saveMode <- FALSE
 ###### COMPLETE SELECTION (OLD VERSION) ##############
 ######################################################
 
-if(saveMode){
-    data.plot <- tibble(n = numeric(),
-                        rho = numeric(),
-                        method = character(),
-                        approach = character(),
-                        sensitivity = numeric(),
-                        sensitivity.sd = numeric(),
-                        fdr = numeric(),
-                        fdr.sd = numeric(),
-                        stab.low = numeric(),
-                        stab.mean = numeric(),
-                        stab.up = numeric())
-    for(nn in c(50,70,100)){
-        for(rr in c(0.3,0.5)){
-            load(paste("ref_approach_n",nn,"rho",rr,".Rdata",sep=""))
-            data.plot <- data.plot %>%
-                ## Credibility intervals inclusion probabilities
-                ## with regularized horseshoe prior
-                bind_rows(tibble(n = rep(n,2),
-                                 rho = rep(rho,2),
-                                 method = rep("ci.90",2),
-                                 approach = c("ref","data"),
-                                 sensitivity = c(avg.sensitivity(ci90_X_ref),
-                                                 avg.sensitivity(ci90_X_data)),
-                                 sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
-                                                    sd.sensitivity(ci90_X_data)),
-                                 fdr = c(avg.fdr(ci90_X_ref),
-                                         avg.fdr(ci90_X_data)),
-                                 fdr.sd = c(sd.fdr(ci90_X_ref),
-                                            sd.fdr(ci90_X_data)),
-                                 stab.low = c(getStability(ci90_X_ref)$lower,
-                                              getStability(ci90_X_data)$lower),
-                                 stab.mean = c(getStability(ci90_X_ref)$stability,
-                                               getStability(ci90_X_data)$stability),
-                                 stab.up = c(getStability(ci90_X_ref)$upper,
-                                             getStability(ci90_X_data)$upper))) %>%
-                ## Control of the local false discovery rate
-                bind_rows(tibble(n = rep(n,2),
-                                 rho = rep(rho,2),
-                                 method = rep("loc.fdr",2),
-                                 approach = c("ref","data"),
-                                 sensitivity = c(avg.sensitivity(lfdr_X_ref),
-                                                 avg.sensitivity(lfdr_X_data)),
-                                 sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
-                                                    sd.sensitivity(lfdr_X_data)),
-                                 fdr = c(avg.fdr(lfdr_X_ref),
-                                         avg.fdr(lfdr_X_data)),
-                                 fdr.sd = c(sd.fdr(lfdr_X_ref),
-                                            sd.fdr(lfdr_X_data)),
-                                 stab.low = c(getStability(lfdr_X_ref)$lower,
-                                              getStability(lfdr_X_data)$lower),
-                                 stab.mean = c(getStability(lfdr_X_ref)$stability,
-                                               getStability(lfdr_X_data)$stability),
-                                 stab.up = c(getStability(lfdr_X_ref)$upper,
-                                             getStability(lfdr_X_data)$upper))) %>%
-                ## Empirical Bayes median thresholding
-                bind_rows(tibble(n = rep(n,2),
-                                 rho = rep(rho,2),
-                                 method = rep("EB.med",2),
-                                 approach = c("ref","data"),
-                                 sensitivity = c(avg.sensitivity(ebmt_X_ref),
-                                                 avg.sensitivity(ebmt_X_data)),
-                                 sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
-                                                    sd.sensitivity(ebmt_X_data)),
-                                 fdr = c(avg.fdr(ebmt_X_ref),
-                                         avg.fdr(ebmt_X_data)),
-                                 fdr.sd = c(sd.fdr(ebmt_X_ref),
-                                            sd.fdr(ebmt_X_data)),
-                                 stab.low = c(getStability(ebmt_X_ref)$lower,
-                                              getStability(ebmt_X_data)$lower),
-                                 stab.mean = c(getStability(ebmt_X_ref)$stability,
-                                               getStability(ebmt_X_data)$stability),
-                                 stab.up = c(getStability(ebmt_X_ref)$upper,
-                                             getStability(ebmt_X_data)$upper)))
-        }
-    }
-    save(data.plot, file='complete_selection_old_plot.RData')
-} else {
-    load('complete_selection_old_plot.RData')
-}
-
-data.plot <- data.plot %>%
-  mutate(method = factor(method, levels = names(colors)))
-
-facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
-                         rho=function(x){paste("rho=",x,sep="")})
-
-
-## Sensitivity vs False discovery rate plot
-plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
-  facet_grid(rho~n, labeller=facet.labels) +
-  geom_point(aes(shape=approach),size=2.5) +
- # geom_errorbar(aes(ymin=sensitivity-sensitivity.sd, ymax=sensitivity+sensitivity.sd)) +
- # geom_errorbarh(aes(xmin=fdr-fdr.sd, xmax=fdr+fdr.sd)) +
-  scale_shape_manual(values = shapes) +
-  scale_color_manual(values = colors) +
-  geom_line(aes(col=method)) +
-  guides(
-    shape = guide_legend(order = 1),
-    colour = guide_legend(order = 2)
-  ) +
-  labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
-#  theme_light()
-
-ggsave("../paper/graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
-
-## Stability plot
-plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
-  facet_grid(rho~n, labeller=facet.labels) +
-  geom_point(size=2.5) +
-  geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
-  coord_flip() +
-  labs(x="",y="Stability", col="Approach") +
-  scale_color_manual(values=c("#819FF7","#FAAC58"))
-#  theme_light()
-
-ggsave("../paper/graphics/stability.pdf",plot2,width=10,height=3)
+# if(saveMode){
+#     data.plot <- tibble(n = numeric(),
+#                         rho = numeric(),
+#                         method = character(),
+#                         approach = character(),
+#                         sensitivity = numeric(),
+#                         sensitivity.sd = numeric(),
+#                         fdr = numeric(),
+#                         fdr.sd = numeric(),
+#                         stab.low = numeric(),
+#                         stab.mean = numeric(),
+#                         stab.up = numeric())
+#     for(nn in c(50,70,100)){
+#         for(rr in c(0.3,0.5)){
+#             load(paste("ref_approach_n",nn,"rho",rr,".Rdata",sep=""))
+#             data.plot <- data.plot %>%
+#                 ## Credibility intervals inclusion probabilities
+#                 ## with regularized horseshoe prior
+#                 bind_rows(tibble(n = rep(n,2),
+#                                  rho = rep(rho,2),
+#                                  method = rep("ci.90",2),
+#                                  approach = c("ref","data"),
+#                                  sensitivity = c(avg.sensitivity(ci90_X_ref),
+#                                                  avg.sensitivity(ci90_X_data)),
+#                                  sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
+#                                                     sd.sensitivity(ci90_X_data)),
+#                                  fdr = c(avg.fdr(ci90_X_ref),
+#                                          avg.fdr(ci90_X_data)),
+#                                  fdr.sd = c(sd.fdr(ci90_X_ref),
+#                                             sd.fdr(ci90_X_data)),
+#                                  stab.low = c(getStability(ci90_X_ref)$lower,
+#                                               getStability(ci90_X_data)$lower),
+#                                  stab.mean = c(getStability(ci90_X_ref)$stability,
+#                                                getStability(ci90_X_data)$stability),
+#                                  stab.up = c(getStability(ci90_X_ref)$upper,
+#                                              getStability(ci90_X_data)$upper))) %>%
+#                 ## Control of the local false discovery rate
+#                 bind_rows(tibble(n = rep(n,2),
+#                                  rho = rep(rho,2),
+#                                  method = rep("loc.fdr",2),
+#                                  approach = c("ref","data"),
+#                                  sensitivity = c(avg.sensitivity(lfdr_X_ref),
+#                                                  avg.sensitivity(lfdr_X_data)),
+#                                  sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
+#                                                     sd.sensitivity(lfdr_X_data)),
+#                                  fdr = c(avg.fdr(lfdr_X_ref),
+#                                          avg.fdr(lfdr_X_data)),
+#                                  fdr.sd = c(sd.fdr(lfdr_X_ref),
+#                                             sd.fdr(lfdr_X_data)),
+#                                  stab.low = c(getStability(lfdr_X_ref)$lower,
+#                                               getStability(lfdr_X_data)$lower),
+#                                  stab.mean = c(getStability(lfdr_X_ref)$stability,
+#                                                getStability(lfdr_X_data)$stability),
+#                                  stab.up = c(getStability(lfdr_X_ref)$upper,
+#                                              getStability(lfdr_X_data)$upper))) %>%
+#                 ## Empirical Bayes median thresholding
+#                 bind_rows(tibble(n = rep(n,2),
+#                                  rho = rep(rho,2),
+#                                  method = rep("EB.med",2),
+#                                  approach = c("ref","data"),
+#                                  sensitivity = c(avg.sensitivity(ebmt_X_ref),
+#                                                  avg.sensitivity(ebmt_X_data)),
+#                                  sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
+#                                                     sd.sensitivity(ebmt_X_data)),
+#                                  fdr = c(avg.fdr(ebmt_X_ref),
+#                                          avg.fdr(ebmt_X_data)),
+#                                  fdr.sd = c(sd.fdr(ebmt_X_ref),
+#                                             sd.fdr(ebmt_X_data)),
+#                                  stab.low = c(getStability(ebmt_X_ref)$lower,
+#                                               getStability(ebmt_X_data)$lower),
+#                                  stab.mean = c(getStability(ebmt_X_ref)$stability,
+#                                                getStability(ebmt_X_data)$stability),
+#                                  stab.up = c(getStability(ebmt_X_ref)$upper,
+#                                              getStability(ebmt_X_data)$upper)))
+#         }
+#     }
+#     save(data.plot, file='complete_selection_old_plot.RData')
+# } else {
+#     load('complete_selection_old_plot.RData')
+# }
+# 
+# data.plot <- data.plot %>%
+#   mutate(method = factor(method, levels = names(colors)))
+# 
+# facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
+#                          rho=function(x){paste("rho=",x,sep="")})
+# 
+# 
+# ## Sensitivity vs False discovery rate plot
+# plot1 <- ggplot(data.plot,aes(x=fdr,y=sensitivity,col=method)) +
+#   facet_grid(rho~n, labeller=facet.labels) +
+#   geom_point(aes(shape=approach),size=2.5) +
+#  # geom_errorbar(aes(ymin=sensitivity-sensitivity.sd, ymax=sensitivity+sensitivity.sd)) +
+#  # geom_errorbarh(aes(xmin=fdr-fdr.sd, xmax=fdr+fdr.sd)) +
+#   scale_shape_manual(values = shapes) +
+#   scale_color_manual(values = colors) +
+#   geom_line(aes(col=method)) +
+#   guides(
+#     shape = guide_legend(order = 1),
+#     colour = guide_legend(order = 2)
+#   ) +
+#   labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
+# #  theme_light()
+# 
+# ggsave("../paper/graphics/sensitivity_vs_fdr.pdf",plot1,width=10,height=3)
+# 
+# ## Stability plot
+# plot2 <- ggplot(data.plot,aes(y=stab.mean,x=method,col=approach)) +
+#   facet_grid(rho~n, labeller=facet.labels) +
+#   geom_point(size=2.5) +
+#   geom_linerange(aes(ymin=stab.low,ymax=stab.up)) +
+#   coord_flip() +
+#   labs(x="",y="Stability", col="Approach") +
+#   scale_color_manual(values=c("#819FF7","#FAAC58"))
+# #  theme_light()
+# 
+# ggsave("../paper/graphics/stability.pdf",plot2,width=10,height=3)
 
 
 
@@ -301,23 +301,15 @@ ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 ##################################################
 k <- 13
 
-# avg.sensitivity <- function(X){
-#   tmp <- apply(X,1,function(x){sum(which(x==1)<=k)/k})
-#   return(mean(tmp, na.rm = TRUE))
-# }
-# 
-# avg.fdr <- function(X){
-#   tmp <- apply(X,1,function(x){sum(which(x==1)>k)/sum(x)})
-#   return(mean(tmp, na.rm = TRUE))
-# }
-
 if(saveMode){
     data.plot <- tibble(n = numeric(),
                         rho = numeric(),
                         method = character(),
                         approach = character(),
                         sensitivity = numeric(),
+                        sensitivity.sd = numeric(),
                         fdr = numeric(),
+                        fdr.sd = numeric(),
                         stab.low = numeric(),
                         stab.mean = numeric(),
                         stab.up = numeric())
@@ -332,8 +324,12 @@ if(saveMode){
                              approach = c("ref","data"),
                              sensitivity = c(avg.sensitivity(ci90_X_ref),
                                              avg.sensitivity(ci90_X_data)),
+                             sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
+                                             sd.sensitivity(ci90_X_data)),
                              fdr = c(avg.fdr(ci90_X_ref),
                                      avg.fdr(ci90_X_data)),
+                             fdr.sd = c(sd.fdr(ci90_X_ref),
+                                     sd.fdr(ci90_X_data)),
                              stab.low = c(getStability(ci90_X_ref)$lower,
                                           getStability(ci90_X_data)$lower),
                              stab.mean = c(getStability(ci90_X_ref)$stability,
@@ -346,8 +342,12 @@ if(saveMode){
                              approach = c("ref","data"),
                              sensitivity = c(avg.sensitivity(lfdr_X_ref),
                                              avg.sensitivity(lfdr_X_data)),
+                             sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
+                                             sd.sensitivity(lfdr_X_data)),
                              fdr = c(avg.fdr(lfdr_X_ref),
                                      avg.fdr(lfdr_X_data)),
+                             fdr.sd = c(sd.fdr(lfdr_X_ref),
+                                     sd.fdr(lfdr_X_data)),
                              stab.low = c(getStability(lfdr_X_ref)$lower,
                                           getStability(lfdr_X_data)$lower),
                              stab.mean = c(getStability(lfdr_X_ref)$stability,
@@ -360,7 +360,12 @@ if(saveMode){
                              approach = c("ref","data"),
                              sensitivity = c(avg.sensitivity(ebmt_X_ref),
                                              avg.sensitivity(ebmt_X_data)),
-                             fdr = c(avg.fdr(ebmt_X_ref),avg.fdr(ebmt_X_data)),
+                             sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
+                                             sd.sensitivity(ebmt_X_data)),
+                             fdr = c(avg.fdr(ebmt_X_ref),
+                                     avg.fdr(ebmt_X_data)),
+                             fdr.sd = c(sd.fdr(ebmt_X_ref),
+                                        sd.fdr(ebmt_X_data)),
                              stab.low = c(getStability(ebmt_X_ref)$lower,
                                           getStability(ebmt_X_data)$lower),
                              stab.mean = c(getStability(ebmt_X_ref)$stability,
@@ -374,7 +379,9 @@ if(saveMode){
                              method = "projpred.iter",
                              approach = "ref",
                              sensitivity =  avg.sensitivity(projpred_X),
+                             sensitivity.sd =  sd.sensitivity(projpred_X),
                              fdr = avg.fdr(projpred_X),
+                             fdr.sd = sd.fdr(projpred_X),
                              stab.low = getStability(projpred_X)$lower,
                              stab.mean = getStability(projpred_X)$stability,
                              stab.up = getStability(projpred_X)$upper))
@@ -384,8 +391,10 @@ if(saveMode){
           bind_rows(tibble(n = n,
                            method = "lasso.iter",
                            approach = "data",
-                           sensitivity =  avg.sensitivity(lasso_X),
+                           sensitivity = avg.sensitivity(lasso_X),
+                           sensitivity.sd = sd.sensitivity(lasso_X),
                            fdr = avg.fdr(lasso_X),
+                           fdr.sd = sd.fdr(lasso_X),
                            stab.low = getStability(lasso_X)$lower,
                            stab.mean = getStability(lasso_X)$stability,
                            stab.up = getStability(lasso_X)$upper))
@@ -416,9 +425,11 @@ data.plot.fixed <- data.plot.fixed %>%
 plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(~n, labeller=facet.labels) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
-    scale_x_continuous(limits=c(0,0.65)) +
-    scale_y_continuous(limits=c(0.3,0.99)) +
+    #scale_x_continuous(limits=c(0,0.65)) +
+    #scale_y_continuous(limits=c(0.3,0.99)) +
     geom_point(aes(shape=approach), size=2) +
+    geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
+    geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
     scale_shape_manual(values = shapes) +
     scale_color_manual(values = colors) +
     #geom_line(aes(col=method)) +
@@ -430,10 +441,6 @@ plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
       colour = guide_legend(order = 2)
     ) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
-   # theme_light() +
-   # theme(strip.background = element_rect(color='black',fill='white'),
-  #        strip.text.x = element_text(color='black'),
-   #       strip.text.y = element_text(color='black'))
 
 
 ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
@@ -448,7 +455,6 @@ plot2 <- data.plot %>%
   coord_flip() +
   labs(x="",y="Stability", col="Approach") +
   scale_color_manual(values=c("#819FF7","#FAAC58"))
-#  theme_light()
 
 ggsave("../paper/graphics/bodyfat_stability.pdf",plot2,width=10,height=2)
 
@@ -497,9 +503,10 @@ if(saveMode){
                         rho = numeric(),
                         method = character(),
                         fdr = numeric(),
+                        fdr.sd = numeric(),
                         rmse = numeric(),
-                        entropy = numeric(),
-                        entropy.sd = numeric())
+                        rmse.sd = numeric(),
+                        entropy = numeric())
 
     intervals <- matrix(1:100,nrow=25,ncol=4)
 
@@ -558,11 +565,21 @@ if(saveMode){
                                          avg.fdr(X.step.ref.tot),
                                          avg.fdr(X.bayes.step.data.tot),
                                          avg.fdr(X.bayes.step.ref.tot)),
+                                 fdr.sd = c(sd.fdr(X.projpred.tot),
+                                         sd.fdr(X.step.data.tot),
+                                         sd.fdr(X.step.ref.tot),
+                                         sd.fdr(X.bayes.step.data.tot),
+                                         sd.fdr(X.bayes.step.ref.tot)),
                                  rmse = c(mean(rmse.projpred.tot),
                                           mean(rmse.step.data.tot),
                                           mean(rmse.step.ref.tot),
                                           mean(rmse.bayes.step.data.tot),
                                           mean(rmse.bayes.step.ref.tot)),
+                                 rmse.sd = c(sd(rmse.projpred.tot),
+                                          sd(rmse.step.data.tot),
+                                          sd(rmse.step.ref.tot),
+                                          sd(rmse.bayes.step.data.tot),
+                                          sd(rmse.bayes.step.ref.tot)),
                                  entropy = c(entropy(apply(X.projpred.tot,2,sum)),
                                              entropy(apply(X.step.data.tot,2,sum)),
                                              entropy(apply(X.step.ref.tot,2,sum)),
@@ -586,6 +603,8 @@ data.plot <- data.plot %>%
 plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
     geom_point(aes(shape=approach),size=3) +
+    geom_errorbar(aes(ymin=rmse-rmse.sd,ymax=rmse+rmse.sd),alpha=0.6) +
+    geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
     scale_shape_manual(values = shapes) +
     geom_line(data=filter(data.plot,method=='step.lm'),aes(x=fdr,y=rmse)) +
     geom_line(data=filter(data.plot,method=='step.bayes'),aes(x=fdr,y=rmse)) +
@@ -619,9 +638,9 @@ if(saveMode){
                         method = character(),
                         approach = character(),
                         sensitivity = numeric(),
-                        ## sensitivity.sd = numeric(),
+                        sensitivity.sd = numeric(),
                         fdr = numeric(),
-                        ## fdr.sd = numeric(),
+                        fdr.sd = numeric(),
                         stab.low = numeric(),
                         stab.mean = numeric(),
                         stab.up = numeric())
@@ -654,10 +673,18 @@ if(saveMode){
                                                  avg.sensitivity(X_data_test),
                                                  avg.sensitivity(X_ref_cv),
                                                  avg.sensitivity(X_data_cv)),
+                                 sensitivity.sd = c(sd.sensitivity(X_ref_test),
+                                                 sd.sensitivity(X_data_test),
+                                                 sd.sensitivity(X_ref_cv),
+                                                 sd.sensitivity(X_data_cv)),
                                  fdr = c(avg.fdr(X_ref_test),
                                          avg.fdr(X_data_test),
                                          avg.fdr(X_ref_cv),
                                          avg.fdr(X_data_cv)),
+                                 fdr.sd = c(sd.fdr(X_ref_test),
+                                         sd.fdr(X_data_test),
+                                         sd.fdr(X_ref_cv),
+                                         sd.fdr(X_data_cv)),
                                  stab.low = c(stab_ref_test$lower,
                                               stab_data_test$lower,
                                               stab_ref_cv$lower,
@@ -684,8 +711,12 @@ if(saveMode){
                                  approach = c("ref","data"),
                                  sensitivity = c(avg.sensitivity(ci90_X_ref),
                                                  avg.sensitivity(ci90_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(ci90_X_ref),
+                                                 sd.sensitivity(ci90_X_data)),
                                  fdr = c(avg.fdr(ci90_X_ref),
                                          avg.fdr(ci90_X_data)),
+                                 fdr.sd = c(sd.fdr(ci90_X_ref),
+                                         sd.fdr(ci90_X_data)),
                                  stab.low = c(getStability(ci90_X_ref)$lower,
                                               getStability(ci90_X_data)$lower),
                                  stab.mean = c(getStability(ci90_X_ref)$stability,
@@ -700,8 +731,12 @@ if(saveMode){
                                  approach = c("ref","data"),
                                  sensitivity = c(avg.sensitivity(lfdr_X_ref),
                                                  avg.sensitivity(lfdr_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(lfdr_X_ref),
+                                                 sd.sensitivity(lfdr_X_data)),
                                  fdr = c(avg.fdr(lfdr_X_ref),
                                          avg.fdr(lfdr_X_data)),
+                                 fdr.sd = c(sd.fdr(lfdr_X_ref),
+                                         sd.fdr(lfdr_X_data)),
                                  stab.low = c(getStability(lfdr_X_ref)$lower,
                                               getStability(lfdr_X_data)$lower),
                                  stab.mean = c(getStability(lfdr_X_ref)$stability,
@@ -716,8 +751,12 @@ if(saveMode){
                                  approach = c("ref","data"),
                                  sensitivity = c(avg.sensitivity(ebmt_X_ref),
                                                  avg.sensitivity(ebmt_X_data)),
+                                 sensitivity.sd = c(sd.sensitivity(ebmt_X_ref),
+                                                 sd.sensitivity(ebmt_X_data)),
                                  fdr = c(avg.fdr(ebmt_X_ref),
                                          avg.fdr(ebmt_X_data)),
+                                 fdr.sd = c(sd.fdr(ebmt_X_ref),
+                                         sd.fdr(ebmt_X_data)),
                                  stab.low = c(getStability(ebmt_X_ref)$lower,
                                               getStability(ebmt_X_data)$lower),
                                  stab.mean = c(getStability(ebmt_X_ref)$stability,
@@ -759,6 +798,8 @@ data.plot.clean.plot1[data.plot.clean.plot1$method=='lasso.iter',]$approach <- '
 plot1 <- ggplot(data.plot.clean.plot1,aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
     geom_point(aes(shape=approach),size=2) +
+    geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
+    geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
     ## geom_label_repel(data=filter(data.plot.clean,!is.na(alpha)),
     ##                 aes(label=alpha),
     ##                 segment.size = 0.2,
