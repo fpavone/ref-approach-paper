@@ -7,12 +7,8 @@ theme_set(theme_light() +
           theme(strip.background = element_rect(color='black',fill='white'),
                 strip.text.x = element_text(color='black'),
                 strip.text.y = element_text(color='black')))
-shapes <- c('ref'=8, 'data'=20)
 library(latex2exp)
 source("getStability.R")
-
-p <- 1000
-k <- 100
 
 avg.sensitivity <- function(X){
   tmp <- apply(X,1,function(x){sum(which(x==1)<=k)/k})
@@ -35,11 +31,15 @@ sd.fdr <- function(X){
 }
 
 colors <- c(
+  'lasso.iter' = '#2E2E2E',
   'projpred.iter' = '#2E2E2E',
   'loc.fdr' = '#619CFF',
   'ci.90' = '#F8766D',
   'EB.med' = '#00BA38'
 )
+shapes <- c('ref'=18, 'data'=1, 'data.lasso'=20)
+facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
+                         rho=function(x){paste("rho=",x,sep="")})
 
 ## If you want to run the script to create the data object
 ## set TRUE, otherwise set FALSE to load the data.
@@ -299,8 +299,6 @@ ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 ##################################################
 ########## BODYFAT VARIABLE SELECTION ############
 ##################################################
-k <- 13
-
 if(saveMode){
     data.plot <- tibble(n = numeric(),
                         rho = numeric(),
@@ -404,18 +402,6 @@ if(saveMode){
     load('bodyfat_complete_selection_plot.RData')
 }
 
-colors <- c(
-  'projpred.iter' = '#2E2E2E',
-  'lasso.iter' = '#2E2E2E',
-  'loc.fdr' = '#619CFF',
-  'ci.90' = '#F8766D',
-  'EB.med' = '#00BA38'
-)
-
-shapes <- c('ref'=8, 'data'=20, 'data.lasso'=9)
-
-facet.labels <- labeller(n = function(x){paste("n=",x,sep="")})
-
 ## Sensitivity vs False discovery rate plot
 data.plot.fixed <- data.plot
 data.plot.fixed[data.plot.fixed$method=='lasso.iter',]$approach <- 'data.lasso'
@@ -427,7 +413,7 @@ plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
     #scale_x_continuous(limits=c(0,0.65)) +
     #scale_y_continuous(limits=c(0.3,0.99)) +
-    geom_point(aes(shape=approach), size=2) +
+    geom_point(aes(shape=approach), size=3) +
     geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
     geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
     scale_shape_manual(values = shapes) +
@@ -471,10 +457,10 @@ data.plot <- data.frame(stat=c(noisy_ref,noisy_data,rmse_ref,rmse_data),
                         method=rep(c(rep('ref',100),rep('data',100)),2),
                         type=c(rep('noisy',200),rep('rmse',200)))
 
-facet.labels <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
+facet.labels2 <- labeller(type=function(x){ifelse(x=='noisy','Noisy features selected','RMSE')})
 
 plot1 <- ggplot(data.plot,aes(x=stat,fill=method,color=method)) +
-    facet_grid(~type, scales='free', labeller=facet.labels) +
+    facet_grid(~type, scales='free', labeller=facet.labels2) +
     geom_histogram(position = "identity", alpha=0.7, bins=30) +
     labs(x='',y='',fill='Approach') +
     guides(color=FALSE) +
@@ -497,7 +483,6 @@ data.plot %>%
 ##++++++++++++++++++++++++++++++++++++++++++++++++#
 ##++++++++++++++++++++++++++++++++++++++++++++++++#
 library(entropy)
-
 if(saveMode){
     data.plot <- tibble(n = numeric(),
                         rho = numeric(),
@@ -593,9 +578,6 @@ if(saveMode){
 } else {
     load('minimal_subset_selection_parallel_plot.RData')
 }
-
-facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
-                         rho=function(x){paste("rho=",x,sep="")})
 
 data.plot <- data.plot %>%
   mutate(method = factor(method, levels = c("projpred", "step.bayes", "step.lm")))
@@ -770,20 +752,6 @@ if(saveMode){
     load('complete_selection_plot.RData')
 }
 
-
-colors <- c(
-  'projpred.iter' = '#2E2E2E',
-  'lasso.iter' = '#2E2E2E',
-  'loc.fdr' = '#619CFF',
-  'ci.90' = '#F8766D',
-  'EB.med' = '#00BA38'
-)
-
-shapes <- c('ref'=8, 'data'=20, 'data.lasso'=9)
-
-facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
-                         rho=function(x){paste("rho=",x,sep="")})
-
 ## Sensitivity vs False discovery rate plot
 data.plot.clean <- data.plot %>%
   filter(method != 'test.iter') %>%
@@ -797,7 +765,7 @@ data.plot.clean.plot1[data.plot.clean.plot1$method=='lasso.iter',]$approach <- '
 
 plot1 <- ggplot(data.plot.clean.plot1,aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
-    geom_point(aes(shape=approach),size=2) +
+    geom_point(aes(shape=approach),size=3) +
     geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
     geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
     ## geom_label_repel(data=filter(data.plot.clean,!is.na(alpha)),
