@@ -670,7 +670,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
  $R=\{\emptyset\}$ \;
  Fit reference model\;
  \While{$F\neq\{\emptyset\}$}{
-   projection.HeuristicSearch \;
+   projection.HeuristicSearch() \;
    projection.elpdEstimate() \;
 %:
    $S=\text{min}\{\text{sub}: P(\text{elpd}_{\text{sub}}-\text{elpd}_{\text{base}}>0)\geq\alpha)$\} \;
@@ -687,7 +687,13 @@ In our experiments we chose the default value used in the \texttt{projpred}
 \end{algorithm}
 \end{center}
 
-In the experiments in the next Sections we include a method which we refer to as iterative lasso. It consists in the same algorithm of the iterative projection, expect for not using any reference model. Given the implementation of projpred in the R-package, it means that the predictions of the reference model consist simply on the observed target values. Iterative lasso is therefore used as the free-reference-model comparison baseline of the iterative projection. 
+In the experiments shown in the next sections, we include an additional iterative
+method which we refer to as 'iterative lasso'. It consists of the same iterative
+algorithm as iterative projpred expect for not using any reference model but
+the lasso method for variable selection, instead.
+That is, it uses the observed target values instead of predictions of the reference model.
+Iterative lasso can help to distangle the effects
+of the iterative procedure and the usage of a reference model in complete feature selection.
 
 \subsection{Alternative complete variable selection methods}
 
