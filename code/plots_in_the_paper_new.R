@@ -429,7 +429,7 @@ plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 
 
-ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.5)
+ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.8)
 
 ## Stability plot
 plot2 <- data.plot %>%
