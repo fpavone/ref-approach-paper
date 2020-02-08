@@ -31,13 +31,13 @@ sd.fdr <- function(X){
 }
 
 colors <- c(
-  'lasso.iter' = '#2E2E2E',
+  'lasso.iter' = '#A4A4A4',
   'projpred.iter' = '#2E2E2E',
   'loc.fdr' = '#619CFF',
   'ci.90' = '#F8766D',
   'EB.med' = '#00BA38'
 )
-shapes <- c('ref'=18, 'data'=1, 'data.lasso'=20)
+shapes <- c('ref'=5, 'data'=19)
 facet.labels <- labeller(n = function(x){paste("n=",x,sep="")},
                          rho=function(x){paste("rho=",x,sep="")})
 
@@ -404,7 +404,6 @@ if(saveMode){
 
 ## Sensitivity vs False discovery rate plot
 data.plot.fixed <- data.plot
-data.plot.fixed[data.plot.fixed$method=='lasso.iter',]$approach <- 'data.lasso'
 data.plot.fixed <- data.plot.fixed %>%
     mutate(method = factor(method, levels = names(colors)))
 
@@ -413,21 +412,20 @@ plot1 <- ggplot(data.plot.fixed, aes(x=fdr,y=sensitivity,col=method)) +
     ##geom_abline(intercept=0, slope=1, linetype='dashed') +
     #scale_x_continuous(limits=c(0,0.65)) +
     #scale_y_continuous(limits=c(0.3,0.99)) +
-    geom_point(aes(shape=approach), size=3) +
     geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
     geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
+    geom_point(aes(shape=approach), size=2.3) +
     scale_shape_manual(values = shapes) +
     scale_color_manual(values = colors) +
     #geom_line(aes(col=method)) +
     geom_line(data=data.plot.fixed,aes(col=method)) +
     geom_line(data=filter(data.plot.fixed,method%in%c('projpred.iter','lasso.iter')),
-            aes(group=1), linetype='dashed') +
+            aes(group=1), linetype='dashed',color='#A4A4A4') +
     guides(
       shape = guide_legend(order = 1),
       colour = guide_legend(order = 2)
     ) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
-
 
 ggsave("../paper/graphics/bodyfat_sensitivity_vs_fdr.pdf",plot1,width=10,height=2.8)
 
@@ -584,9 +582,9 @@ data.plot <- data.plot %>%
 
 plot1 <- ggplot(data.plot, aes(x=fdr,y=rmse, color=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
-    geom_point(aes(shape=approach),size=3) +
     geom_errorbar(aes(ymin=rmse-rmse.sd,ymax=rmse+rmse.sd),alpha=0.6) +
     geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
+    geom_point(aes(shape=approach),size=2.3) +
     scale_shape_manual(values = shapes) +
     geom_line(data=filter(data.plot,method=='step.lm'),aes(x=fdr,y=rmse)) +
     geom_line(data=filter(data.plot,method=='step.bayes'),aes(x=fdr,y=rmse)) +
@@ -758,16 +756,11 @@ data.plot.clean <- data.plot %>%
   #filter(!(method=='projpred.iter' & approach=='data')) %>%
   mutate(method = factor(method, levels = names(colors)))
 
-## Specific approach label for iterative lasso
-data.plot.clean.plot1 <- data.plot.clean
-data.plot.clean.plot1[data.plot.clean.plot1$method=='lasso.iter',]$approach <- 'data.lasso'
-
-
-plot1 <- ggplot(data.plot.clean.plot1,aes(x=fdr,y=sensitivity,col=method)) +
+plot1 <- ggplot(data.plot.clean,aes(x=fdr,y=sensitivity,col=method)) +
     facet_grid(rho~n, labeller=facet.labels) +
-    geom_point(aes(shape=approach),size=3) +
     geom_errorbar(aes(ymin=sensitivity-sensitivity.sd,ymax=sensitivity+sensitivity.sd),alpha=0.6) +
     geom_errorbarh(aes(xmin=fdr-fdr.sd,xmax=fdr+fdr.sd),alpha=0.6) + 
+    geom_point(aes(shape=approach),size=2.3) +
     ## geom_label_repel(data=filter(data.plot.clean,!is.na(alpha)),
     ##                 aes(label=alpha),
     ##                 segment.size = 0.2,
@@ -782,7 +775,7 @@ plot1 <- ggplot(data.plot.clean.plot1,aes(x=fdr,y=sensitivity,col=method)) +
     ## geom_line(data=filter(data.plot.clean,method!='projpred.iter'),aes(col=method)) +
     geom_line(data=filter(data.plot.clean),aes(col=method)) +
     geom_line(data=filter(data.plot.clean,method%in%c('projpred.iter','lasso.iter')),
-            aes(group=1), linetype='dashed') +
+            aes(group=1), linetype='dashed', color='#A4A4A4') +
     guides(label=FALSE) +
     labs(x="False discovery rate",y="Sensitivity", shape="Approach", col="Method")
 
