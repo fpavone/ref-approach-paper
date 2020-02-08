@@ -552,7 +552,7 @@ simple refit of submodels.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr_parallel.pdf}
-  \caption{Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection.}
+  \caption{Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars.}
   \label{fig:rmse_vs_fdr}
 \end{figure}
 
@@ -688,7 +688,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
 \end{center}
 
 In the experiments shown in the next sections, we include an additional iterative
-method which we refer to as 'iterative lasso'. It consists of the same iterative
+method which we refer to as `iterative lasso'. It consists of the same iterative
 algorithm as iterative projpred expect for not using any reference model but
 the lasso method for variable selection, instead.
 That is, it uses the observed target values instead of predictions of the reference model.
@@ -1063,7 +1063,7 @@ misspecified models with cross-validation \citep{bengio2004no}.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr_iterated.pdf}
-  \caption{Sensitivity against false discovery rate based on 100 data simulations.\\}
+  \caption{Sensitivity against false discovery rate based on 100 data simulations with one standard deviation error bars.\\}
   \label{fig:sensitivity_vs_fdr_iterated}
 \end{figure}
 
@@ -1127,7 +1127,7 @@ are averaged over 100 bootstrap samples of the respective size.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/bodyfat_sensitivity_vs_fdr.pdf}
-  \caption{Sensitivity against false discovery rate based on 100 bootstrap samples.\\}
+  \caption{Sensitivity against false discovery rate based on 100 bootstrap samples with one standard deviation error bars.\\}
   \label{fig:bodyfat_sensitivity_vs_fdr}
 \end{figure}
 
