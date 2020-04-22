@@ -491,7 +491,9 @@ model:
   model using the first five supervised principal components \citep{piironen2018} as predictors
   and the full posterior predictive distribution as the basis of the projection.   
   The search heuristic  is forward search and the predictive performance 
-  is estimated via 10-fold cross-validation.
+  is estimated via 10-fold cross-validation. The selection continues
+  until the predictive performance is close to the predictive
+  performance of the reference model. See more details in Appendix A.
   
 \item Bayesian stepwise selection (without a reference model): At each step, the fitted model
  is a Bayesian linear regression using the regularised horseshoe
@@ -1325,7 +1327,7 @@ $\boldsymbol{\theta}_{\perp}^{s}$ then present the projected posterior
 for the submodel.
 \item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation. Fast cross-validation can be performed using using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
 \citep[PSIS-LOO-CV; ][]{paper:psis_loo}.
-\item Choose the smallest submodel (size) that is sufficiently close to the reference model's predictive utility score.
+\item Choose the smallest submodel (size) that is sufficiently close to the reference model's predictive utility score. The results in this paper were not sensitive to the specific choice of how ``sufficiently close'' is defined, and we used the same definition as \citet{paper:projpred}.
 \end{enumerate} 
 
 In general, Expression \eqref{eq:draw_by_draw} is not an easy optimisation problem
@@ -1333,7 +1335,7 @@ However, in the special case of the submodels being
 generalised linear models with a likelihood coming from the exponential family, \eqref{eq:draw_by_draw} reduces to a
 maximum likelihood estimation problem, which can be easily solved
 \citep{paper:original_proj}. For further details on the projective
-prediction workflow and implementation see paper by \citet{paper:projpred}.
+prediction workflow and implementation see the paper by \citet{paper:projpred}.
 
 \end{document}
 
