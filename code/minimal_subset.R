@@ -12,7 +12,7 @@ args = commandArgs(trailingOnly=TRUE) # n rho
 ## Simulation parameters
 n <- as.numeric(args[1])  # number of observations
 rho <- as.numeric(args[2])  # correlation level
-p <- 80   # total number of features
+p <- 70   # total number of features
 k <- 20    # number of relevant features
 
 times <- 100
