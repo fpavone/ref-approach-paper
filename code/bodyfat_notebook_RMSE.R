@@ -75,12 +75,16 @@ for (k in 1:K) {
 lmmus<-unlist(lmmuss)[order(as.integer(names(unlist(lmmuss))))]
 lmvsnlmus<-unlist(lmvsnlmuss)[order(as.integer(names(unlist(lmvsnlmuss))))]
 lmvsnlnvs <- unlist(lmvsnlnvss)
+mean(lmvsnlnvs)
+sd(lmvsnlnvs)
 rmse_lmfull <- sqrt(mean((df$siri-lmmus)^2))
 rmse_lmselnl <- sqrt(mean((df$siri-lmvsnlmus)^2))
 ## Reference model + projpred
 mus<-unlist(muss)[order(as.integer(names(unlist(muss))))]
 vsmus<-unlist(vsmuss)[order(as.integer(names(unlist(vsmuss))))]
 vsnvs <- unlist(vsnvss)
+mean(vsnvs)
+sd(vsnvs)
 rmse_full <- sqrt(mean((df$siri-mus)^2))
 rmse_proj <- sqrt(mean((df$siri-vsmus)^2))
 
@@ -145,12 +149,16 @@ for (k in 1:K) {
 lmmus2 <- unlist(lmmuss2)[order(as.integer(names(unlist(lmmuss2))))]
 lmvsnlmus2 <- unlist(lmvsnlmuss2)[order(as.integer(names(unlist(lmvsnlmuss2))))]
 lmvsnlnvs2 <- unlist(lmvsnlnvss2)
+mean(lmvsnlnvs2)
+sd(lmvsnlnvs2)
 rmse_lmfull2 <- sqrt(mean((dfr$siri-lmmus2)^2))
 rmse_lmselnl2 <- sqrt(mean((dfr$siri-lmvsnlmus2)^2))
 ## Reference model + projpred
 mus2 <- unlist(muss2)[order(as.integer(names(unlist(muss2))))]
 vsmus2 <- unlist(vsmuss2)[order(as.integer(names(unlist(vsmuss2))))]
 vsnvs2 <- unlist(vsnvss2)
+mean(vsnvs2)
+sd(vsnvs2)
 rmse_full2 <- sqrt(mean((dfr$siri-mus2)^2))
 rmse_proj2 <- sqrt(mean((dfr$siri-vsmus2)^2))
 
