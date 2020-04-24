@@ -343,22 +343,24 @@ higher and include a large number of irrelevant variables.
 \centering
 \begin{tabular}{ll|rrrr}
 %  \hline
-Data  & Method & RMSE Full & RMSE Selected & \# Selected (avg, sd) & \# Selected noisy \\ 
+Data  & Method & RMSE Full & RMSE Sel & \# Sel (CPL, AVG, SD) & \# Sel noisy (CPL, AVG, SD) \\ 
   \hline
-bodyfat & projpred & 4.36 & 4.45 & 2 (2.3, 0.48) &   \\
-& steplm & 4.38 & 4.46 & 7 (6, 0.94) &  \\
+bodyfat & projpred & 4.36 & 4.45 & (2, 2.3, 0.48) &   \\
+& steplm & 4.38 & 4.46 & (7, 6, 0.94) &  \\
 \hline
-+ noisy variables & projpred & 4.58 & 4.54 & 2 (2, 0)& 0  \\
-& steplm & 5.89 & 5.43 & 23 (26.2, 4.54) & 15 \\
++ noisy variables & projpred & 4.58 & 4.54 & (2, 2, 0)& 0  \\
+& steplm & 5.89 & 5.43 & (23, 26.2, 4.54) & 15 \\
 %   \hline
 \end{tabular}
 \caption{Predictive performances with original bodyfat data (first two
   rows) and with extra noisy variables (last two rows) estimated with
-  10-fold cross-validation. Abbreviations: Full = full model; Selected =
-  selected submodel; \# Selected = selected number of variables;
-  \# Selected noisy = selected number of extra noisy variables. 
-  Between brackets average number of selected features and one standard deviation
-  values over the 10-fold cross-validation.}
+  10-fold cross-validation. Abbreviations: RMSE = root mean squared error;
+  Full = full model; Sel = selected submodel; 
+  \# Sel = total number of selected variables;
+  \# Sel noisy = number of selected noisy variables. 
+  CPL = results for the complete data (not using cross-validation).
+  AVG = average over the 10-fold cross-validation. SD = standard deviation
+  over the 10-fold cross-validation.}
 \label{tab:model_performances}
 \end{table}
 
