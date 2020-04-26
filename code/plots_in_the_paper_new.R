@@ -299,6 +299,7 @@ ggsave("../paper/graphics/correlation.pdf",cor_plot_final, width=4, height=4)
 ##################################################
 ########## BODYFAT VARIABLE SELECTION ############
 ##################################################
+k <- 13
 if(saveMode){
     data.plot <- tibble(n = numeric(),
                         rho = numeric(),

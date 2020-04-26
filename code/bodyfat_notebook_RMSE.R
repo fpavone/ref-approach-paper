@@ -75,12 +75,16 @@ for (k in 1:K) {
 lmmus<-unlist(lmmuss)[order(as.integer(names(unlist(lmmuss))))]
 lmvsnlmus<-unlist(lmvsnlmuss)[order(as.integer(names(unlist(lmvsnlmuss))))]
 lmvsnlnvs <- unlist(lmvsnlnvss)
+mean(lmvsnlnvs)
+sd(lmvsnlnvs)
 rmse_lmfull <- sqrt(mean((df$siri-lmmus)^2))
 rmse_lmselnl <- sqrt(mean((df$siri-lmvsnlmus)^2))
 ## Reference model + projpred
 mus<-unlist(muss)[order(as.integer(names(unlist(muss))))]
 vsmus<-unlist(vsmuss)[order(as.integer(names(unlist(vsmuss))))]
 vsnvs <- unlist(vsnvss)
+mean(vsnvs)
+sd(vsnvs)
 rmse_full <- sqrt(mean((df$siri-mus)^2))
 rmse_proj <- sqrt(mean((df$siri-vsmus)^2))
 
@@ -90,6 +94,7 @@ p <- 100
 noise <- array(rnorm((p-13)*n), c(n,p-13))
 dfr<-cbind(df,noise=noise)
 formula2<-paste(formula,"+",paste(colnames(dfr[,15:(p+1)]), collapse = "+"))
+noisy_names <- colnames(dfr[,15:(p+1)])
 
 sel2 <- step(lm(formula2, data = dfr,  x=T,y=T),
                 direction = "backward",
@@ -114,6 +119,8 @@ lmvsnlnvss2 <- list()
 muss2 <- list()
 vsmuss2 <- list()
 vsnvss2 <- list()
+step_selected_noisy <- list()
+proj_selected_noisy <- list()
 for (k in 1:K) {
     message("Fitting model ", k, " out of ", K)
     omitted <- which(bin == k)
@@ -123,6 +130,7 @@ for (k in 1:K) {
     selnl_k2 <- step(lm(formula2, data = dfr[-omitted,, drop=FALSE],  x=T,y=T),
                     direction = "backward",
                     trace = 0)
+    step_selected_noisy[[k]] <- coef(selnl_k2)
     lmvsnlmuss2[[k]] <- predict(selnl_k2, newdata = dfr[omitted, , drop = FALSE])
     lmvsnlnvss2[[k]] <- length(coef(selnl_k2))-1
     ## Reference model + projpred
@@ -135,6 +143,7 @@ for (k in 1:K) {
     fit_cvvs_k2 <- cv_varsel(fit_k2, method='forward', cv_method='LOO',
                             nloo=nrow(dfr[-omitted,, drop=FALSE]))
     nvk2 <- suggest_size(fit_cvvs_k2,alpha=0.1)
+    proj_selected_noisy[[k]] <- fit_cvvs_k2$vind[1:nvk2]
     vsnvss2[[k]] <- nvk2
     proj_k2 <- project(fit_cvvs_k2, nv = nvk2, ns = 4000)
     muss2[[k]] <- colMeans(posterior_linpred(fit_k2,
@@ -145,12 +154,22 @@ for (k in 1:K) {
 lmmus2 <- unlist(lmmuss2)[order(as.integer(names(unlist(lmmuss2))))]
 lmvsnlmus2 <- unlist(lmvsnlmuss2)[order(as.integer(names(unlist(lmvsnlmuss2))))]
 lmvsnlnvs2 <- unlist(lmvsnlnvss2)
+mean(lmvsnlnvs2)
+sd(lmvsnlnvs2)
+noisy_step2 <- sapply(step_selected_noisy, function(x){sum(names(x)%in%noisy_names)})
+mean(noisy_step2)
+sd(noisy_step2)
 rmse_lmfull2 <- sqrt(mean((dfr$siri-lmmus2)^2))
 rmse_lmselnl2 <- sqrt(mean((dfr$siri-lmvsnlmus2)^2))
 ## Reference model + projpred
 mus2 <- unlist(muss2)[order(as.integer(names(unlist(muss2))))]
 vsmus2 <- unlist(vsmuss2)[order(as.integer(names(unlist(vsmuss2))))]
 vsnvs2 <- unlist(vsnvss2)
+mean(vsnvs2)
+sd(vsnvs2)
+noisy_proj2 <- sapply(proj_selected_noisy, function(x){sum(which(x>13))})
+mean(noisy_proj2)
+sd(noisy_proj2)
 rmse_full2 <- sqrt(mean((dfr$siri-mus2)^2))
 rmse_proj2 <- sqrt(mean((dfr$siri-vsmus2)^2))
 

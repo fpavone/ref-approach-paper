@@ -194,11 +194,11 @@ the future data in the best possible way and which has passed model checking and
 \citep[see, e.g.][]{gelman2013bayesian,gabry2019visualization}.  The reference model approach
 has been used in Bayesian statistics at least since the seminal
 work of \citet{paper:reference_lindley}. For more historical
-references, see the papers by \citet{vehtari2012survey} and
+references, see \citet{vehtari2012survey} and
 \citet{paper:model_selection}, and for most recent methodological
-development see a paper by \citet{paper:projpred}.
+developments see \citet{paper:projpred}.
 
-Reference models have been also used in non-Bayesian contexts, where
+Reference models have been also used in non-Bayesian contexts, in which
 \cite{harrell2015regression} describes them as full models that can be
 thought of as a ``gold standard'' (for a given application).  For
 example, \cite{faraggi2001understanding} deal with the necessity of
@@ -233,7 +233,7 @@ into the theoretical reasons why reference models help in variable selection.
 \subsection{Bodyfat example: Part 1}
 \label{bodyfat-1}
 
-To motivate the further discussion and experiments, we start by simple
+To motivate the further discussion and experiments, we start by a simple
 variable selection example using body fat data by \citet{johnson1996fitting}.
 We compare the projective prediction approach (\emph{projpred},
 \citet{paper:projpred}) which uses a reference model, and classic
@@ -243,8 +243,9 @@ stepwise backward regression (\emph{steplm}).
 The experiments are implemented in \texttt{R} \citep{Rcore2018}.
 
 The target variable of interest is the amount of body fat, which is
-measured by immersing a person in water tank which is a complex and
-expensive procedure. Additionally, we have information about 13
+obtained by a complex and expensive procedure consisting in immersing a 
+person in a water tank and carrying out different measuraments and computations. 
+Additionally, we have information about 13
 variables which are anthropometric measurements (e.g., height, weight
 and circumference of different body parts). The
 variables are highly correlated which causes additional
@@ -269,7 +270,7 @@ log-predictive density (elpd) estimated using approximate leave-one-out cross-va
 when taking into account the uncertainty in estimating the predictive
 model performance. See Appendix A for brief review of projection
 predictive approach, and papers by \citet{paper:model_selection} and
-\citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} R package.
+\citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} R package \citep{Rprojpred}.
 
 The inclusion frequencies of each variable in the final model given 100
 bootstrap samples are shown in Figure
@@ -327,7 +328,7 @@ correlation between the variables and different combinations can
 provide similar predictive accuracy.
 
 We repeat the experiment with a modified data set by adding 84
-unrelated noisy variables so that there are 100 variable in total. 
+unrelated noisy variables so that there are 100 variables in total. 
 The last two rows of Table
 \ref{tab:model_performances} show the cross-validated RMSE, the size
 of the selected model and the number of selected noisy variables using
@@ -342,20 +343,24 @@ higher and include a large number of irrelevant variables.
 \centering
 \begin{tabular}{ll|rrrr}
 %  \hline
-Data  & Method & RMSE Full & RMSE Selected & \# Selected & \# Selected noisy \\ 
+Data  & Method & RMSE Full & RMSE Sel & \# Sel (CPL, AVG, SD) & \# Sel noisy (CPL, AVG, SD) \\ 
   \hline
-bodyfat & projpred & 4.35 & 4.47 & 2 &   \\
-& steplm & 4.38 & 4.47 & 7 &  \\
+bodyfat & projpred & 4.36 & 4.45 & (2, 2.3, 0.48) &   \\
+& steplm & 4.38 & 4.46 & (7, 6, 0.94) &  \\
 \hline
-+ noisy variables & projpred & 4.58 & 4.54 & 2 & 0  \\
-& steplm & 5.89 & 5.43 & 19 & 13 \\
++ noisy variables & projpred & 4.48 & 4.46 & (2, 2, 0)&  (0, 0, 0)  \\
+& steplm & 5.74 & 5.13 & (23, 26.2, 4.54) & (15, 18.9, 4.01) \\
 %   \hline
 \end{tabular}
 \caption{Predictive performances with original bodyfat data (first two
   rows) and with extra noisy variables (last two rows) estimated with
-  10-fold cross-validation. Abbreviations: Full = full model; Selected =
-  selected submodel; \# Selected = selected number of variables;
-  \# Selected noisy = selected number of extra noisy variables.}
+  10-fold cross-validation. Abbreviations: RMSE = root mean squared error;
+  Full = full model; Sel = selected submodel; 
+  \# Sel = total number of selected variables;
+  \# Sel noisy = number of selected noisy variables. 
+  CPL = results for the complete data (not using cross-validation).
+  AVG = average over the 10-fold cross-validation. SD = standard deviation
+  over the 10-fold cross-validation.}
 \label{tab:model_performances}
 \end{table}
 
@@ -373,7 +378,7 @@ not a reference model is applied.
 \subsection{Benefits and costs of using a reference model}
 
 A properly designed reference model is able to filter parts of the
-noise present in the data, and hence provide an improved and more
+noise present in the data, and hence to provide an improved and more
 stable selection process. This holds even if the reference model does
 not perfectly resemble the true data generating process. Moreover, our
 analyses indicate that the substantial reduction of variance
@@ -387,11 +392,11 @@ selection process to improve the stability and selection
 performance. Our results indicate that the core reason why the
 reference model based methods perform well is the reference model
 itself, rather than the specific way of using it.  In general, the
-less data we have and the more complex the estimated models, the
-higher the benefit of using a reference models as the basis for
+less data we have and the more complex the estimated models are, the
+higher is the benefit of using a reference models as the basis for
 variable selection.
 
-If one of the models to be compared is the full model which can be
+If one of the models to be compared is the full model, which can be
 used as a reference model, there is no additional cost of using a
 reference model as it was estimated as part of the analysis anyway.
 Sometimes including all the available variables in an
@@ -406,9 +411,10 @@ models.
 \subsection{Why the reference model helps}\label{reference-model-approach}}
  
 A good predictive model is able to filter part of the noise present in
-the data. The noise is the main source of the instability and tends to
+the data. The noise is the main source of the instability in the selection
+and tends to
 obscure the relevance of the variables in relation to the target
-variable of interest. We demonstrate with the following simple
+variable of interest. We demonstrate it with the following simple
 explanatory example taken from \cite{paper:projpred}. The data
 generation mechanism is
 \begin{alignat}{2} \label{eq:simulated_data}
@@ -479,12 +485,13 @@ the variables with some predictive power in Section~\ref{complete-selection}.
 
 Using the data generating mechanism \eqref{eq:simulated_data}, we
 simulate data sets of different sizes with a relatively large number
-of variables $p=100$ with $k=20$ of them being predictive.  We compare
-the minimal subset variable selection perfomance of projection
-predictive approach (with a reference model), a Bayesian stepwise
+of variables $p=70$, with $k=20$ of them being predictive.  We compare
+the minimal subset variable selection performance of the projection
+predictive approach (which uses a reference model and it is referred to as projpred), 
+a Bayesian stepwise
 forward selection with and without a reference model, and maximum
 likelihood stepwise forward selection with and without a reference
-model:
+model (steplm). The following is a summary of the implementation of the compared methods:
 \begin{itemize}
 \item projpred: The projective prediction approach is used. 
   The reference model is a Bayesian linear regression
@@ -498,7 +505,8 @@ model:
 \item Bayesian stepwise selection (without a reference model): At each step, the fitted model
  is a Bayesian linear regression using the regularised horseshoe
   prior and the variable excluded is the one with the highest Bayesian
-  $p$-value defined as $\text{min}\{P(\theta\leq0 \; | \; D),P(\theta>0 \; | \; D)\}$.
+  $p$-value defined as $\text{min}\{P(\theta\leq0 \; | \; D),P(\theta>0 \; | \; D)\}$,
+  where $D$ stays for the observed data.
 The selection continues if the reduced model has an elpd score higher 
 (i.e., better) than the current model.
 
@@ -528,18 +536,17 @@ selection of the Bayesian linear regression is still less reliable than projpred
 When the variable selection is repeated with different simulated data
 sets, there is some variability in the selected variables. We
 measure the stability of variable selection by computing the entropy
-of observed distribution over different models. The smallest entropy
+of the observed distribution of the included variables over different models. The smallest entropy
 would be obtained if the approach always selected the same set of
 variables, and the largest entropy would be observed if the approach
-would always selected different sets of variables.
-Figure \ref{fig:entropy} shows the entropy scores for the different compared
-methods. Lower entropy corresponds to a more stable
-selection. Highly correlated predictive variables may happen to be
+would always selected different sets of variables. Therefore, lower entropy 
+corresponds to a more stable selection. Highly correlated predictive variables may happen to be
 selected alternately, thus making stability estimation of the
-selection a non-trivial task. Entropy cannot distinguish the interchangeability 
+selection a non-trivial task. Entropy can not distinguish the interchangeability 
 due to correlation from instability. Thus, such a measure should be 
-considerd as a relative and not as an absolute measure of stability.
-The use of a reference model
+considered as a relative, and not as an absolute, measure of stability.
+Figure \ref{fig:entropy} shows the entropy scores for the different compared
+methods. The use of a reference model
 improves the stability of steplm in variable selection slightly, while it makes
 little difference for the Bayesian linear regression. The
 projpred approach turns out to be far more stable than all
@@ -618,10 +625,10 @@ An alternative to minimal subset variable selection is \emph{complete
   variable selection} in which the goal is to find all relevant
 variables that have some predictive information about the target. In
 complete variable selection, it is possible that there are theoretically
-relevant variables, but given finite noisy data we are not able infer their relevance.
+relevant variables, but given finite noisy data we are not able to infer their relevance.
 The projection predictive approach was originally designed for the minimal subset
 variable selection but we will test a simple iterative variant for the complete
-variable selection case in the section.
+variable selection case in this Section.
  In addition, we analyse the benefits of the reference
 model approach in combination with three other
 methods which have been specifically designed for complete variable selection. 
@@ -649,8 +656,8 @@ iterations from the search.
  At each iteration the selected submodel size corresponds to the
 one having a predictive performance close enough to the baseline
 model, which in this iterative version is the submodel with the
-highest predictive score explored at the current iteration. The
-stopping rule that we adopted is the following:
+highest predictive score explored at the current iteration. This translates
+in the following stopping rule at each iteration:
 \begin{equation} 
 \label{eq:rule_of_thumb}
 \text{min} \{i\in \{0,\ldots,p\}: \text{P}(\text{elpd}_{i}-\text{elpd}_{\text{best}}>0)\geq \alpha \},
@@ -659,7 +666,7 @@ where $i$ indexes the submodel size and ``best'' stands for the best predictive 
 at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
 the stopping rule (see Algorithm \ref{alg:iterated_proj}).
 The choice of the hyperparameter $\alpha$ is non-trivial, and we have 
-observed sensitivity of the selection to such a choice mainly when using cross-validation with a small
+observed sensitivity of the selection to such a choice, mainly when using cross-validation with a small
 number of observations or not very predictive variables. 
 In our experiments we chose the default value used in the \texttt{projpred} 
 \texttt{R}-package, that is, $\alpha=0.16$.
@@ -691,10 +698,10 @@ In our experiments we chose the default value used in the \texttt{projpred}
 
 In the experiments shown in the next sections, we include an additional iterative
 method which we refer to as `iterative lasso'. It consists of the same iterative
-algorithm as iterative projpred expect for not using any reference model but
+algorithm as iterative projpred expect for not using any reference model, but
 the lasso method for variable selection, instead.
 That is, it uses the observed target values instead of predictions of the reference model.
-Iterative lasso can help to distangle the effects
+The comparison with iterative lasso can help to disentangle the effects
 of the iterative procedure and the usage of a reference model in complete feature selection.
 
 \subsection{Alternative complete variable selection methods}
@@ -788,14 +795,15 @@ of the iterative procedure and the usage of a reference model in complete featur
 %prior in which we select variables whose 90\% credible intervals
 %excludes zero (\emph{ci.90}) \note{Reference for this?}.
 
-We consider three alternative complete selection methods,
+We consider three alternative complete selection methods:
  the control of the local
 false discovery rate \citep{paper:efron, efron2012large}, the
 empirical Bayes median \citep{johnstone2004needles}, and the selection
 by posterior credible intervals.
 
 The control of the local false discovery rate consists of testing the
-z-values $\{z_{j}\}_{j=1}^{p}$ on whether they belong to the
+z-values $\{z_{j}\}_{j=1}^{p}$ of a normal mean problem (explained in Section \ref{simulations}) 
+on whether they belong to the
 theoretical null distribution $f_{0}$ (i.e., the null hypothesis $H_0$
 meaning no relevance) against the alternative hypothesis distribution
 $f_{1}$. In our case $f_{0}$ corresponds to the standard normal
@@ -814,13 +822,13 @@ discovery rate below $0.2$, which is suggested by
 36 (assuming $\pi_{0}\geq0.9$). The results of the comparison are not
 sensitive to the specific value. To estimate $\pi_{0}$ from the data,
 we use the default setting provided by the \texttt{R}-package
-\texttt{locfdr} \citep{Efron+Turnbull+Narasimhan:2015:locfdr}.
+\texttt{locfdr} \citep{Efron+Turnbull+Narasimhan:2015:locfdr, Rlocfdr}.
 
 The empirical Bayes median approach consists of fitting a Bayesian
 model with a prior composed by a mixture of a delta spike in zero and
 a heavy-tailed distribution. We use the implementation in the
 \texttt{R}-package \texttt{EbayesThresh}
-\citep{Silverman+etal:2017:EbayesThresh}. As suggested by
+\citep{Silverman+etal:2017:EbayesThresh, REbayesThresh}. As suggested by
 \cite{johnstone2004needles}, we use a Laplace distribution resulting
 in a thresholding property, that is, there exists a threshold value
 such that all the data under that threshold have posterior median
@@ -1083,7 +1091,7 @@ the variability of the subset of the selected variables at each
 simulation (originally at each bootstrap sample), modelling the
 selection of each variable as a Bernoulli process. Further details are
 available in \cite{paper:stability}. The reference model helps in
-improving the stability of the selection: Again, the benefits are
+improving the stability of the selection: again, the benefits are
 bigger when the problem is more difficult (small $n$ and $\rho$). In
 addition, we observe less uncertainty in the stability estimates for
 the reference approach (i.e., smaller width of the 95\% intervals),
@@ -1117,9 +1125,9 @@ hold is that the variables are jointly normally distributed. In our
 experience the normal approximation in
 \eqref{eq:fisher_transformation} is still reasonable, but after
 rescaling by $\sqrt{n-3}$ we do not fix the variance to be one, and
-instead estimate it from the data. We compare iteration projections, 
+instead estimate it from the data. We compare the iterative projection, 
 the control of the local false discovery rate (loc.fdr), 
-the empirical Bayes median (EB.med),
+the empirical Bayes median (EB.med)
 and the selection by posterior credible intervals at level 90\%
 (ci.90).  In order to vary the difficulty of the selection, we
 bootstrap subsamples of different sizes, going from $n=50$ up to
@@ -1163,8 +1171,8 @@ marginal with only small improvements.
 
 In this example, we have used the reference model defined as a linear
 regression over some supervised principal components, because it is
-natural for a large number of correlating variables, has fairly good
-predictive performance and is computationally efficient. We do not
+natural for a large number of correlating variables, and has fairly good
+predictive performance plus it is computationally efficient. We do not
 argue that this is always the best choice and more sophisticated
 models can lead to even better results. Here the purpose of the
 experiments were to motivate the use of reference models in general,
@@ -1237,10 +1245,14 @@ experiments. It is left for future research to develop
 a better projective prediction approach for complete variable
 selection problems.
 
-All Bayesian models used in the this paper have been implemented in
+All Bayesian models in this paper have been implemented in
 the probabilistic programming language \texttt{Stan}
 \citep{paper:stan} and fit via dynamic Hamiltonian Monte Carlo
-\citep{hoffman2014no,betancourt2017conceptual}. The code to run all
+\citep{hoffman2014no,betancourt2017conceptual}, through the R-packages 
+\texttt{rstan} \citep{Rrstan} and \texttt{rstanarm} \citep{Rrstanarm}.
+Graphics elaborations have been done using \texttt{ggplot2} \citep{Rggplot2}
+and the \texttt{tidyverse} framework \citep{Rtidyverse}.
+The code to run all
 the experiments is available on GitHub
 (\url{https://github.com/fpavone/ref-approach-paper}).
 
