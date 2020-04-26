@@ -298,7 +298,8 @@ selected with steplm.
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/inc_prob.pdf}
-  \caption{Bootstrap inclusion frequencies after 100 bootstrap samples.}
+  \vspace{-0.7\baselineskip}
+  \caption{Body fat example: Bootstrap inclusion frequencies calculated from 100 bootstrap samples. The projpred approach has less variability on which variables are selected.}
   \label{fig:inclusion_frequencies}
 \end{figure}
 
@@ -322,7 +323,7 @@ M & projpred & Freq \% & steplm & Freq \%  \\
 10 & abdom., age, height, neck, thigh, wrist & 2 & abdom., age, ankle, biceps, weight, wrist & 2 \\
 %   \hline
 \end{tabular}
-\caption{Bootstrap model selection frequencies after 100 bootstrap samples.}
+\caption{Body fat example: Bootstrap model selection frequencies from 100 bootstrap samples.  The projpred approach has less variability on which variable combinations are selected.}
 \label{tab:model_frequencies}
 \end{table}
 
@@ -332,7 +333,7 @@ predictive performances, in terms of cross-validated root mean square
 error (RMSE), of the full model and the selected models using projpred
 or steplm.  There is no significant difference in predictive performance
 of the selected models by different approaches even if there is
-difference in the selected variables. This can be explained by high
+clear difference in the number of selected variables. This can be explained by high
 correlation between the variables and different combinations can
 provide similar predictive accuracy.
 
@@ -352,24 +353,23 @@ higher and include a large number of irrelevant variables.
 \centering
 \begin{tabular}{ll|rrrr}
 %  \hline
-Data  & Method & RMSE Full & RMSE Sel & \# Sel (CPL, AVG, SD) & \# Sel noisy (CPL, AVG, SD) \\ 
+Data  & Method & RMSE Full & RMSE Sel & \# Sel (10-CV avg, sd) & \# Sel noisy (10-CV avg, sd) \\ 
   \hline
-body fat & projpred & 4.36 & 4.45 & (2, 2.3, 0.48) &   \\
-& steplm & 4.38 & 4.46 & (7, 6, 0.94) &  \\
+body fat & projpred & 4.4 & 4.5 &  2\, (2.3, 0.5) &   \\
+& steplm & 4.4 & 4.5 & 7\, (6.0, 0.9) &  \\
 \hline
-+ noisy variables & projpred & 4.48 & 4.46 & (2, 2, 0)&  (0, 0, 0)  \\
-& steplm & 5.74 & 5.13 & (23, 26.2, 4.54) & (15, 18.9, 4.01) \\
++ noisy variables & projpred & 4.5 & 4.5 &  2\, (2.0, 0.0)&  0\,\; (0,\, 0)  \\
+& steplm & 5.7 & 5.1 & 23\, (26,\; 4.5) &  15\, (19, 4) \\
 %   \hline
 \end{tabular}
-\caption{Predictive performances with original body fat data (first two
+\caption{Body fat example: Predictive performances with original data (first two
   rows) and with extra noisy variables (last two rows) estimated with
   10-fold cross-validation. Abbreviations: RMSE = root mean squared error;
   Full = full model; Sel = selected submodel; 
   \# Sel = total number of selected variables;
   \# Sel noisy = number of selected noisy variables. 
-  CPL = results for the complete data (not using cross-validation).
-  AVG = average over the 10-fold cross-validation. SD = standard deviation
-  over the 10-fold cross-validation.}
+  10-CV avg = average over the 10 folds in cross-validation. 10-CV sd = standard deviation
+  over the 10 folds in cross-validation.}
 \label{tab:model_performances}
 \end{table}
 
@@ -460,16 +460,16 @@ that using a reference model to filter out noise in the data, the two
 groups of variables (relevant and non-relevant) can be distinguished
 much better than when the correlation is computed using the observed
 noisy data directly.
-
 \begin{figure}[tp]
   \centering
   \vspace{-5mm}
-  \includegraphics[width=0.4\textwidth]{graphics/correlation.pdf}
+  \includegraphics[width=0.35\textwidth]{graphics/correlation.pdf}
+  \vspace{-0.5\baselineskip}
   \caption{Sample correlation plot of each variable (relevant in red, 
   non-relevant in blue) with the target variable $y$ and the latent variable 
-  $f$ respectively on the x and y axis. Data are generated according to 
+  $f$ respectively on the x and y axis. Simulated data are generated according to 
   \eqref{eq:simulated_data} with parameters $n=70$, $\rho=0.3$,
-  $k=100$, $p=1000$.\\}
+  $k=100$, $p=1000$.}
   \label{fig:correlation}
 \end{figure}
 
@@ -490,7 +490,7 @@ which are not in the minimal subset are highly correlated with variables already
 the minimal subset. We will return to a problem of finding all
 the variables with some predictive power in Section~\ref{complete-selection}.
 
-\subsection{Simulation study}
+\subsection{Simulation study 1}
 
 Using the data generating mechanism \eqref{eq:simulated_data}, we
 simulate data sets of different sizes with a relatively large number
@@ -564,22 +564,22 @@ decision theoretical formulation which 1) takes into account the full
 predictive distribution and not just point estimate and 2) projects
 the reference model posterior to the submodel instead of using a
 simple refit of submodels.
-
 % TODO: Bigger and more distinctive symbols in figures
 % label order: steplm, bayes.step, projpred
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr_parallel.pdf}
-  \caption{Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars.}
+  \vspace{-0.3\baselineskip}
+  \caption{Simulation study 1: Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars. The projpred approach has the smallest RMSE and false discovery ratio.}
   \label{fig:rmse_vs_fdr}
 \end{figure}
-
 % TODO: Bigger and more distinctive symbols in figures
 % TODO: order steplm, bayes.step, projpred
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/entropy_parallel.pdf}
-  \caption{Entropy score in the minimal subset variable selection.}
+  \vspace{-0.3\baselineskip}
+  \caption{Simulation study 1: Entropy score in the minimal subset variable selection.  The projpred approach has much smaller entropy score than the other approaches.}
   \label{fig:entropy}
 \end{figure}
 
@@ -607,21 +607,21 @@ prediction approach (see results of Section \ref{bodyfat-1}).
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/bodyfat_step_refvsdata.pdf}
-  \caption{Stepwise backward selection with and without using a reference model. The x-axis denotes the number of selected irrelevant variables on the left and the out-of-sample RMSE on the right-hand side based on 100 bootstrap samples.\\}
+  \vspace{-0.7\baselineskip}
+  \caption{Body fat example: Stepwise backward selection with and without using a reference model. The x-axis denotes the number of selected irrelevant variables on the left and the out-of-sample RMSE on the right-hand side based on 100 bootstrap samples. The reference approach reduces the number of noisy variables selected and the out-of-sample RMSE.}
   \label{fig:bodyfat_step_refvsdata}
 \end{figure}
-
 \begin{table}[tp]
 \footnotesize
 \centering
-\begin{tabular}{l|r|r}
+\begin{tabular}{l|rr}
 %  \hline
 Method & RMSE & Selected noisy \\ 
   \hline
-Stepwise selection & 6.92 (0.68) & 48.1 (7.46)    \\
-Reference model + Stepwise selection & 4.71 (0.45) & 25.1 (6.89)   \\
+Stepwise selection & 6.9 (0.7) & 48 (7)    \\
+Reference model + Stepwise selection & 4.7 (0.5) & 25 (7)   \\
 \end{tabular}
-\caption{Mean and standard deviation (between brackets) values of Figure \ref{fig:bodyfat_step_refvsdata}}
+\caption{Body fat example: Mean and standard deviation (between brackets) values of Figure \ref{fig:bodyfat_step_refvsdata}.}
 \label{tab:step_refvsdata}
 \end{table}
 
@@ -877,7 +877,7 @@ their mean predictions $\hat{y}$ based on the reference model.
 % \label{tab:comparison}
 % \end{table}
 
-\subsection{Simulation study}
+\subsection{Simulation study 2}
 \label{simulations}
 
 The iterative projection applies straightforwardly to data, whereas
@@ -1057,6 +1057,20 @@ threshold as done by \citet{paper:projpred}.
 %     red and blue respectively.\\}
 %   \label{fig:k}
 % \end{figure}
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr_iterated.pdf}
+  \vspace{-0.3\baselineskip}
+  \caption{Simulation study 2: Complete variable selection sensitivity against false discovery rate based on 100 data simulations with one standard deviation error bars. The reference approach improves sensitivity and reduces false discovery rate for all methods.}
+  \label{fig:sensitivity_vs_fdr_iterated}
+\end{figure}
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/stability_iterated.pdf}
+  \vspace{-0.3\baselineskip}
+  \caption{Simulation study 2: Complete variable selection stability estimates with 95\% intervals based on 100 data simulations. The reference approach improves stability for all methods.}
+  \label{fig:stability_iterated}
+\end{figure}
 
 Figure \ref{fig:sensitivity_vs_fdr_iterated} shows the average sensitivity on
 the vertical axis and the average false discovery rate on the
@@ -1079,12 +1093,6 @@ selection, yet the main source of poor performance could well be the
 miscalibration of the uncertainty of the predictive utility score for
 misspecified models with cross-validation \citep{bengio2004no}.
 
-\begin{figure}[tp]
-  \centering
-  \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr_iterated.pdf}
-  \caption{Sensitivity against false discovery rate based on 100 data simulations with one standard deviation error bars.\\}
-  \label{fig:sensitivity_vs_fdr_iterated}
-\end{figure}
 
 %\begin{figure}[tp]
 %  \centering
@@ -1108,16 +1116,25 @@ which can be still connected to the overall stability of the
 procedure. As in Figure \ref{fig:sensitivity_vs_fdr_iterated}, the iterative
 projection does not perform well in the hardest scenarios. 
 
-\begin{figure}[tp]
-  \centering
-  \includegraphics[width=0.98\textwidth]{graphics/stability_iterated.pdf}
-  \caption{Stability estimates with 95\% intervals based on 100 data simulations.\\}
-  \label{fig:stability_iterated}
-\end{figure}
 
 
 \hypertarget{bodyfat-2}{%
 \subsection{Body fat example: Part 3}\label{bodyfat-3}}
+
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_sensitivity_vs_fdr.pdf}
+  \vspace{-0.3\baselineskip}
+  \caption{Body fat example with noisy variables: Complete variable selection sensitivity against false discovery rate based on 100 bootstrap samples with one standard deviation error bars. The improvement from using the reference approach is small (except that the projpred is much better than lasso).}
+  \label{fig:bodyfat_sensitivity_vs_fdr}
+\end{figure}
+\begin{figure}[tp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_stability.pdf}
+  \vspace{-0.3\baselineskip}
+  \caption{Body fat example with noisy variables: Complete variable selection stability estimates with 0.95 confidence intervals based on 100 bootstrap samples. The improvement from using the reference approach is small (except that the projpred is much better than lasso).}
+  \label{fig:bodyfat_stability}
+\end{figure}
 
 We conclude our complete selection experiments using the body fat
 dataset one more time. As earlier we add noisy uncorrelated variables
@@ -1142,20 +1159,6 @@ and the selection by posterior credible intervals at level 90\%
 bootstrap subsamples of different sizes, going from $n=50$ up to
 $n=251$ (i.e., the full size of the data). For each condition, results
 are averaged over 100 bootstrap samples of the respective size.
-
-\begin{figure}[tp]
-  \centering
-  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_sensitivity_vs_fdr.pdf}
-  \caption{Sensitivity against false discovery rate based on 100 bootstrap samples with one standard deviation error bars.\\}
-  \label{fig:bodyfat_sensitivity_vs_fdr}
-\end{figure}
-
-\begin{figure}[tp]
-  \centering
-  \includegraphics[width=0.98\textwidth]{graphics/bodyfat_stability.pdf}
-  \caption{Stability estimates with 0.95 confidence intervals based on 100 bootstrap samples.\\}
-  \label{fig:bodyfat_stability}
-\end{figure}
 
 Figure \ref{fig:bodyfat_sensitivity_vs_fdr} shows the sensitivity
 against the false discovery rate.  In almost all of the bootstrapped
