@@ -345,14 +345,14 @@ higher and include a large number of irrelevant variables.
 %  \hline
 Data  & Method & RMSE Full & RMSE Sel & \# Sel (CPL, AVG, SD) & \# Sel noisy (CPL, AVG, SD) \\ 
   \hline
-bodyfat & projpred & 4.36 & 4.45 & (2, 2.3, 0.48) &   \\
+body fat & projpred & 4.36 & 4.45 & (2, 2.3, 0.48) &   \\
 & steplm & 4.38 & 4.46 & (7, 6, 0.94) &  \\
 \hline
 + noisy variables & projpred & 4.48 & 4.46 & (2, 2, 0)&  (0, 0, 0)  \\
 & steplm & 5.74 & 5.13 & (23, 26.2, 4.54) & (15, 18.9, 4.01) \\
 %   \hline
 \end{tabular}
-\caption{Predictive performances with original bodyfat data (first two
+\caption{Predictive performances with original body fat data (first two
   rows) and with extra noisy variables (last two rows) estimated with
   10-fold cross-validation. Abbreviations: RMSE = root mean squared error;
   Full = full model; Sel = selected submodel; 
@@ -467,7 +467,7 @@ noisy data directly.
 \hypertarget{comparison-minimal-subset}{
 \section{Minimal subset variable selection}\label{comparison-minimal-subset}}
 
-In the bodyfat example above, our two simultaneous goals were to 
+In the body fat example above, our two simultaneous goals were to 
 obtain good predictive performance and to select a smaller number of variables. 
 When the goal is to select a minimal subset of variables,
 which have similar predictive performance as the full model, we call it
@@ -514,7 +514,7 @@ The selection continues if the reduced model has an elpd score higher
   $p$-value selection strategy as in the data based Bayesian stepwise selection is used.
 
 %Same as the data based Bayesian stepwise selection, but instead of using the observed data values to fit the models at each step, it uses the target values predicted by the reference model (which is the same as in the projpred approach).
-\item steplm (without a reference model): Stepwise selection using AIC as in the bodyfat example.
+\item steplm (without a reference model): Stepwise selection using AIC as in the body fat example.
 
 \item steplm (with a reference model): The reference model is the same as for
  projpred, but only point predictions (posterior predictive means) $\hat{y}$ 
