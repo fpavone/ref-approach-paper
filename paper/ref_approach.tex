@@ -230,7 +230,7 @@ We will start with a case study that is repeatedly used throughout
 the paper to illustrate the benefits of reference models before we dive deeper
 into the theoretical reasons why reference models help in variable selection.
 
-\subsection{Bodyfat example: Part 1}
+\subsection{Body fat example: Part 1}
 \label{bodyfat-1}
 
 To motivate the further discussion and experiments, we start by a simple
@@ -244,7 +244,7 @@ The experiments are implemented in \texttt{R} \citep{Rcore2018}.
 
 The target variable of interest is the amount of body fat, which is
 obtained by a complex and expensive procedure consisting in immersing a 
-person in a water tank and carrying out different measuraments and computations. 
+person in a water tank and carrying out different measurements and computations. 
 Additionally, we have information about 13
 variables which are anthropometric measurements (e.g., height, weight
 and circumference of different body parts). The
@@ -321,7 +321,7 @@ M & projpred & Freq \% & steplm & Freq \%  \\
 The first two rows of Table \ref{tab:model_performances} show the
 predictive performances, in terms of cross-validated root mean square
 error (RMSE), of the full model and the selected models using projpred
-or steplm.  There is no signfiant difference in predictive performance
+or steplm.  There is no significant difference in predictive performance
 of the selected models by different approaches even if there is
 difference in the selected variables. This can be explained by high
 correlation between the variables and different combinations can
@@ -1226,7 +1226,7 @@ selection compared to alternative methods whether or not these methods
 make use of a reference model. That is, while the reference model is
 certainly one important aspect the projective prediction approach, it
 is not the only reason for its superior performance.  Rather, by
-incoporating the full uncertainty of the posterior predictive
+incorporating the full uncertainty of the posterior predictive
 distribution into the variable selection procedure (instead of just
 using point estimates) and using principled cross-validation method,
 projective predictions combine several desirable variables into a
