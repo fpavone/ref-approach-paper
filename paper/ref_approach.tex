@@ -163,7 +163,6 @@
 \maketitle
 \begin{abstract}
   Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods independently of whether or not they use reference models.
-% These benefits are also illustrated on a real-world example of predicting the amount of body fat for which we compare a reference model based selection method to a purely data driven approach.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -247,8 +246,6 @@ variable selection example using body fat data by \citet{johnson1996fitting}.
 We compare the projective prediction approach (\emph{projpred},
 \citet{paper:projpred}) which uses a reference model, and classic
 stepwise backward regression (\emph{steplm}).
-% \footnote{The analysis is based on \texttt{R}-notebook by Vehtari available at
-%   \url{https://avehtari.github.io/modelselection/bodyfat.html}.}.
 The experiments are implemented in \texttt{R} \citep{Rcore2018}.
 
 The target variable of interest is the amount of body fat, which is
@@ -267,7 +264,7 @@ measurements for a new person.
 level of 0.157 with AIC selection \citep{akaike1974new}, fixing
 abdomen and height to be always included in the model. For better
 comparison we do not fix any of the variables.  The steplm approach is
-carried out combining the \texttt{step} and \texttt{lm} functions in R.
+carried out combining the \texttt{step} and \texttt{lm} functions in \texttt{R}.
 
 For the selection via projpred, the Bayesian reference model includes
 all the variables using a regularised horseshoe prior~\citep{paper:rhs} on the
@@ -279,7 +276,7 @@ log-predictive density (elpd) estimated using approximate leave-one-out cross-va
 when taking into account the uncertainty in estimating the predictive
 model performance. See Appendix A for brief review of projection
 predictive approach, and papers by \citet{paper:model_selection} and
-\citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} R package \citep{Rprojpred}.
+\citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} \texttt{R} package \citep{Rprojpred}.
 
 The inclusion frequencies of each variable in the final model given 100
 bootstrap samples are shown in Figure
@@ -308,7 +305,6 @@ selected with steplm.
 \footnotesize
 \centering
 \begin{tabular}{l|lr|lr}
-%  \hline
 M & projpred & Freq \% & steplm & Freq \%  \\ 
   \hline
 1 & abdom., weight & 39 & abdom., age, forearm, height, hip, neck, thigh, wrist & 4 \\
@@ -321,7 +317,6 @@ M & projpred & Freq \% & steplm & Freq \%  \\
 8 & abdom., height, weight, wrist & 2 & abdom., age, biceps, chest, height, neck, wrist & 2 \\
 9 & abdom., age, wrist & 2 & abdom., age, biceps, chest, forearm, height, neck, thigh, wrist & 2 \\
 10 & abdom., age, height, neck, thigh, wrist & 2 & abdom., age, ankle, biceps, weight, wrist & 2 \\
-%   \hline
 \end{tabular}
 \caption{Body fat example: Bootstrap model selection frequencies from 100 bootstrap samples.  The projpred approach has less variability on which variable combinations are selected.}
 \label{tab:model_frequencies}
@@ -338,7 +333,7 @@ correlation between the variables and different combinations can
 provide similar predictive accuracy.
 
 We repeat the experiment with a modified data set by adding 84
-unrelated noisy variables so that there are 100 variables in total. 
+unrelated noisy variables, resulting in 100 variables in total. 
 The last two rows of Table
 \ref{tab:model_performances} show the cross-validated RMSE, the size
 of the selected model and the number of selected noisy variables using
@@ -352,7 +347,6 @@ higher and include a large number of irrelevant variables.
 \footnotesize
 \centering
 \begin{tabular}{ll|rrrr}
-%  \hline
 Data  & Method & RMSE Full & RMSE Sel & \# Sel (10-CV avg, sd) & \# Sel noisy (10-CV avg, sd) \\ 
   \hline
 body fat & projpred & 4.4 & 4.5 &  2\, (2.3, 0.5) &   \\
@@ -360,7 +354,6 @@ body fat & projpred & 4.4 & 4.5 &  2\, (2.3, 0.5) &   \\
 \hline
 + noisy variables & projpred & 4.5 & 4.5 &  2\, (2.0, 0.0)&  0\,\; (0,\, 0)  \\
 & steplm & 5.7 & 5.1 & 23\, (26,\; 4.5) &  15\, (19, 4) \\
-%   \hline
 \end{tabular}
 \caption{Body fat example: Predictive performances with original data (first two
   rows) and with extra noisy variables (last two rows) estimated with
@@ -416,7 +409,7 @@ as for example the supervised principal components
 models.
 
 
-\hypertarget{reference-model-approach}{%
+\hypertarget{reference-model-approach}{
 \subsection{Why the reference model helps}\label{reference-model-approach}}
  
 A good predictive model is able to filter part of the noise present in
@@ -502,7 +495,7 @@ forward selection with and without a reference model, and maximum
 likelihood stepwise forward selection with and without a reference
 model (steplm). The following is a summary of the implementation of the compared methods:
 \begin{itemize}
-\item projpred: The projective prediction approach is used. 
+\item \textbf{projpred}: the projective prediction approach is used. 
   The reference model is a Bayesian linear regression
   model using the first five supervised principal components \citep{piironen2018} as predictors
   and the full posterior predictive distribution as the basis of the projection.   
@@ -511,7 +504,7 @@ model (steplm). The following is a summary of the implementation of the compared
   until the predictive performance is close to the predictive
   performance of the reference model. See more details in Appendix A.
   
-\item Bayesian stepwise selection (without a reference model): At each step, the fitted model
+\item \textbf{Bayesian stepwise selection (without a reference model)}: at each step, the fitted model
  is a Bayesian linear regression using the regularised horseshoe
   prior and the variable excluded is the one with the highest Bayesian
   $p$-value defined as $\text{min}\{P(\theta\leq0 \; | \; D),P(\theta>0 \; | \; D)\}$,
@@ -519,13 +512,12 @@ model (steplm). The following is a summary of the implementation of the compared
 The selection continues if the reduced model has an elpd score higher 
 (i.e., better) than the current model.
 
-\item Bayesian stepwise selection (with a reference model): The reference model is the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ are used to replace the target variable $y$. The same Bayesian
+\item \textbf{Bayesian stepwise selection (with a reference model)}: the reference model is the same as for projpred, but only point predictions (posterior predictive means) $\hat{y}$ are used to replace the target variable $y$. The same Bayesian
   $p$-value selection strategy as in the data based Bayesian stepwise selection is used.
 
-%Same as the data based Bayesian stepwise selection, but instead of using the observed data values to fit the models at each step, it uses the target values predicted by the reference model (which is the same as in the projpred approach).
-\item steplm (without a reference model): Stepwise selection using AIC as in the body fat example.
+\item \textbf{steplm (without a reference model)}: stepwise selection using AIC as in the body fat example.
 
-\item steplm (with a reference model): The reference model is the same as for
+\item \textbf{steplm (with a reference model)}: the reference model is the same as for
  projpred, but only point predictions (posterior predictive means) $\hat{y}$ 
  are used to replace the target variable $y$. The same AIC selection strategy 
  as in the data based steplm is used.
@@ -564,8 +556,7 @@ decision theoretical formulation which 1) takes into account the full
 predictive distribution and not just point estimate and 2) projects
 the reference model posterior to the submodel instead of using a
 simple refit of submodels.
-% TODO: Bigger and more distinctive symbols in figures
-% label order: steplm, bayes.step, projpred
+
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr_parallel.pdf}
@@ -573,8 +564,7 @@ simple refit of submodels.
   \caption{Simulation study 1: Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars. The projpred approach has the smallest RMSE and false discovery ratio.}
   \label{fig:rmse_vs_fdr}
 \end{figure}
-% TODO: Bigger and more distinctive symbols in figures
-% TODO: order steplm, bayes.step, projpred
+
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/entropy_parallel.pdf}
@@ -584,7 +574,7 @@ simple refit of submodels.
 \end{figure}
 
 
-\hypertarget{bodyfat-2}{%
+\hypertarget{bodyfat-2}{
 \subsection{Body fat example: Part 2}\label{bodyfat-2}}
 
 Here we repeat the selection of Section \ref{bodyfat-1} via
@@ -615,7 +605,6 @@ prediction approach (see results of Section \ref{bodyfat-1}).
 \footnotesize
 \centering
 \begin{tabular}{l|rr}
-%  \hline
 Method & RMSE & Selected noisy \\ 
   \hline
 Stepwise selection & 6.9 (0.7) & 48 (7)    \\
@@ -625,8 +614,6 @@ Reference model + Stepwise selection & 4.7 (0.5) & 25 (7)   \\
 \label{tab:step_refvsdata}
 \end{table}
 
-% \hypertarget{comparison}{%
-%   \section{A comparison in the normal means problem framework}\label{comparison}}
 \section{Complete variable selection}\label{comparison-complete-subset}
 \label{complete-selection}
 
@@ -648,8 +635,6 @@ variables over the total number of relevant variables). We also provide
 a comparison of the stability of the selection by means of a stability
 measure proposed by \citet{paper:stability}, which goes from 0 to 1 and a higher value 
 means a more stable selection. 
-
-%Table \ref{tab:comparison} summarises the methods used in the numerical experiments.
 
 \subsection{Iterative projections}
 
@@ -690,7 +675,6 @@ In our experiments we chose the default value used in the \texttt{projpred}
  \While{$F\neq\{\emptyset\}$}{
    projection.HeuristicSearch() \;
    projection.elpdEstimate() \;
-%:
    $S=\text{min}\{\text{sub}: P(\text{elpd}_{\text{sub}}-\text{elpd}_{\text{base}}>0)\geq\alpha)$\} \;
   
   \eIf{$S=\{\emptyset\}$}{
@@ -714,95 +698,6 @@ The comparison with iterative lasso can help to disentangle the effects
 of the iterative procedure and the usage of a reference model in complete feature selection.
 
 \subsection{Alternative complete variable selection methods}
-
-% Many Bayesian approaches for complete variable selection first fit a
-% Bayesian regression model using some sparsifying prior on the
-% regression coefficients, for example, as discussed in
-% \cite{paper:dirichlet_laplace}, \cite{bhadra2017horseshoe+} and
-% \cite{johnstone2004needles}.  In our experiments, we include the
-% Dirichlet-Laplace \cite[DL;][]{paper:dirichlet_laplace} prior and the
-% regularised horseshoe (RHS) prior \citep{paper:rhs}, which in our experience
-% scales better to higher number of variables as compared to other
-% horseshoe-like priors.
-% \note{Aki: How this paragraph connects to the next paragraph?}
-
-% If these priors have continuous support, as is the case for the DL and
-% horseshoe-like priors \citep{paper:hs,bhadra2017horseshoe+,paper:rhs},
-% there is no canonical way to complete the selection since the
-% posterior probability of an exactly zero signal is always
-% zero. Whereas \cite{paper:dirichlet_laplace} used k-means clustering
-% over the posterior samples to perform the actual selection,
-% \cite{bhadra2017horseshoe+} just focused their analysis on the
-% obtained shrinkage and the correct estimation of the sparse signals
-% without any actual selection.
-
-% For the Bayesian regression
-% models with these priors, we compare the posterior shrinkage and the
-% correct estimation of the sparse signals with and without using a
-% reference model as a noise filter. For this purpose, we consider the
-% average SSE (sum of square errors) and the average SESE (sum of
-% expected square errors) as quantities measuring estimation
-% accuracy. They are defined as \
-% \begin{align}
-% \text{SSE}&=\frac{1}{n-3}\sum_{j=1}^{p}(\hat{\theta}_{j} - \theta^{0}_{j})^{2} \label{eq:SSE} \\
-% \text{SESE}&=\frac{1}{n-3}\sum_{j=1}^{p}\int_{\mathbb{R}}(\theta_{j}-\theta^{0}_{j})^{2}p(\theta_{j}|z_{1},\ldots,z_{p})d\theta_{j} \\
-% &=\frac{1}{n-3}\sum_{j=1}^{p}\mathbb{E}_{\theta_{j}}[(\theta_{j}-\theta^{0}_{j})^{2}|z_{1},\ldots,z_{p}], \label{eq:SESE}
-% \end{align}
-% where $\theta_{j}^{0}=\sqrt{n-3}\,T_{F}(\rho_{j})$ is the true value,
-% $\hat{\theta}_{j}$ is the posterior median of each parameter
-% $\theta_{j}$. We divide the errors by $(n-3)$ to have quantities
-% independent of the number of statistical units.  The SESE takes the
-% posterior uncertainty in account and thus also the shrinkage of the
-% posterior distributions, whereas the SSE only measures the bias in the
-% point estimates.  Any (sensible) point estimate could be used to
-% compute the SSE but here we follow \cite{paper:dirichlet_laplace} and
-% use the posterior median. The results that we show later on in Section
-% \ref{shrinkage-signal} are not sensitive to the choice of this point
-% estimate.
-
-% For shrinkage priors, one central aspect is the amount of shrinkage
-% they actually impose on the relevant and irrelevant variables. Ideally,
-% the irrelevant variables should be completely shrunk to zero while the
-% relevant variables should not be shrunk at all. The amount of shrinkage
-% can be quantified by the shrinkage factor $\kappa_{j}$ for each
-% parameter $\theta_{j}$ ranging from $0$ (no shrinkage) to $1$
-% (complete shrinkage). For model \eqref{eq:normal_means_problem2} with
-% a hierarchical shrinkage prior of the type
-% \begin{align}
-% Z_{j}|&\theta_{j}\overset{ind}{\sim}N(\theta_{j},1) \qquad j=1,\ldots,p \\
-% &\theta_{j}|\tau,\nu_{j}\overset{ind}{\sim}N(0,\nu_{j}^{2}\tau^{2})
-% \end{align}
-% the shrinkage factor $\kappa_{j}$ is defined as
-% \begin{equation}
-% \kappa_{j}=\frac{1}{1+\tau^{2}\nu_{j}^{2}}.
-% \end{equation}
-% \
-% For RHS and DL priors we have
-% \begin{equation}
-% \kappa_{j}^{\text{RHS}}=\frac{1}{1+\tau^{2}\lambda_{j}^{2}}, \qquad \kappa_{j}^{\text{DL}}=\frac{1}{1+\psi\phi_{j}^{2}\tau^{2}}.
-% \end{equation}
-% In the left hand-side expression, $\tau$ and $\lambda_{j}$ represent
-% the global and local shrinkage parameters of the regularised horseshoe
-% prior \cite[for further details see][]{paper:rhs}, whereas on the
-% right hand-side, $\psi\phi_{j}^{2}\tau^{2}$ is the variance term of
-% the Dirichlet-Laplace prior of parameter $\theta_{j}$ following the
-% notation of \cite{paper:dirichlet_laplace}. We use the posterior mean
-% of $\kappa_{j}$ as a point estimate.
-
-%Within the set of complete selection procedures, we consider three
-%Bayesian methods.  \cite{johnstone2004needles} use a spike-and-slab
-%type prior given by a mixture of a delta distribution in zero and a
-%heavy-tailed distribution \cite[see
-%also][]{paper:spike_slab_mitchell}. When the latter is a Laplace
-%distribution, they show an interesting thresholding property of the
-%median estimator and, based on this observation, present a complete
-%selection procedure using their prior. We refer to this method as
-%\emph{EB.med}. Further, we use a method to control for the local false
-%discovery rate (\emph{loc.fdr}) as described in \cite{paper:efron,
-%  efron2012large}. Finally, we device a simple selection procedure
-%based on posterior credible intervals using the regularised horseshoe
-%prior in which we select variables whose 90\% credible intervals
-%excludes zero (\emph{ci.90}) \note{Reference for this?}.
 
 We consider three alternative complete selection methods:
  the control of the local
@@ -858,24 +753,6 @@ That is, in the data condition, we apply the method on the original
 data $y$ while, in the reference model condition, we replace $y$ by
 their mean predictions $\hat{y}$ based on the reference model.
   
-
-%\note{Aki: ``Type: Complete selection'' doesn't make sense in the table. Maybe we need to discuss when to use the term complete selection and what is the alternative title for this section.}
-
-% \begin{table}[tp]
-% \scriptsize
-% \centering
-% \begin{tabular}{l|l|l|l}
-% Method & Abbreviation & Type & Quantities of interest \\ 
-%  \hline
-% Regularised Horseshoe & RHS & Shrinkage prior & SSE, SESE, $\kappa$ \\
-% Dirichlet-Laplace & DL & Shrinkage prior & SSE, SESE, $\kappa$ \\
-% Local false discovery rate & loc.fdr & Complete selection & fdr, sensitivity, stability \\
-% Median estimator & EB.med & Complete selection & fdr, sensitivity, stability \\
-% Credible intervals & ci.90 & Complete selection & fdr, sensitivity, stability \\
-% \end{tabular}
-% \caption{Summary of the shrinkage and selection methods used in the numerical experiments.}
-% \label{tab:comparison}
-% \end{table}
 
 \subsection{Simulation study 2}
 \label{simulations}
@@ -959,104 +836,6 @@ sensitive to the specific choice of the screening threshold, yet a more
 principled approach would be to use cross-validation to select the
 threshold as done by \citet{paper:projpred}.
 
-% The normal means problem formulation is obtained as explained in
-% Section \ref{comparison} by applying the Fisher-z-transformation to
-% the empirical correlations. We label the reference approach as
-% ``ref'', which consists of using the reference model on top of the
-% computation of the z-values, and the standard approach based on the
-% observed data simply as ``data''. In Section \ref{shrinkage-signal},
-% we analyse the different shrinkage and signal estimates in the context
-% of the full Bayes estimation methods by comparing the ref and data
-% approach. In Section \ref{complete-selection}, we present results for
-% the complete selection procedures.
-
-% \hypertarget{shrinkage-signal}{%
-% \subsubsection{Shrinkage and signal analysis}\label{shrinkage-signal}}
-% In the framework of fully Bayesian estimation methods, we analyse the
-% effect of the reference model using two continuous hierarchical
-% shrinkage priors: the Dirichlet-Laplace
-% \citep{paper:dirichlet_laplace} and the regularised horseshoe prior
-% \citep{paper:rhs}.
-% %
-% For the Dirichlet hyperparameter of the Dirichlet-Laplace prior, we
-% use an uniform prior on the interval $(1/p,1/2)$. For the regularised
-% horseshoe prior, we follow the recommendations provided in
-% \cite{paper:rhs} by setting the prior guess of the number of relevant
-% variables to one in order to achieve the highest possible
-% shrinkage. The results are not sensitive with respect to the specific
-% choice.  \ Since, as explained at the start of Section
-% \ref{comparison}, continuous priors usually do not provide an
-% automatic selection procedure, we study the amount of shrinkage and
-% the bias of the posterior medians looking at the SESE and the SSE (see
-% definitions \eqref{eq:SSE} and \eqref{eq:SESE}), together with the
-% posterior mean of the shrinkage factors.
-
-% \begin{figure}[tp]
-%   \centering
-%   \includegraphics[width=0.98\textwidth]{graphics/post_int.pdf}
-%   \caption{Posterior intervals for the parameters of the normal means
-%     problem ($n=50$, $\rho=0.3$) using the regularised horseshoe
-%     prior. Posterior means and one standard deviation intervals are
-%     depicted. Relevant and non-relevant variables are displayed in red
-%     and in blue respectively. Horizontal dashed lines corresponds to
-%     the true value of the mean for the relevant variables.\\}
-%   \label{fig:posterior_intervals}
-% \end{figure}
-
-% Figure \ref{fig:posterior_intervals} shows an example of posterior
-% distributions for the model \eqref{eq:normal_means_problem2} using the
-% regularised horseshoe prior with the data approach on the left and the
-% ref approach on the right-hand side. It is evident how the reference
-% model helps in tearing apart the signal from the noise, resulting in
-% less biased estimates and clearer separation between relevant and
-% irrelevant variables. This is quantified in Figure \ref{fig:SESE_SSE}
-% where average SESE and SSE are depicted based on 100 simulations. We
-% observe that the reference approach (in orange) has a clearly lower
-% estimate for both the SESE and the SSE. As $n$ and $\rho$ increase,
-% the amount of error diminishes, as expected, due to a larger amount of
-% information of the relevance of each variable provided by the
-% data. The two priors (RHS and DL) seem to achieve similar results
-% under all conditions.
-
-% \begin{figure}[tp]
-%   \centering
-%   \includegraphics[width=0.98\textwidth]{graphics/SESE_SSE.pdf}
-%   \caption{Average SESE and SSE with one standard deviation intervals based on 100 simulations.\\}
-%   \label{fig:SESE_SSE}
-% \end{figure}
-
-% Figure \ref{fig:k} shows the posterior means for the shrinkage factors
-% of each parameter using the regularised horseshoe prior, averaged over
-% 100 data simulations. Relevant and non-relevant variables are
-% highlighted in red and blue respectively. The ideal shrinkage would be
-% $\kappa=0$ when the parameter is a signal and $\kappa=1$ when it is
-% noise. The shrinkage factors using the data and reference approach are
-% depicted on the y-axis and on the x-axis respectively. If the
-% reference model did not make any difference, we would expect the
-% points to lie on the diagonal. For the non-relevant variables points
-% are on the diagonal on average for all the simulated scenarios, which
-% implies that their shrinkage was not improved by the reference
-% approach. For the relevant variables, the points are always located
-% under the diagonal, which means that the reference model helps and
-% true signals are shrunk less. This benefit is roughly proportional to
-% the difficulty of the problem, that is, the benefit increases with
-% lower correlations and a smaller number of observations. The perfect
-% distinction of the two clusters of variables (relevant and
-% non-relevant) observable on both the marginal distributions of the
-% shrinkage factors is due to the averaging over the 100 data
-% simulations. In a single data realisation, there is more noise and the
-% cluster are closer and overlapping. The results for the
-% Dirichlet-Laplace prior are very similar.
-
-% \begin{figure}[tp]
-%   \centering
-%   \includegraphics[width=0.98\textwidth]{graphics/k_RHS.pdf}
-%   \caption{Average posterior mean values for the shrinkage factors
-%     using the regularised horseshoe prior based on 100
-%     simulations. Relevant and non-relevant variables are displayed in
-%     red and blue respectively.\\}
-%   \label{fig:k}
-% \end{figure}
 \begin{figure}[tp]
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr_iterated.pdf}
@@ -1093,13 +872,6 @@ selection, yet the main source of poor performance could well be the
 miscalibration of the uncertainty of the predictive utility score for
 misspecified models with cross-validation \citep{bengio2004no}.
 
-
-%\begin{figure}[tp]
-%  \centering
-%  \includegraphics[width=0.98\textwidth]{graphics/sensitivity_vs_fdr.pdf}
-%  \caption{Sensitivity against false discovery rate based on 100 data simulations.\\}
-%  \label{fig:sensitivity_vs_fdr}
-%\end{figure}
 
 Figure \ref{fig:stability_iterated} shows the estimates of the stability
 measure proposed by \cite{paper:stability} with 0.95 confidence
@@ -1192,7 +964,7 @@ and as we needed to average results over a lot of repetitions per
 simulation condition, we preferred such a comparably simple and
 computationally fast reference model.
 
-\hypertarget{conclusion}{%
+\hypertarget{conclusion}{
 \section{Conclusion}\label{conclusion}}
 
 In this paper, we demonstrated the benefits of using a reference model
@@ -1224,9 +996,6 @@ for example, the projective prediction approach
 \citep{paper:projpred}. Note that one of the main challenges in many
 real world application will consist in devising a sensible reference
 model itself and assessing its predictive performance.
-% We did provide
-% a generic way to build simple reference models, but those may not
-% necessarily be appropriate in all situations.
 To build good predictive reference models, which are specifically
 tuned to the data and problem at hand, we recommend them to be
 developed using a robust Bayesian modelling workflow, for instance, as
@@ -1260,7 +1029,7 @@ selection problems.
 All Bayesian models in this paper have been implemented in
 the probabilistic programming language \texttt{Stan}
 \citep{paper:stan} and fit via dynamic Hamiltonian Monte Carlo
-\citep{hoffman2014no,betancourt2017conceptual}, through the R-packages 
+\citep{hoffman2014no,betancourt2017conceptual}, through the \texttt{R}-packages 
 \texttt{rstan} \citep{Rrstan} and \texttt{rstanarm} \citep{Rrstanarm}.
 Graphics elaborations have been done using \texttt{ggplot2} \citep{Rggplot2}
 and the \texttt{tidyverse} framework \citep{Rtidyverse}.
@@ -1282,16 +1051,6 @@ Science-IT project.
 
 \appendix
 
-%\hypertarget{ap:shrinkage_signal}{%
-%\section{Appendix: Shrinkage factors with Dirichlet-Laplace prior}\label{ap:shrinkage_signal}}
-%Figure \ref{fig:k_DL} shows the posterior mean shrinkage factors using the Dirichlet-Laplace prior for the normal means problem in the simulated data study of Section \ref{comparison}. The result is qualitatively equal to the regularised horseshoe prior's one (see Figure \ref{fig:k}). 
-
-%\begin{figure}[tp]
-%  \centering
-%  \includegraphics[width=0.98\textwidth]{graphics/k_DL.pdf}
-%  \caption{Average posterior mean values for the shrinkage factors using the Dirichlet-Laplace prior based on 100 simulations. Respectively in red and in blue relevant and non-relevant variables.\\}
-%  \label{fig:k_DL}
-%\end{figure}
 
 \section*{Appendix}
 
