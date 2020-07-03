@@ -166,26 +166,6 @@
   Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods independently of whether or not they use reference models.
 \end{abstract}
 
-\vspace{2cm}
-
-\textbf{Keywords}: variable selection, projection predictive approach, reference model
-
-\textbf{Corresponding author}: Federico Pavone (\texttt{federicopavone01@gmail.com})
-
-\textbf{Declarations}:
-\begin{itemize}
-\item \textbf{Funding}: Academy of Finland (grants 298742, and 313122), Finnish Center for Artificial Intelligence and Technology Industries of Finland Centennial Foundation (grant 70007503; Artificial Intelligence for Research and Development)
-
-\item \textbf{Conflicts of interest/Competing interests}: no conflicts of interest
-
-\item \textbf{Availability of data and material}: data and material available at \url{https://github.com/fpavone/ref-approach-paper}
-
-\item \textbf{Code availability}: code available at \url{https://github.com/fpavone/ref-approach-paper}
-\end{itemize}
-
-
-\newpage
-
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
@@ -242,7 +222,15 @@ Whatever the terminology or applied statistical framework, reference
 models offer a powerful approach to improving variable selection as we
 will demonstrate in the present paper.
 
-This paper is structured as follows. In Section
+The main contributions of our work are:
+
+\begin{itemize}
+\item to show a simple and basic way to frame any variable selection method in the reference model approach,
+\item to do a structured comparison for variable selection methods using or not a reference model, both for the the complete and the minimal subset selection,
+\item to bring evidence in supporting the projection predictive approach as a principled way to use the reference model.
+\end{itemize}
+
+The paper is structured as follows. In Section
 \ref{ref-intro}, we review the concept of the reference
 model, its benefits with examples and how it can be used as a filter
 on data in a simple way. In Section \ref{comparison-minimal-subset} and 
