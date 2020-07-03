@@ -1,0 +1,185 @@
+\documentclass[a4]{article}
+
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage{newtxtext} % times
+\usepackage[scaled=.95]{cabin} % sans serif
+\usepackage[varqu,varl]{inconsolata} % typewriter
+\usepackage{amsmath}
+\usepackage[varg]{newtxmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\usepackage{algorithm2e}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={The reference model approach in variable selection},
+            pdfauthor={Federico Pavone, Juho Piironen, Paul-Christian B\"{u}rkner, Aki Vehtari},
+            pdfkeywords={keywords},
+            pdfborder={0 0 0},
+            breaklinks=true,
+            colorlinks=true,
+            linkcolor=black,
+            citecolor=RoyalBlue,
+            filecolor=black,
+            urlcolor=RoyalBlue,
+          }
+\urlstyle{same}  % don't use monospace font for urls
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=american]{babel}
+\else
+  \usepackage{polyglossia}
+  \setmainlanguage[variant=american]{english}
+\fi
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\usepackage{placeins}
+\usepackage{graphicx,grffile,subcaption}
+\textwidth 6.0 true in
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{3}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+   
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table,dvipsnames]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage{textcomp}
+\usepackage{graphicx,pdflscape}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{supertabular}
+%\usepackage{booktabs,caption,fixltx2e}
+\usepackage{booktabs,fixltx2e}
+\usepackage[font={small,it}]{caption}
+\usepackage{tcolorbox}
+\usepackage{paralist}
+\usepackage{multicol}
+\setcitestyle{round}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\DeclareMathOperator{\Cor}{Cor}
+\DeclareMathOperator{\N}{N}
+\newcommand{\note}[1]{\textcolor{red}{#1}}
+
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\floatpagefraction}{0.8}
+
+\title{Using reference models in variable selection 
+	\vspace{.1in}}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Federico Pavone, Juho Piironen, Paul-Christian B\"{u}rkner and Aki Vehtari}
+    
+    \author{
+      Federico Pavone\footnote{Department of Computer Science, Aalto University, Finland.}\, \footnote{Department of Decision Sciences, Bocconi University, Italy.}%$\,$\footnote{Correspondence concerning this article should be addressed to Federico Pavone, Department of Decision Sciences, Bocconi University, Via R\"{o}ntgen 1, 20136 Milano, Italy. E-mail: federicopavone01@gmail.com.}
+      \,,\,
+  Juho Piironen$^*$,\,
+  Paul-Christian B\"{u}rkner$^*$
+  and Aki Vehtari$^*$
+  }
+	 
+    
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{\today}
+    \date{\today}
+%    \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods independently of whether or not they use reference models.
+\end{abstract}
+
+\vspace{2cm}
+
+\textbf{Keywords}: variable selection, projection predictive approach, reference model
+
+\textbf{Corresponding author}: Federico Pavone (\texttt{federicopavone01@gmail.com})
+
+\textbf{Declarations}:
+\begin{itemize}
+\item \textbf{Funding}: Academy of Finland (grants 298742, and 313122), Finnish Center for Artificial Intelligence and Technology Industries of Finland Centennial Foundation (grant 70007503; Artificial Intelligence for Research and Development)
+
+\item \textbf{Conflicts of interest/Competing interests}: no conflicts of interest
+
+\item \textbf{Availability of data and material}: data and material available at \url{https://github.com/fpavone/ref-approach-paper}
+
+\item \textbf{Code availability}: code available at \url{https://github.com/fpavone/ref-approach-paper}
+\end{itemize}
+
+\end{document}
