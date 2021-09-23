@@ -1,0 +1,143 @@
+% LaTeX rebuttal letter example. 
+% 
+% Copyright 2019 Friedemann Zenke, fzenke.net
+%
+% Based on examples by Dirk Eddelbuettel, Fran and others from 
+% https://tex.stackexchange.com/questions/2317/latex-style-or-macro-for-detailed-response-to-referee-report
+% 
+% Licensed under cc by-sa 3.0 with attribution required.
+% See https://creativecommons.org/licenses/by-sa/3.0/
+% and https://stackoverflow.blog/2009/06/25/attribution-required/
+
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+%\usepackage{lipsum} % to generate some filler text
+\usepackage{fullpage}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+
+% import Eq and Section references from the main manuscript where needed
+% \usepackage{xr}
+% \externaldocument{manuscript}
+
+% package needed for optional arguments
+\usepackage{xifthen}
+% define counters for reviewers and their points
+\newcounter{reviewer}
+\setcounter{reviewer}{0}
+\newcounter{point}[reviewer]
+\setcounter{point}{0}
+
+% This refines the format of how the reviewer/point reference will appear.
+\renewcommand{\thepoint}{P\,\thereviewer.\arabic{point}} 
+
+% command declarations for reviewer points and our responses
+\newcommand{\reviewersection}{\stepcounter{reviewer} \bigskip \hrule
+                  \section*{Reviewer \thereviewer}}
+
+\newenvironment{point}
+   {\refstepcounter{point} \bigskip \noindent {\textbf{Reviewer~Point~\thepoint} } ---\ }
+   {\par }
+
+\newcommand{\shortpoint}[1]{\refstepcounter{point}  \bigskip \noindent 
+	{\textbf{Reviewer~Point~\thepoint} } ---~#1\par }
+
+\newenvironment{reply}
+   {\medskip \noindent \begin{sf}\textbf{Reply}:\  }
+   {\medskip \end{sf}}
+
+\newcommand{\shortreply}[2][]{\medskip \noindent \begin{sf}\textbf{Reply}:\  #2
+	\ifthenelse{\equal{#1}{}}{}{ \hfill \footnotesize (#1)}%
+	\medskip \end{sf}}
+
+\newcommand{\todo}{\subsection*{\textcolor{red}{To do (comment out when done)}:}}
+
+\newcommand{\mm}[1]{\textcolor{red}{[M\aa ns: #1]}}
+\newcommand{\av}[1]{\textcolor{blue}{[Aki: #1]}}
+\newcommand{\ami}[1]{\textcolor{brown}{[Alonzo: #1]}}
+\newcommand{\ts}[1]{\textcolor{purple}{[Tuomas: #1]}}
+
+\begin{document}
+
+\section*{Response to the reviewers}
+% General intro text goes here
+We thank the editor and the reviewers for careful review of the paper and the many useful comments.
+\bigskip 
+\hrule
+\medskip 
+\section*{Editor}
+
+\paragraph{Editor comment}
+I regret to inform you that the reviewers have raised serious concerns, and therefore your paper cannot be accepted for publication in Communications in Statistics – Theory and Methods. However since the reviewers do find some merit in the paper, I would be willing to reconsider if you wish to undertake major revisions and re-submit, addressing the referees' concerns.
+
+\paragraph{Reply}
+
+We thank the editor and the reviewer for the careful review of the paper and many valuable comments. We have addressed the discussed concerns and made changes to the manuscript accordingly. In particular, we have discussed the paper's practical implications and highlighted both the problem setting and the main contributions.
+
+%\todo
+%\begin{description}
+%    \item [Mans] Nothing
+%\end{description}
+
+% Let's start point-by-point with Reviewer 1
+\reviewersection
+
+% Point one description 
+\begin{point}
+English language needs careful editing.
+\end{point}
+
+\begin{reply}
+Thank you for the feedback. We have addressed now gone through the text multiple times and used automatic spell and grammar checkers. We are not native speakers, so please feel free to point out if you find further problems with the text.
+\end{reply}
+
+
+%\todo
+%\begin{description}
+%    \item[Mans] Clarified that we present first time how this problem should be approached in the Bayesian context.
+%\end{description}
+
+\begin{point}
+The specific case considered in the article needs to be elaborated on in terms of its practical meaning and importance. Giving a solution for a specific case can be useful if that case has some practical importance. Otherwise, anyone can create solutions for many different cases.
+\end{point}
+
+\begin{reply}
+We realise that the motivation of the work may be unclear. We aim to show one feasible (albeit simple) problem setting to show that it is possible to derive an unbiased variance estimator for the popular way of analysing the uncertainty in LOO-CV. Previous literature (e.g. Bengio and Grandvalet, 2004) indicates that this is not possible in general. To the best of our knowledge, we do not know anyone who has shown that it is possible to derive an unbiased estimator if one also considers the actual problem setting and model. This is an important advancement in the study for understanding the uncertainty in LOO-CV estimation in practice and can further encourage new work on variance estimation in Bayesian LOO-CV.
+
+We now see that this has not been clear enough in the paper. We have clarified this both in the introduction and the discussion.
+\end{reply}
+
+
+\begin{point}
+It is noted that there is no need for the observations to be identically distributed. We should see the impact of this on the likelihood in Eq. (6).
+\end{point}
+
+\begin{reply}
+We see that the analysis description may be a bit misleading considering the two-level perspective on the variable $y$: the model level and the true data generating process level. In the latter, we apply only weak assumption on the distribution $p_\text{true}(y)$, and in particular, do not need to assume identically distributed observations. At the model level, the Bayesian normal model does make this assumption. Equation (6) defines the likelihood of the model. Based on the feedback, we clarified this in the text.
+\end{reply}
+
+\begin{point}
+You have a normal hyper-prior on the mean $\theta$, $\sigma_{m}^{2}$ and $\sigma_{0}^{2}$ are fixed. Specification of these variances needs elaboration.
+\end{point}
+
+\begin{reply}
+Thank you for this suggestion. We are a little unsure about what the reviewer asks for here. We added the following descriptive explanation on the effects of the parameters: 
+
+"The fixed data variance parameter $\sigma_\mathrm{m}^2$ reflects how the model considers the magnitude of the variability of the data. A fixed $\sigma_\mathrm{m}^2$ is mainly chosen to simplify derivations. The fixed prior variance parameter $\sigma_0^2$ reflects the prior belief of the magnitude of the variability of the unknown mean parameter. The fixed model parameters $\sigma_\mathrm{m}^2$ and $\sigma_0^2$ can be chosen freely." 
+
+In addition, we emphasise that the model may be miss-specified so that it represents the true data generating mechanism poorly.
+\end{reply}
+
+\begin{point}
+The settings in the numerical example need further explanation. Why are those specific numbers selected? The example runs are too specific and cannot be generalised. This makes the article too focused on some specific cases. Then, the importance of dealing with these specific cases have to be articulated clearly.
+\end{point}
+
+\begin{reply}
+Thank you for the relevant comment. We understand that the motivation of the experiments can be a bit confusing. The simulation experiment has two purposes. First, illustrating that the theory is correct and, second, show the naive estimator can be both upward and negatively biased. 
+
+The experiments apply three problem settings covering different, but feasible, scenarios including both well-fitting and bad-fitting data. We have now clarified the selection of the problem settings in the text. It is clear that, as the true data generating mechanism is quite unrestricted, there are arbitrarily many possible experiment setups. We believe that these applied setups are sufficient for illustrative purposes.
+
+We believe that your comment calls for this to be written out more clearly in the paper. We have tried to clarify this further in the paper.
+\end{reply}
+\end{document}
