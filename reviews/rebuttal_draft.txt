@@ -30,6 +30,11 @@ We should clarify these issues and resbumit without better approach. I would ass
 
 For the last comment I would answer that, of course the performance of the variable selection depends on the quality of the reference model. If the reference model is, e.g., without any covariates, there is no useful information to learn. Stability of Bayesian inference wrt priors have been extensively studied elsewhere and the prior sensitivity checking is natural part of the workflow for building a reference model (cite Bayesian workflow, priorsense paper, and something else)
 
+
+Related to point 1)
+
+The reference model doesn't need to be Bayesian. The results are better with better model. The sensitivity of the Bayesian models to choice of priors is well studied and there exists well developed workflows for doing prior sensitivity analysis and other model checking (see, e.g. Gelman et al, 2020). In this paper the point is not the Bayesian workflow, but to analysis given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be imporvef by relacing the data with filtered prediction from the reference model. We have added clarification that the reference model approach requires a sensible model, so that for example a model predicting constant output or a model predicting uncorrelated noise are not useful reference models.
+
 Reviewer #3
 
 They also comment that " the motivation of the study in relation to
@@ -137,4 +142,25 @@ fact that if each tail has 16% mass, then the central interval has 68%
 mass which corresponds to plus minus one std assuming normal
 distribution (i.e. alpha=0.16 corresponds to one std away from mean,
 thus it's not that magical).
+
+***23 September 2021***
+
+We have added clarification that the reference model approach requires a sensible model, so that for example a model predicting constant output or a model predicting uncorrelated noise are not useful reference models. A sensible reference model doesn't need to be Bayesian. The results are better with better reference models. The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking (see, e.g. Gelman et al, 2020). In this paper the point is not the Bayesian workflow, but to analysis given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be improved by replacing the data with filtered prediction from the reference model. The reference models used in the examples are using widely accepted weakly informative priors and there is no prior sensitivity issues. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
+
+MLE is more unstable than Bayesian approach. The Bayesian approach gets the improved stability both from integration over the parameter space (instead of using a point estimate) and can further be improved by using even just weakly informative priors. We have added references that discuss merits of Bayesian approach compared to MLE. Although we think Bayesian reference models are better choice, we also assume that in large n, small p case there will be not much difference to using MLE to construct the reference model, and we believe that in what ever way the reference model has been built, if it’s a good predictive model, it will be a useful reference model.
+
+The projection predictive variable selection and its properties have been extensively discussed in Piironen & Vehtari, and Piironen, Paasiniemi & Vehtari, and we refer to them for the detailed discussion on the uncertainty related to search paths. Paasinemi (2018) https://aaltodoc.aalto.fi/handle/123456789/33657 provides illustrations how this uncertainty can be communicated to the users. When there are correlating variables that have exactly the same amount of information, the minimal set is not unique. In this paper, we focused on the average performance of the minimal set, but when analysing a single dataset, we recommend the approaches presented in Paasinemi (2018) to analyse alternative possible variable sets.
+
+We assume that all models are wrong. Analysing model misspecification is well studied in Bayesian literature and there are plenty of methods available for model checking (see, e.g. Gelman et al, 2020). The reference model approach assumes we have first made the best possible model, following all the best practices for Bayesian model building (Gelman et al, 2020). Even a misspecifed model that would introduce some bias can reduce the variance so that the variable selection is improved. 
+
+See Piironen, Paasiniemi & Vehtari,
+
+The usual Bayesian workflow (Gelman et al, 2020) states that if there is uncertainty about which model then we integrate over the model space or create a continuous super model that includes the alternative models as special cases.
+
+
+We used AIC because reference X was using AIC. The goal of the paper was not to compare all possible information criteria. We made choices to keep the paper within reasonable length. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
+
+> M Complete approach, it is usually consistent.
+
+It seems your definition of M-complete doesn’t match with definition of Bernardo & Smith (1994) we are using.
 
