@@ -1,0 +1,12 @@
+
+    Reviewer #1: See attached file
+
+    Reviewer #3: In this article, the authors focus on using a reference model to enhance the accuracy of model selection procedures when the predictive capability of the modelling is of main interest. The problem is motivated through some numerical examples and simulations, and the benefits of using a reference model are articulated using numerical results and comparisons. The focus of this article is interesting, and the results of the study are potentially useful in practice. I have the following comments for authors to address: 
+
+    1. Although main articles related to the use of the reference model approach in the model selection are mentioned, the motivation of the study in relation to the literature is missing in the Introduction. The given discussion of the existing literature supports the idea that the reference models have been used in Bayesian and non-Bayesian contexts. However, why do we need the proposed approach in the article is missing. Full motivation is given in Section 2. However, it needs to be briefly mentioned in the Introduction as well to motivate the reader to keep reading. In addition, instead of pointing to the references, please give a brief critique of them.
+    2. Please include the computational cost of compared approaches in Section 2.1. 
+    3. Please add a brief summary of the results you obtained in Section 3 and the main message you infer from these results before moving onto Section 4.
+    4. Please mention the availability of the R codes to reporoduce the results under each section as well.
+
+    Associate Editor: Please note the strong concerns of the reviewers. If you cannot implement a better projective prediction approach for complete variable selection problems, then at the very least, I would expect you to motivate why it's worth knowing about this approach; you show that it doesn't work very well.
+

@@ -1,0 +1,140 @@
+
+***Federico's quick comments:***
+
+Reviewer 1: I think they misunderstood some of our results regarding the use of a reference model and not the specific implementation of projpred. Also about the complete selection case, our focus was on how the other methods improve with a reference model rather than the new projpred-based algorithm.  Apart from this inconvenient, I think that the other comments they report are interesting as the ones on reference model misspecification and prior sensitivity. I believe we have already addressed some of those, but maybe not that explicitly.
+
+Reviewer 3: they don’t address major problems with the works, but mostly minor changes.
+
+Associate Editor: also here, I think there has been a misunderstanding of the purpose of the complete selection section.
+
+I didn’t receive any report by Reviewer 2.
+
+What do you suggest to do next? I think that addressing the reviewers’s concerns would require to work mainly in two directions: we need to 
+clarify that the purpose of the simulations is to show the effect of the reference model (and not a specific implementation) and than to answer questions 1)-5) by Reviewers 1. The latter requires a bit of thinking: I think we could mostly answer to those question in a discursive way, but would it be enough? Setting up experiments to study the reference model misspecification and the prior sensitivity problem might require some thinking!
+To start, I could go in details through the reviews and the paper and try to write down for each question if we have already answered somewhere in the paper or what we should do. What do you think? I wait for your advice!
+
+The deadline for the possible resubmission is the 23/02/22.
+
+***Aki's quick comments***
+
+Quick comments that need to be processed to be polite answers (I wrote these before looking at Federico's comments)
+
+Reviewer #1 (PDF reviewer?)
+
+The reviewer has mistaken that we would be proposing a new method. The main purpose is as stated in the abstract:
+"In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection."
+
+We need to clarify this point. We knew that projpred works well for the minimal set variable selection, but we didn't know whether that is due to the use of reference model or due to the projection that make better inference after the selection. In this paper we show that the use of a reference model helps also other approaches and thus it canät be the projection alone that is producing the good results. Other point we make is that projpred was specifically designed for the minimal set variable selection and we show that it is not good for complete set selection, which is useful information, too. Showing a failure mode of existing algorithm is useful even without being able to develop a solutin for that failure.
+
+We should clarify these issues and resbumit without better approach. I would assume the second round decision would be quicker.
+
+For the last comment I would answer that, of course the performance of the variable selection depends on the quality of the reference model. If the reference model is, e.g., without any covariates, there is no useful information to learn. Stability of Bayesian inference wrt priors have been extensively studied elsewhere and the prior sensitivity checking is natural part of the workflow for building a reference model (cite Bayesian workflow, priorsense paper, and something else)
+
+Reviewer #3
+
+They also comment that " the motivation of the study in relation to
+the literature is missing in the Introduction. " and we need to
+clarify the poimt I mentioned above. They helpfully point out that
+"Full motivation is given in Section 2. However, it needs to be
+briefly mentioned in the Introduction as well to motivate the reader
+to keep reading. In addition, instead of pointing to the references,
+please give a brief critique of them." so we need to just copy stuff
+from there.
+
+> 2. Please include the computational cost of compared approaches in Section 2.1.
+
+Sensible suggestion.
+
+> 3. Please add a brief summary of the results you obtained in Section 3 and the main message you infer from these results before moving onto Section 4.
+
+Sensible suggestion.
+
+
+> 4. Please mention the availability of the R codes to reporoduce the results under each section as well.
+
+Sensible suggestion.
+
+AE
+
+> Associate Editor: Please note the strong concerns of the
+> reviewers. If you cannot implement a better projective prediction
+> approach for complete variable selection problems, then at the very
+> least, I would expect you to motivate why it's worth knowing about
+> this approach; you show that it doesn't work very well.
+
+I think the above answers cover this, too.
+
+Overall the reviewer #3 seems to be positive, and also helpfully hints
+why reviewer #1 may be confused.
+
+I agree with Federico's analysis of the situation
+
+ - Clarify as suggested by reviewer #3
+ - Transform the comments about reviewr #1 to polite explanation how we have improved the paper and clarified the main points.
+ - we can be more straight that iterative projpred is not that good
+
+
+***Juho's quick comments***
+
+I generally agree with Aki's comments, in particular that we should
+not try to come up with a better algorithm for complete variable
+selection, but try to articulate why this study still contains useful
+findings (negative results are also useful, it's sad how often they
+are overlooked).
+
+A few comments to the points raised by reviewer 1 (should be
+reformulated to be polite answers):
+
+"... you can have use standard inverted gamma priors on sigma2 and
+tau2 by determining the parameters of the prior in order to the prior
+mixture gives reasonable results about the data using the prior
+mixture. How can you study the robustness of your results to this
+important aspect?"
+- I have to admit that I did not understand what the reviewer is
+trying to say here.
+
+"Perhaps a solution to the previous problem would be to determine the
+reference model using frequentist MLE procedures that avoid the
+construction of prior distributions and use a single point prediction
+or, alternatively, to use the sampling distribution of MLE as a
+posterior distribution and take this “Bayesian” model as reference
+model. Do you have any experience in this line?"
+- I don't really have experience about this, but I don't quite see how
+a frequentist reference model would solve the issue of having to
+choose the prior for the reference model; afterall you need to choose
+how you regularize your frequentist model, which is kinda equivalent
+to choosing the prior (but you lose the extra regularizing effect
+which comes from integrating over the posterior uncertainty in a
+Bayesian model).
+
+"What if the true generator process is a mixture model, in such a way
+that there is not a unique solution to the minimal subset variable
+selection problem? In fact, how can you assure that the minimal subset
+variable selection problems have only one selection?"
+- I don't think we have stated anywhere that we assume there is a
+unique solution? Nor do we attempt to find such unique solution. We
+attempt to find _a_ model with smallest number of variables without
+substantial loss in predictive accuracy compared to the reference or
+any other candidate model.
+
+"In most of real situations, we have an M-open problem (particularly
+in big data problems) where the true generator mechanism is too
+complex and it is not included in the family of considered models.
+What would be the performance of your methodology if the reference
+model is far from the true generator process? How can you detect these
+situations?"
+- Not sure what we should answer here, but it feels to me that
+answering this sort of question would require a paper (or two) on its
+own. We can write e.g. that this is beyond the scope of this paper,
+and we feel it's not quite fair to require such a major issue to be
+solved in the present paper.
+
+"Section 4.1: It is no clear how the value of alpha should be chosen.
+alpha = 0.16 is a magic number and a more thoroughly discussion of the
+influence of this value should be provided."
+- It is purely heuristic, yes, but the 'magic' number comes from the
+fact that if each tail has 16% mass, then the central interval has 68%
+mass which corresponds to plus minus one std assuming normal
+distribution (i.e. alpha=0.16 corresponds to one std away from mean,
+thus it's not that magical).
+
