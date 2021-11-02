@@ -15,6 +15,8 @@
 \usepackage{fullpage}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage[authoryear,round]{natbib}
 
 
 % import Eq and Section references from the main manuscript where needed
@@ -53,10 +55,10 @@
 
 \newcommand{\todo}{\subsection*{\textcolor{red}{To do (comment out when done)}:}}
 
-\newcommand{\mm}[1]{\textcolor{red}{[M\aa ns: #1]}}
-\newcommand{\av}[1]{\textcolor{blue}{[Aki: #1]}}
-\newcommand{\ami}[1]{\textcolor{brown}{[Alonzo: #1]}}
-\newcommand{\ts}[1]{\textcolor{purple}{[Tuomas: #1]}}
+\newcommand{\fede}[1]{\textcolor{red}{[Fede: #1]}}
+%\newcommand{\av}[1]{\textcolor{blue}{[Aki: #1]}}
+%\newcommand{\ami}[1]{\textcolor{brown}{[Alonzo: #1]}}
+%\newcommand{\ts}[1]{\textcolor{purple}{[Tuomas: #1]}}
 
 \begin{document}
 
@@ -66,14 +68,13 @@ We thank the editor and the reviewers for careful review of the paper and the ma
 \bigskip 
 \hrule
 \medskip 
-\section*{Editor}
+\section*{Associated Editor}
 
-\paragraph{Editor comment}
-I regret to inform you that the reviewers have raised serious concerns, and therefore your paper cannot be accepted for publication in Communications in Statistics – Theory and Methods. However since the reviewers do find some merit in the paper, I would be willing to reconsider if you wish to undertake major revisions and re-submit, addressing the referees' concerns.
+\paragraph{Associated Editor comment}
+Please note the strong concerns of the reviewers. If you cannot implement a better projective prediction approach for complete variable selection problems, then at the very least, I would expect you to motivate why it's worth knowing about this approach; you show that it doesn't work very well.
 
 \paragraph{Reply}
-
-We thank the editor and the reviewer for the careful review of the paper and many valuable comments. We have addressed the discussed concerns and made changes to the manuscript accordingly. In particular, we have discussed the paper's practical implications and highlighted both the problem setting and the main contributions.
+todo
 
 %\todo
 %\begin{description}
@@ -85,11 +86,14 @@ We thank the editor and the reviewer for the careful review of the paper and man
 
 % Point one description 
 \begin{point}
-English language needs careful editing.
+My main concern with respect to the projective predictive approach is the robustness of the results to the reference model. Apparently, you can build very different references models to the same data set: have you study the sensitivity of the results with different reference models?. You use Bayesian models as reference models and, in these cases, the determination of prior distribution is not very clear. You can build hundreds and hundreds of prior distribution: for instance in (7) you can have use standard inverted gamma priors on $\tau^2$ and $\sigma^2$ by determining the parameters of the prior in order to the prior mixture gives reasonable results about the data using the prior mixture. How can you study the robustness of your results to this important aspect?
 \end{point}
 
 \begin{reply}
-Thank you for the feedback. We have addressed now gone through the text multiple times and used automatic spell and grammar checkers. We are not native speakers, so please feel free to point out if you find further problems with the text.
+We have added clarification that the reference model approach requires a sensible model, so that for example a model predicting constant output or a model predicting uncorrelated noise are not useful reference models.
+A sensible reference model doesn't need to be Bayesian. The results are better with better reference models. 
+
+The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking \citep[see, e.g.][]{gelman2020bayesian}. In this paper the point is not the Bayesian workflow, but to analysis given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be improved by replacing the data with filtered prediction from the reference model. The reference models used in the examples are using widely accepted weakly informative priors and there is no prior sensitivity issues. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
 \end{reply}
 
 
@@ -99,45 +103,154 @@ Thank you for the feedback. We have addressed now gone through the text multiple
 %\end{description}
 
 \begin{point}
-The specific case considered in the article needs to be elaborated on in terms of its practical meaning and importance. Giving a solution for a specific case can be useful if that case has some practical importance. Otherwise, anyone can create solutions for many different cases.
+Perhaps a solution to the previous problem would be to determine the reference model using frequentist MLE procedures that avoid the construction of prior distributions and use a single point prediction or, alternatively, to use the sampling distribution of MLE as a posterior distribution and take this “Bayesian” model as reference model. Do you have any experience in this line?
 \end{point}
 
 \begin{reply}
-We realise that the motivation of the work may be unclear. We aim to show one feasible (albeit simple) problem setting to show that it is possible to derive an unbiased variance estimator for the popular way of analysing the uncertainty in LOO-CV. Previous literature (e.g. Bengio and Grandvalet, 2004) indicates that this is not possible in general. To the best of our knowledge, we do not know anyone who has shown that it is possible to derive an unbiased estimator if one also considers the actual problem setting and model. This is an important advancement in the study for understanding the uncertainty in LOO-CV estimation in practice and can further encourage new work on variance estimation in Bayesian LOO-CV.
-
-We now see that this has not been clear enough in the paper. We have clarified this both in the introduction and the discussion.
+MLE is more unstable than Bayesian approach. The Bayesian approach gets the improved stability both from integration over the parameter space (instead of using a point estimate) and can further be improved by using even just weakly informative priors. We have added references that discuss merits of Bayesian approach compared to MLE. Although we think Bayesian reference models are better choice, we also assume that in large n, small p case there will be not much difference to using MLE to construct the reference model, and we believe that in what ever way the reference model has been built, if it's a good predictive model, it will be a useful reference model.
 \end{reply}
 
 
 \begin{point}
-It is noted that there is no need for the observations to be identically distributed. We should see the impact of this on the likelihood in Eq. (6).
+What if the true generator process is a mixture model, in such a way that there is not a unique solution to the minimal subset variable selection problem? In fact, how can you assure that the minimal subset variable selection problems have only one selection? I think that the algorithm described in appendix A should take into account this possibility, and the step 5 not to choose the smallest (model) that is sufficient close to the reference model's predictive utility score but to use, for instance, an Occam window, that reflects more adequately the uncertainty associated with the model selection process something that, apparently, your methodology does not consider. In fact, and even though in your examples your results in the paper were not sensitive to the specific choice of how “sufficiently close” is defined, I guess that there can be situations where this statement is not true, and more of one solution to the minimal subset variable selection problem and to the complete variable selection problem could exist.
 \end{point}
 
 \begin{reply}
-We see that the analysis description may be a bit misleading considering the two-level perspective on the variable $y$: the model level and the true data generating process level. In the latter, we apply only weak assumption on the distribution $p_\text{true}(y)$, and in particular, do not need to assume identically distributed observations. At the model level, the Bayesian normal model does make this assumption. Equation (6) defines the likelihood of the model. Based on the feedback, we clarified this in the text.
+The projection predictive variable selection and its properties have been extensively discussed in \citet{piironen2017comparison} and \citet{piironen2020projective}, and we refer to them for the detailed discussion on the uncertainty related to search paths. \citet{paasiniemi2018} provides illustrations how this uncertainty can be communicated to the users. When there are correlating variables that have exactly the same amount of information, the minimal set is not unique. In this paper, we focused on the average performance of the minimal set, but when analysing a single dataset, we recommend the approaches presented in \citet{paasiniemi2018} to analyse alternative possible variable sets.
 \end{reply}
 
 \begin{point}
-You have a normal hyper-prior on the mean $\theta$, $\sigma_{m}^{2}$ and $\sigma_{0}^{2}$ are fixed. Specification of these variances needs elaboration.
+In most of real situations, we have an M-open problem (particularly in big data problems) where the true generator mechanism is too complex and it is not included in the family of considered models. What would be the performance of your methodology if the reference model is far from the true generator process? How can you detect these situations?
 \end{point}
 
 \begin{reply}
-Thank you for this suggestion. We are a little unsure about what the reviewer asks for here. We added the following descriptive explanation on the effects of the parameters: 
+We assume that all models are wrong. Analysing model misspecification is well studied in Bayesian literature and there are plenty of methods available for model checking \citep[see, e.g.][]{gelman2020bayesian}. The reference model approach assumes we have first made the best possible model, following all the best practices for Bayesian model building \citep{gelman2020bayesian}. Even a misspecifed model that would introduce some bias can reduce the variance so that the variable selection is improved. 
+\end{reply}
 
-"The fixed data variance parameter $\sigma_\mathrm{m}^2$ reflects how the model considers the magnitude of the variability of the data. A fixed $\sigma_\mathrm{m}^2$ is mainly chosen to simplify derivations. The fixed prior variance parameter $\sigma_0^2$ reflects the prior belief of the magnitude of the variability of the unknown mean parameter. The fixed model parameters $\sigma_\mathrm{m}^2$ and $\sigma_0^2$ can be chosen freely." 
+\begin{point} \label{q5}
+In big data problems with n << p and the explanatory variables are weakly related (in such a way that the number of significant principal components is large), how do you build a reference model? Is it possible?
+\end{point}
 
-In addition, we emphasise that the model may be miss-specified so that it represents the true data generating mechanism poorly.
+\begin{reply}
+See \citet{piironen2020projective}.
 \end{reply}
 
 \begin{point}
-The settings in the numerical example need further explanation. Why are those specific numbers selected? The example runs are too specific and cannot be generalised. This makes the article too focused on some specific cases. Then, the importance of dealing with these specific cases have to be articulated clearly.
+The same question that \ref{q5} but if n is small and your data have not power to discriminate between two alternative reference models.
 \end{point}
 
 \begin{reply}
-Thank you for the relevant comment. We understand that the motivation of the experiments can be a bit confusing. The simulation experiment has two purposes. First, illustrating that the theory is correct and, second, show the naive estimator can be both upward and negatively biased. 
-
-The experiments apply three problem settings covering different, but feasible, scenarios including both well-fitting and bad-fitting data. We have now clarified the selection of the problem settings in the text. It is clear that, as the true data generating mechanism is quite unrestricted, there are arbitrarily many possible experiment setups. We believe that these applied setups are sufficient for illustrative purposes.
-
-We believe that your comment calls for this to be written out more clearly in the paper. We have tried to clarify this further in the paper.
+The usual Bayesian workflow \citep{gelman2020bayesian} states that if there is uncertainty about which model then we integrate over the model space or create a continuous super model that includes the alternative models as special cases.
 \end{reply}
+
+%%% SOME OF THE MINOR REQUEST
+\section*{Reviewer 1 - Minor comments}
+
+\begin{point}
+Section 3.1: you say that in this simulation you use a Bayesian stepwise forward selection procedure. Is this really the case? In your description of the procedure in page
+6 you exclude (and not include variables) in this step of the algorithm. In my view, this procedure is a Bayesian stepwise backward selection procedure.
+\end{point}
+
+\begin{reply}
+Thanks for pointing out the typo. We fixed it in the new version of the paper.
+\end{reply}
+
+\begin{point}
+In the Bayesian stepwise selection procedures of section 3.1 you use posterior pvalues to exclude variables, and you exclude the variable with the highest Bayesian p- value. Shouldn't you take into account whether the value of the pvalue is large or small? Shouldn't you calibrate these pvalues?
+\end{point}
+
+\begin{reply}
+\fede{There is not need of calibration of the pvalues since they are used only to select the "worse" predictor. Then the variable is excluded or not looking at the predictive performance of the reduced model compared to the not-reduced one. In such a way, the posterior pvalues matter only for their ordering and not for their magnitude.}
+\end{reply}
+
+\begin{point}
+Section 3.1 steplm procedure: Why have you chosen the AIC criterion which, as it is well-known tend to select non-parsimonious models? Have you tried to use the BIC criterion instead? In my experience, this criterion tend to select more parsimonious models and in a M Complete approach, it is usually consistent.
+\end{point}
+
+\begin{reply}
+We used AIC because reference X was using AIC. The goal of the paper was not to compare all possible information criteria. We made choices to keep the paper within reasonable length. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
+\end{reply}
+
+\begin{point}
+Section 4.1, page 8, line 38: $\text{elpd}_\text{base}$ should be $\text{elpd}_\text{best}$
+\end{point}
+
+\begin{reply}
+Thanks for pointing out the typo. We fixed it in the new version of the paper.
+\end{reply}
+
+\begin{point}
+How is calculated the probability used in the stopping rule (2)? Using the reference model?
+\end{point}
+
+\begin{reply}\label{reply:stopping}
+\fede{At each iteration, the best model is selected via the default stopping rule implemented the \texttt{R}-package \texttt{projpred}. For details, see \citet{piironen2020projective} for details. In few words, the predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples are used to estimate that probability under normality assumption.}
+\end{reply}
+
+\begin{point}
+It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{best}>0$? Perhaps you should consider other limits similar to those used in Bayes factors (Kass and Raftery, 1995) and not to choose only on solution but to explore other possible solutions in the spirit of Occam’s window
+\end{point}
+
+\begin{reply}
+\fede{The above condition comes from the implementation of the projection predictive approach \citet{piironen2020projective} in the \texttt{R}-package \texttt{projpred}. The fact that the algorithm is based on the probability of that condition and not on the condition itself make it not that exigent.}
+\end{reply}
+
+\begin{point}
+Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha= 0.16$ is a magic number and a more thoroughly discussion of the influence of this value should be provided.
+\end{point}
+
+\begin{reply}
+\fede{The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible standard way to proceed, but not guaranteed to be the best in any case, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score. For further details see \ref{reply:stopping} and \citet{piironen2020projective}.}
+\end{reply}
+
+\begin{point}
+Section 4.1, line 50 “expect” should be “except”
+\end{point}
+
+\begin{reply}
+Thanks for pointing out the typo. We fixed it in the new version of the paper.
+\end{reply}
+
+\reviewersection
+
+No comments provided.
+
+\reviewersection
+
+\begin{point}
+Although main articles related to the use of the reference model approach in the model selection are mentioned, the motivation of the study in relation to the literature is missing in the Introduction. The given discussion of the existing literature supports the idea that the reference models have been used in Bayesian and non-Bayesian contexts. However, why do we need the proposed approach in the article is missing. Full motivation is given in Section 2. However, it needs to be briefly mentioned in the Introduction as well to motivate the reader to keep reading. In addition, instead of pointing to the references, please give a brief critique of them.
+\end{point}
+
+\begin{reply}
+todo
+\end{reply}
+
+\begin{point}
+Please include the computational cost of compared approaches in Section 2.1. 
+\end{point}
+
+\begin{reply}
+todo
+\end{reply}
+
+\begin{point}
+Please add a brief summary of the results you obtained in Section 3 and the main message you infer from these results before moving onto Section 4.
+\end{point}
+
+\begin{reply}
+todo
+\end{reply}
+
+\begin{point}
+Please mention the availability of the R codes to reproduce the results under each section as well.
+\end{point}
+
+\begin{reply}
+Thank you for the feedback, we mentioned the availability of the R codes under each section in the new version of the paper.
+\end{reply}
+
+
+\bibliographystyle{abbrvnat}
+\bibliography{rebuttal}
+
 \end{document}
