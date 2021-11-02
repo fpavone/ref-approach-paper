@@ -9,3 +9,8 @@ paper/*
 *.RData
 *.rds
 .Rproj.user
+reviews/*
+!reviews/*.tex
+!reviews/*.txt
+!reviews/*.bib
+!reviews/reviewer2.pdf
