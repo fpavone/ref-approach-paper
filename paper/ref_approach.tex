@@ -246,6 +246,9 @@ for the use of reference models to improve variable selection methods.
 We will start with a case study that is repeatedly used throughout
 the paper to illustrate the benefits of reference models before we dive deeper
 into the theoretical reasons why reference models help in variable selection.
+\\
+The code to run all
+the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Body fat example: Part 1}
 \label{bodyfat-1}
@@ -491,6 +494,9 @@ The usual reason for this is that the relevant variables
 which are not in the minimal subset are highly correlated with variables already in
 the minimal subset. We will return to a problem of finding all
 the variables with some predictive power in Section~\ref{complete-selection}.
+\\
+The code to run all
+the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Simulation study 1}
 
@@ -500,8 +506,8 @@ of variables $p=70$, with $k=20$ of them being predictive.  We compare
 the minimal subset variable selection performance of the projection
 predictive approach (which uses a reference model and it is referred to as projpred), 
 a Bayesian stepwise
-forward selection with and without a reference model, and maximum
-likelihood stepwise forward selection with and without a reference
+backward selection with and without a reference model, and maximum
+likelihood stepwise backward selection with and without a reference
 model (steplm). The following is a summary of the implementation of the compared methods:
 \begin{itemize}
 \item \textbf{projpred}: the projective prediction approach is used. 
@@ -644,6 +650,9 @@ variables over the total number of relevant variables). We also provide
 a comparison of the stability of the selection by means of a stability
 measure proposed by \citet{paper:stability}, which goes from 0 to 1 and a higher value 
 means a more stable selection. 
+\\
+The code to run all
+the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Iterative projections}
 
@@ -684,7 +693,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
  \While{$F\neq\{\emptyset\}$}{
    projection.HeuristicSearch() \;
    projection.elpdEstimate() \;
-   $S=\text{min}\{\text{sub}: P(\text{elpd}_{\text{sub}}-\text{elpd}_{\text{base}}>0)\geq\alpha)$\} \;
+   $S=\text{min}\{\text{sub}: P(\text{elpd}_{\text{sub}}-\text{elpd}_{\text{best}}>0)\geq\alpha)$\} \;
   
   \eIf{$S=\{\emptyset\}$}{
    break \;
@@ -700,7 +709,7 @@ In our experiments we chose the default value used in the \texttt{projpred}
 
 In the experiments shown in the next sections, we include an additional iterative
 method which we refer to as `iterative lasso'. It consists of the same iterative
-algorithm as iterative projpred expect for not using any reference model, but
+algorithm as iterative projpred except for not using any reference model, but
 the lasso method for variable selection, instead.
 That is, it uses the observed target values instead of predictions of the reference model.
 The comparison with iterative lasso can help to disentangle the effects
