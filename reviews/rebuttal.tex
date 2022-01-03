@@ -74,7 +74,8 @@ We thank the editor and the reviewers for careful review of the paper and the ma
 Please note the strong concerns of the reviewers. If you cannot implement a better projective prediction approach for complete variable selection problems, then at the very least, I would expect you to motivate why it's worth knowing about this approach; you show that it doesn't work very well.
 
 \paragraph{Reply}
-todo
+\fede{We have elaborated a better version of our paper following many of the reviewers' comments and suggestions. However, we believe that there has been a misunderstanding on the purpose of our work by Reviewer 1. The projective prediction approach for complete variable selection is not the aim of this work. The method has been included for the sake of a more exhaustive comparison, since the good performances of the projective prediction method (projpred) for minimal variable selection. Indeed, we have highlighted how projpred has been designed specificly for the minimal selection case, making it not trivial to extend for the complete selection. We do not exclude that better projective prediction method for complete selection can be designed in the future. \\
+Reviewer 3 gave precious comments on how to clarify the real intentions of our work, which is the study of the effect of reference models when used to guide the selection process, regardless of the selection method. We followed the suggestions and we believe that the current version reduces the possibility of misunderstandings.}
 
 %\todo
 %\begin{description}
@@ -93,7 +94,7 @@ My main concern with respect to the projective predictive approach is the robust
 We have added clarification that the reference model approach requires a sensible model, so that for example a model predicting constant output or a model predicting uncorrelated noise are not useful reference models.
 A sensible reference model doesn't need to be Bayesian. The results are better with better reference models. 
 
-The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking \citep[see, e.g.][]{gelman2020bayesian}. In this paper the point is not the Bayesian workflow, but to analysis given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be improved by replacing the data with filtered prediction from the reference model. The reference models used in the examples are using widely accepted weakly informative priors and there is no prior sensitivity issues. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
+The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking \citep[see, e.g.][]{gelman2020bayesian}. In this paper the point is not the Bayesian workflow, but to analyse given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be improved by replacing the data with filtered prediction from the reference model. The reference models used in the examples are using widely accepted weakly informative priors and there is no prior sensitivity issues. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
 \end{reply}
 
 
@@ -128,11 +129,11 @@ We assume that all models are wrong. Analysing model misspecification is well st
 \end{reply}
 
 \begin{point} \label{q5}
-In big data problems with n << p and the explanatory variables are weakly related (in such a way that the number of significant principal components is large), how do you build a reference model? Is it possible?
+In big data problems with $n<<p$ and the explanatory variables are weakly related (in such a way that the number of significant principal components is large), how do you build a reference model? Is it possible?
 \end{point}
 
 \begin{reply}
-See \citet{piironen2020projective}.
+Please, see \citet{piironen2020projective} for further information.
 \end{reply}
 
 \begin{point}
@@ -160,7 +161,7 @@ In the Bayesian stepwise selection procedures of section 3.1 you use posterior p
 \end{point}
 
 \begin{reply}
-\fede{There is not need of calibration of the pvalues since they are used only to select the "worse" predictor. Then the variable is excluded or not looking at the predictive performance of the reduced model compared to the not-reduced one. In such a way, the posterior pvalues matter only for their ordering and not for their magnitude.}
+\fede{There is no need of calibration of the pvalues, since they are used only to select the "worse" predictor. Such predictor is then excluded or not, looking at the predictive performance of the reduced model and of the not-reduced one. In such a way, the posterior pvalues matter only for their ordering and not for their magnitude.}
 \end{reply}
 
 \begin{point}
@@ -168,7 +169,7 @@ Section 3.1 steplm procedure: Why have you chosen the AIC criterion which, as it
 \end{point}
 
 \begin{reply}
-We used AIC because reference X was using AIC. The goal of the paper was not to compare all possible information criteria. We made choices to keep the paper within reasonable length. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
+We used AIC because reference \citet{heinze2018variable} was using AIC. The goal of the paper was not to compare all possible information criteria. We made choices to keep the paper within reasonable length. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
 \end{reply}
 
 \begin{point}
@@ -184,7 +185,7 @@ How is calculated the probability used in the stopping rule (2)? Using the refer
 \end{point}
 
 \begin{reply}\label{reply:stopping}
-\fede{At each iteration, the best model is selected via the default stopping rule implemented the \texttt{R}-package \texttt{projpred}. For details, see \citet{piironen2020projective} for details. In few words, the predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples are used to estimate that probability under normality assumption.}
+\fede{At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{piironen2020projective}. In few words, the predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples are used to estimate that probability.}
 \end{reply}
 
 \begin{point}
@@ -192,7 +193,8 @@ It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{be
 \end{point}
 
 \begin{reply}
-\fede{The above condition comes from the implementation of the projection predictive approach \citet{piironen2020projective} in the \texttt{R}-package \texttt{projpred}. The fact that the algorithm is based on the probability of that condition and not on the condition itself make it not that exigent.}
+\fede{The above condition derives from the original criteria to choose the model size in \citet{piironen2020projective} for the use of the projection predictive approach in the minimal subset scenario. In that case, the comparison is between the predictive score of the submodel of size $i$ and the reference model. Here we decided to compare the submodel of size $i$ with the ``best'' size, at the given iteration, due to the natural loss of explanatory power of the remaining covariates as the iterations increase. \\
+In general, notice that the condition is expressed as the probability of that event, which is anyhow less exigent than the inequality itself.}
 \end{reply}
 
 \begin{point}
@@ -200,7 +202,7 @@ Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha=
 \end{point}
 
 \begin{reply}
-\fede{The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible standard way to proceed, but not guaranteed to be the best in any case, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score. For further details see \ref{reply:stopping} and \citet{piironen2020projective}.}
+\fede{The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible way to proceed, but just as rule of thumb, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score.}
 \end{reply}
 
 \begin{point}
@@ -222,7 +224,7 @@ Although main articles related to the use of the reference model approach in the
 \end{point}
 
 \begin{reply}
-todo
+\fede{Thank you for the feedback. We renovated Section 1 and Section 2, improving the paper according to your suggestions.}
 \end{reply}
 
 \begin{point}
@@ -230,7 +232,7 @@ Please include the computational cost of compared approaches in Section 2.1.
 \end{point}
 
 \begin{reply}
-todo
+\fede{We touch the computational aspects in Section 2.2. The reference model approach has in general the additional cost of fitting a reference model. However, this is usually available when building up a model via robust workflows \citep{gelman2020bayesian}. Therefore, in these cases there is not additional cost. In any case we believe that the benefits of a more stable and efficient selection overcome the cost of fitting a reference model.}
 \end{reply}
 
 \begin{point}
@@ -238,7 +240,7 @@ Please add a brief summary of the results you obtained in Section 3 and the main
 \end{point}
 
 \begin{reply}
-todo
+\fede{We added a new Section 3.3 which summarises and elaborate the results of Section 3.}
 \end{reply}
 
 \begin{point}
