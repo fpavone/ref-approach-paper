@@ -116,11 +116,11 @@ My main concern with respect to the projective predictive approach is the robust
 \end{point}
 
 \begin{reply}
-Thank you for your comments. We have added clarification at the end of Section 2.3 regarding the reference model, in particular we write that
+Thank you for your comments. We have added clarification at the end of Section 2.2 regarding the reference model, in particular we write that
 
 \vspace{0.5cm}
 \textit{
-``Clearly, the reference model approach requires a sensible model. The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. The goodness of a reference model comes from its predictive ability which should be assessed via proper validation methods. In general, there is not restriction on the type of model the reference models should be and a sensible reference model does not need to be Bayesian.''
+``Clearly, the reference model approach requires a sensible model. The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. The goodness of a reference model comes from its predictive ability which should be assessed via proper validation methods. [...] In general, there is not restriction on the type of model the reference models should be and a sensible reference model does not need to be Bayesian.''
 }
 \vspace{0.5cm}
 
@@ -142,7 +142,26 @@ Perhaps a solution to the previous problem would be to determine the reference m
 \end{point}
 
 \begin{reply}
-MLE is more unstable than Bayesian approach. The Bayesian approach gets the improved stability both from integration over the parameter space (instead of using a point estimate) and can further be improved by using even just weakly informative priors. We have added references that discuss merits of Bayesian approach compared to MLE \fede{not yet added!}. Although we think Bayesian reference models are better choice, we also assume that in large n, small p case there will be not much difference to using MLE to construct the reference model, and we believe that in what ever way the reference model has been built, if it's a good predictive model, it will be a useful reference model.
+Thank you for the interesting question. It is known that MLE is more unstable than Bayesian approach. The Bayesian approach gets the improved stability both from integration over the parameter space (instead of using a point estimate) and can further be improved by using even just weakly informative priors. We have added references that discuss merits of Bayesian approach compared to MLE. Although we think Bayesian reference models are better choice, we also assume that in large n, small p case there will be not much difference to using MLE to construct the reference model, and we believe that in what ever way the reference model has been built, if it's a good predictive model, it will be a useful reference model.
+
+Inspired by your question, we added a discussion of this in the new version of the paper. In Section 2.2 we write
+
+\vspace{0.5cm}
+
+\textit{``In general, there is not restriction on the type of model the reference models 
+	should be and a sensible reference model does not need to be Bayesian.
+	However, Bayesian methods can help in some of those situations
+	where MLE procedures struggle. 
+	It is known that as the number of parameters in the model increases, the MLE
+	estimator is dominated by shrunk estimators 
+	\citep{stein1956inadmissibility, stein1961estimation, parmigiani2009decision, efron2011tweedie}.
+	The use of a prior in Bayesian inference automatically incorporates 
+	some kind of shrinkage in the Bayesian estimator under a given loss function \citep[see, e.g.][]{rockova2012hierarchical}. 
+	For the sake of our study, we rely on simple data structure which can be well described 
+	by linear regression models. However, more complex data can arise from applications, for example including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the posterior distribution.''}
+
+\vspace{0.5cm}
+
 \end{reply}
 
 
@@ -292,8 +311,8 @@ Please add a brief summary of the results you obtained in Section 3 and the main
 
 \vspace{0.5cm}
 \textit{
-The previous experiments allowed us to study and disantangle the effect of a reference model in variable selection, specifically in the minimal subset selection case.
-The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection with the reference model approach (see Figure 5 and Table 3). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.
+``The previous experiments allowed us to study and disantangle the effect of a reference model in variable selection, specifically in the minimal subset selection case.
+The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection with the reference model approach (see Figure 5 and Table 3). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.''
 }
 \vspace{0.5cm}
 \end{reply}

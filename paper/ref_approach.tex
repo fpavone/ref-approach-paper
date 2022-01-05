@@ -405,10 +405,30 @@ not a reference model is applied.
 A properly designed reference model is able to filter parts of the
 noise present in the data, and hence to provide an improved and more
 stable selection process. This holds even if the reference model does
-not perfectly resemble the true data generating process. Moreover, our
-analyses indicate that the substantial reduction of variance
-attributable to noise is usually more important than small potential
-bias due to model misspecification.  We argue that, regardless of how
+not perfectly resemble the true data generating process. 
+\fede{Clearly, the reference model approach requires a sensible model. 
+The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. 
+The goodness of a reference model comes from its predictive ability which should be 
+assessed via proper validation methods.} Our analyses indicate that the substantial 
+reduction of variance attributable to noise is usually more important than small potential
+bias due to model misspecification.
+\fede{When the goal is ranking the variables for importance to
+perform variable selection, it is known that variance is
+generally more harmful then bias \citep{piironen2017comparison}.}
+
+\fede{In general, there is not restriction on the type of model the reference models 
+should be and a sensible reference model does not need to be Bayesian.
+However, Bayesian methods can help in some of those situations
+where MLE procedures struggle. 
+It is known that as the number of parameters in the model increases, the MLE
+estimator is dominated by shrunk estimators 
+\citep{stein1956inadmissibility, stein1961estimation, parmigiani2009decision, efron2011tweedie}.
+The use of a prior in Bayesian inference automatically incorporates 
+some kind of shrinkage in the Bayesian estimator under a given loss function \citep[see, e.g.][]{rockova2012hierarchical}. 
+For the sake of our study, we rely on simple data structure which can be well described 
+by linear regression models. However, more complex data can arise from applications, for example including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the posterior distribution.}
+
+We argue that, regardless of how
 the reference model is set up and used in the inference procedure, it
 can be always seen as acting as a filter on the observed
 data. Furthermore, regardless of what specific model selection method
@@ -489,7 +509,6 @@ noisy data directly.
   \label{fig:correlation}
 \end{figure}
 
-\fede{Clearly, the reference model approach requires a sensible model. The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. The goodness of a reference model comes from its predictive ability which should be assessed via proper validation methods. In general, there is not restriction on the type of model the reference models should be and a sensible reference model does not need to be Bayesian.}
 
 \hypertarget{comparison-minimal-subset}{
 \section{Minimal subset variable selection}\label{comparison-minimal-subset}}
