@@ -524,7 +524,13 @@ provide such additional information that would improve predictive
 performance in a substantial manner.
 The usual reason for this is that the relevant variables
 which are not in the minimal subset are highly correlated with variables already in
-the minimal subset. We will return to a problem of finding all
+the minimal subset. \fede{Such nature of the minimal subset makes the solution
+not unique, except in the particular case of completely orthogonal predictors. 
+The non-uniqueness of the solution is not a problem per se, as different samples of the data
+are expected to give possible different minimal subsets but with same predictive power. 
+However, it makes it difficult to define a proper
+concept of stability of the selection.} \\
+We will return to a problem of finding all
 the variables with some predictive power in Section~\ref{complete-selection}.
 \\
 The code to run all
@@ -717,7 +723,11 @@ The choice of the hyperparameter $\alpha$ is non-trivial, and we have
 observed sensitivity of the selection to such a choice, mainly when using cross-validation with a small
 number of observations or not very predictive variables. 
 In our experiments we chose the default value used in the \texttt{projpred} 
-\texttt{R}-package, that is, $\alpha=0.16$.
+\texttt{R}-package, that is, $\alpha=0.16$. \fede{The choice of $\alpha$ to determine 
+the submodel size is discussed in \cite{paper:projpred}. One possible way to proceed, 
+but just as rule of thumb, is to choose $\alpha = 0.16$, which correspond to requiring 
+that the submodel predictive score is at most at one standard deviation distance 
+from the best submodel predictive score.}
 
 \begin{center}
 \begin{algorithm}[H]

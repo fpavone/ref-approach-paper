@@ -180,7 +180,17 @@ What if the true generator process is a mixture model, in such a way that there 
 
 \begin{reply}
 The projection predictive variable selection and its properties have been extensively discussed in \citet{piironen2017comparison} and \citet{piironen2020projective}, and we refer to them for the detailed discussion on the uncertainty related to search paths. \citet{paasiniemi2018} provides illustrations how this uncertainty can be communicated to the users. When there are correlating variables that have exactly the same amount of information, the minimal set is not unique. In this paper, we focused on the average performance of the minimal set, but when analysing a single dataset, we recommend the approaches presented in \citet{paasiniemi2018} to analyse alternative possible variable sets.
-TODO: clarify this in the paper in 1 or 2 sentences?
+
+\fede{We clarified this point in the paper in Section 3, writing:}
+
+\vspace{0.5cm}
+
+\textit{``Such nature of the minimal subset makes the solution
+	not unique, except in the particular case of completely orthogonal predictors. 
+	The non-uniqueness of the solution is not a problem per se, as different samples of the data
+	are expected to give possible different minimal subsets but with same predictive power. 
+	However, it makes it difficult to define a proper
+	concept of stability of the selection.''}
 \end{reply}
 
 \begin{point}
@@ -269,8 +279,13 @@ Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha=
 \end{point}
 
 \begin{reply}
-The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible way to proceed, but just as rule of thumb, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score.
 TODO: clarify this in the paper
+\fede{We clarified the choice of $\alpha$ by writing in Section 4.1:}
+
+\vspace{0.5cm}
+
+\textit{``The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible way to proceed, but just as rule of thumb, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score.''}
+
 \end{reply}
 
 \begin{point}
