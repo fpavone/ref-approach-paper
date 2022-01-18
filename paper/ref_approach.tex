@@ -449,7 +449,32 @@ elaborate model can be computationally demanding.  In such a
 case, even simpler screening or dimensionality reduction techniques,
 as for example the supervised principal components
 \citep{bair2006prediction,piironen2018} can produce useful reference
-models.
+models. \fede{As an example, Table \ref{tab:computational_time} reports
+the computational time for the body fat data example of Section \ref{bodyfat-1}. 
+For reference model approaches, i.e. projpred and ref+step.lm, the main
+time consuming operation is to fit the reference model. The burden of it depends clearly
+on the specific application and type of model used.}
+
+\begin{table}[tp]
+	\footnotesize
+	\centering
+	\begin{tabular}{l|cc|ccc}
+		Data & Reference model & Search path & projpred & step.lm & ref + step.lm \\
+		\hline
+		body fat & 37.661 & 15.289 & 52.95 &  &  \\
+		  &  & 0.078 &  & 0.078 &  \\
+		  & 37.661 & 0.078 &  &  & 37.739 \\
+		\hline 
+		+ noisy variables & 169.797 & 77.638 & 247.435 &  &  \\
+		  & & 12.019 & & 12.019 & \\
+		  & 169.797 & 12.019 & & & 181.816
+		
+	\end{tabular}
+	\caption{Computational time (in seconds) of body fat example of Section \ref{bodyfat-1}.
+		The reported time is the sum of the time to fit the reference model (second column) and
+		to explore the search path (third column), according to the method.}
+	\label{tab:computational_time}
+\end{table}
 
 
 \hypertarget{reference-model-approach}{

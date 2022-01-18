@@ -279,7 +279,6 @@ Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha=
 \end{point}
 
 \begin{reply}
-TODO: clarify this in the paper
 \fede{We clarified the choice of $\alpha$ by writing in Section 4.1:}
 
 \vspace{0.5cm}
@@ -328,8 +327,8 @@ Please include the computational cost of compared approaches in Section 2.1.
 \end{point}
 
 \begin{reply}
-We discuss the computational aspects in Section 2.2. In general, the reference model approach has the additional cost of fitting the reference model before performing selection. However, this reference models is usually available anyway when building up a model via robust workflows \citep{gelman2020bayesian}. Therefore, in these cases there is no additional cost. In any case we believe that the benefits of a more stable and efficient selection overcome the cost of fitting a reference model.
-TODO: does the reviewer only mean the reference model or also the selection methods themselves? Can we say something (vaguely) about the computational cost of the selection methods? Right now, I think this answer to the reviewer will not be percevied as fully satisfying.
+Thanks for the suggestion. We discuss the computational aspects in Section 2.2. In general, the reference model approach has the additional cost of fitting the reference model before performing selection. However, this reference models is usually available anyway when building up a model via robust workflows \citep{gelman2020bayesian}. Therefore, in these cases there is no additional cost. In any case we believe that the benefits of a more stable and efficient selection overcome the cost of fitting a reference model.
+\fede{We added a new table (Table 3) reporting the computational time for the bodyf fat example, showing how the burden is divided between the fit of the reference model and the rest of the selection procedure.}
 \end{reply}
 
 \begin{point}
@@ -342,7 +341,7 @@ This is a good idea. We added a new Section 3.3 which summarises and elaborate t
 \vspace{0.5cm}
 \textit{
 ``The previous experiments allowed us to study the impact of using reference models in variable selection and to disentangle their influence from that of the actual variable selection method, specifically in the minimal subset selection case.
-The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the actual variable selection method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection when coupled with the reference model approach (see Figure 5 and Table 3). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.''
+The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the actual variable selection method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection when coupled with the reference model approach (see Figure 5 and Table 4). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.''
 }
 \vspace{0.5cm}
 \end{reply}
