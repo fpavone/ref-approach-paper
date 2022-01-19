@@ -165,7 +165,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods independently of whether or not they use reference models.
+  Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability, leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model, leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods, independently of whether or not they use reference models.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -191,23 +191,40 @@ In data-based approaches, such as Lasso selection
 \citep{tibshirani1996regression} or stepwise backward/forward
 regression \citep{venables2013modern,harrell2015regression}, the
 observed empirical data distribution is utilised as a proxy of future
-data usually in combination with cross-validation or information
-criteria to provide estimates for out-of-sample predictive
+data, usually in combination with cross-validation or information
+criteria to provide estimates of out-of-sample predictive
 performance.  In contrast, reference model based methods approximate
 the future data generation mechanism using the predictive distribution
 of a reference model, which can be, for example, a full-encompassing
-model including all variables.  The main assumption under any
-reference model approach is that we operate in an
-$\mathcal{M}$-\textit{complete} framework
-\citep{book:bernardo_smith,vehtari2012survey}, that is, we have
-constructed a model which reflects our beliefs about
-the future data in the best possible way and which has passed model checking and criticism
-\citep[see, e.g.][]{gelman2013bayesian,gabry2019visualization}.  The reference model approach
-has been used in Bayesian statistics at least since the seminal
-work of \citet{paper:reference_lindley}. For more historical
-references, see \citet{vehtari2012survey} and
-\citet{paper:model_selection}, and for most recent methodological
-developments see \citet{paper:projpred}.
+model including all variables.
+%
+We assume all models are wrong, but we assume we have constructed a
+model which reflects our beliefs about the future data in the best
+possible way and which has passed model checking and criticism
+\citep{gelman2020bayesian,gabry2019visualization}.  Using the usual
+best practices for constructing the reference model is important, as
+using a bad reference model can only lead to selecting a similarly
+bad smaller model. If the reference model is considered to have
+useful predictions, then the smaller models selected will also have
+similar useful predictions.
+%
+The reference model approach has been used in Bayesian statistics in
+some form at least since the seminal work of
+\citet{paper:reference_lindley}. For more historical references, see
+\citet{vehtari2012survey} and \citet{paper:model_selection}, and for
+most recent methodological developments see \citet{paper:projpred}.
+%
+Examples of useful reference models can be found for example for
+small-$n$-large-$p$ regression and logistic regression by
+\citet{piironen2017comparison} (with spike-and-slab prior),
+\citet{Piironen:2015:Stan_projection} (with horseshoe prior), and
+\citet{paper:projpred} (with iterative supervised principal
+components), for generalized linear and additive multilevel models by
+\citet{Catalina:2020:GAMM_projection}, for regression models with
+non-exponential family observation models by
+\citet{Catalina+etal:2021:latent_projection}, and for generic
+multivariate non-linear regression with higher order interactions by
+\citet{Piironen:2016:GPprojection}.
 
 Reference models have been also used in non-Bayesian contexts, in which
 \cite{harrell2015regression} describes them as full models that can be
@@ -225,13 +242,12 @@ reference model instead of the observed responses $y$.
 The common denominator is the use of the reference model posterior predictive information 
 instead of simply observed data to guide the selection.}
 Whatever the terminology or applied statistical framework, reference
-models offer a powerful approach to improving variable selection as we
+models offer a powerful approach to improving variable selection, as we
 will demonstrate in the present paper. \\
 \fede{The goal of our work is to study the impact of reference model approaches
 disentangling the benefit of the usage of a reference model from the specific selection algorithm.
 Specifically, we:}
 % The main contributions of our work are:
-
 \fede
 {\begin{itemize}
 \item disentangle the action of the reference model through a simple and intuitive way to combine any variable selection method with the reference model approach. This allows us to build up a comparison independent of the specific variable selection method;
@@ -248,6 +264,8 @@ on data in a simple way. In Section \ref{comparison-minimal-subset} and
 Section \ref{comparison-complete-subset}, we show the
 benefits of a reference model approaches for minimal and complete 
 variable selection, respectively, before we end with a conclusion in Section \ref{conclusion}.
+The code to run all
+the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \section{Reference models in variable selection}
 \label{ref-intro}
@@ -257,9 +275,6 @@ for the use of reference models to improve variable selection methods.
 We will start with a case study that is repeatedly used throughout
 the paper to illustrate the benefits of reference models before we dive deeper
 into the theoretical reasons why reference models help in variable selection.
-\\
-The code to run all
-the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Body fat example: Part 1}
 \label{bodyfat-1}
@@ -277,7 +292,7 @@ person in a water tank and carrying out different measurements and computations.
 Additionally, we have information about 13
 variables which are anthropometric measurements (e.g., height, weight
 and circumference of different body parts). The
-variables are highly correlated which causes additional
+variables are highly correlated, which causes additional
 challenge in the variable selection. In total, we have 251
 observations. The goal is to find the model which is able to predict
 the amount of body fat well while requiring the least amount of
@@ -286,7 +301,7 @@ measurements for a new person.
 \cite{paper:bodyfat} report results using steplm with a significance
 level of 0.157 with AIC selection \citep{akaike1974new}, fixing
 abdomen and height to be always included in the model. For better
-comparison we do not fix any of the variables.  The steplm approach is
+comparison, we do not fix any of the variables.  The steplm approach is
 carried out combining the \texttt{step} and \texttt{lm} functions in \texttt{R}.
 
 For the selection via projpred, the Bayesian reference model includes
@@ -297,7 +312,7 @@ backward search is used), and the predictive utility is the expected
 log-predictive density (elpd) estimated using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
 \citep[PSIS-LOO-CV; ][]{paper:psis_loo}.  We select the smallest  submodel with an elpd score similar to the reference model
 when taking into account the uncertainty in estimating the predictive
-model performance. See Appendix A for brief review of projection
+model performance. See Appendix A for a brief review of projection
 predictive approach, and papers by \citet{paper:model_selection} and
 \citet{paper:projpred} for more details. The complete projpred approach is implemented in the \texttt{projpred} \texttt{R} package \citep{Rprojpred}.
 
@@ -350,9 +365,9 @@ The first two rows of Table \ref{tab:model_performances} show the
 predictive performances, in terms of cross-validated root mean square
 error (RMSE), of the full model and the selected models using projpred
 or steplm.  There is no significant difference in predictive performance
-of the selected models by different approaches even if there is
+of the selected models by different approaches, even if there is
 clear difference in the number of selected variables. This can be explained by high
-correlation between the variables and different combinations can
+correlation between the variablesm and different combinations can
 provide similar predictive accuracy.
 
 We repeat the experiment with a modified data set by adding 84
@@ -398,7 +413,8 @@ submodel with similar performance as the full model. In this example, the two
 uses Bayesian inference and steplm uses maximum likelihood estimation. 
 However, as we show in the present paper, one of the primary difference 
 with respect to quality of the variable selection is indeed whether or 
-not a reference model is applied.
+not a reference model is applied, and the performance of steplm can
+also be improved by using a reference model.
 
 \subsection{Benefits and costs of using a reference model}
 
@@ -413,8 +429,8 @@ assessed via proper validation methods.} Our analyses indicate that the substant
 reduction of variance attributable to noise is usually more important than small potential
 bias due to model misspecification.
 \fede{When the goal is ranking the variables for importance to
-perform variable selection, it is known that variance is
-generally more harmful then bias \citep{piironen2017comparison}.}
+perform variable selection, it is known that large variance is
+generally more harmful than small bias \citep{piironen2017comparison}.}
 
 \fede{In general, there is not restriction on the type of model the reference models 
 should be and a sensible reference model does not need to be Bayesian.
@@ -444,12 +460,12 @@ variable selection.
 If one of the models to be compared is the full model, which can be
 used as a reference model, there is no additional cost of using a
 reference model as it was estimated as part of the analysis anyway.
-Sometimes including all the available variables in an
+Sometimes, including all the available variables in an
 elaborate model can be computationally demanding.  In such a
 case, even simpler screening or dimensionality reduction techniques,
 as for example the supervised principal components
-\citep{bair2006prediction,piironen2018} can produce useful reference
-models. \fede{As an example, Table \ref{tab:computational_time} reports
+\citep{bair2006prediction,piironen2018}, can produce useful reference
+models \citep{paper:projpred}. \fede{As an example, Table \ref{tab:computational_time} reports
 the computational time for the body fat data example of Section \ref{bodyfat-1}. 
 For reference model approaches, i.e. projpred and ref+step.lm, the main
 time consuming operation is to fit the reference model. The burden of it depends clearly
@@ -461,18 +477,18 @@ on the specific application and type of model used.}
 	\begin{tabular}{l|cc|ccc}
 		Data & Reference model & Search path & projpred & step.lm & ref + step.lm \\
 		\hline
-		body fat & 37.661 & 15.289 & 52.95 &  &  \\
-		  &  & 0.078 &  & 0.078 &  \\
-		  & 37.661 & 0.078 &  &  & 37.739 \\
+		body fat & 38 & 15 & 53 &  &  \\
+		  &  & 0.08 &  & 0.08 &  \\
+		  & 38 & 0.08 &  &  & 38 \\
 		\hline 
-		+ noisy variables & 169.797 & 77.638 & 247.435 &  &  \\
-		  & & 12.019 & & 12.019 & \\
-		  & 169.797 & 12.019 & & & 181.816
+		+ noisy variables & 170 & 78 & 247 &  &  \\
+		  & & 12 & & 12 & \\
+		  & 170 & 12 & & & 182
 		
 	\end{tabular}
 	\caption{Computational time (in seconds) of body fat example of Section \ref{bodyfat-1}.
-		The reported time is the sum of the time to fit the reference model (second column) and
-		to explore the search path (third column), according to the method.}
+		The reported times for each each method on the three last columns are sums of the time to fit the reference model (second column) and
+		to explore the search path (third column).}
 	\label{tab:computational_time}
 \end{table}
 
@@ -514,7 +530,7 @@ which improves the accuracy in the estimation of the relevance of the
 variables.  Figure \ref{fig:correlation} illustrates this process in
 the form of a scatter plot of (absolute) correlations of the
 variables with $Y$ against the corresponding correlations with the
-predictions of a reference model (in this case the posterior
+predictions of a reference model (in this case, the posterior
 predictive means of model \eqref{eq:ref_mod}; see Section
 \ref{simulations}). Looking at the marginal distributions, we see
 that using a reference model to filter out noise in the data, the two
@@ -528,7 +544,7 @@ noisy data directly.
   \vspace{-0.5\baselineskip}
   \caption{Sample correlation plot of each variable (relevant in red, 
   non-relevant in blue) with the target variable $y$ and the latent variable 
-  $f$ respectively on the x and y axis. Simulated data are generated according to 
+  $f$ respectively on the x- and y-axes. Simulated data are generated according to 
   \eqref{eq:simulated_data} with parameters $n=70$, $\rho=0.3$,
   $k=100$, $p=1000$.}
   \label{fig:correlation}
@@ -554,12 +570,12 @@ not unique, except in the particular case of completely orthogonal predictors.
 The non-uniqueness of the solution is not a problem per se, as different samples of the data
 are expected to give possible different minimal subsets but with same predictive power. 
 However, it makes it difficult to define a proper
-concept of stability of the selection.} \\
+concept of stability of the selection.} 
 We will return to a problem of finding all
 the variables with some predictive power in Section~\ref{complete-selection}.
-\\
-The code to run all
-the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
+%
+% The code to run all
+% the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Simulation study 1}\label{minimal-simulated}
 
@@ -605,9 +621,8 @@ The selection continues if the reduced model has an elpd score higher
 In Figure \ref{fig:rmse_vs_fdr}, the predictive performance is shown
 for different values of $n$ and $\rho$ in terms of RMSE and the false discovery rate (FDR, the ratio of the number of non-relevant selected
 variables over the number of selected variables) of the selected submodel,
-averaged after 100 data simulations. We see that projpred has superior FDR and the
-smallest RMSE. Using a reference model improves steplm significantly,
-but the minimal subset variable selection stays unreliable. Stepwise
+averaged after 100 data simulations. Use of a reference model reduces RMSE of the selected model for all the methods. projpred has superior FDR and the
+smallest RMSE. Using a reference model improves also FDR of steplm significantly. Stepwise
 Bayesian linear regression is better than steplm when comparing both methods with
 and without a reference model, respectively. However, the minimal subset variable
 selection of the Bayesian linear regression is still less reliable than projpred.
@@ -618,7 +633,7 @@ measure the stability of variable selection by computing the entropy
 of the observed distribution of the included variables over different models. The smallest entropy
 would be obtained if the approach always selected the same set of
 variables, and the largest entropy would be observed if the approach
-would always selected different sets of variables. Therefore, lower entropy 
+would always select different sets of variables. Therefore, lower entropy 
 corresponds to a more stable selection. Highly correlated predictive variables may happen to be
 selected alternately, thus making stability estimation of the
 selection a non-trivial task. Entropy can not distinguish the interchangeability 
@@ -629,9 +644,9 @@ methods. The use of a reference model
 improves the stability of steplm in variable selection slightly, while it makes
 little difference for the Bayesian linear regression. The
 projpred approach turns out to be far more stable than all
-other methods. This is likely due to projpred being based on better
+other methods. This is likely due to projpred being based on a better
 decision theoretical formulation which 1) takes into account the full
-predictive distribution and not just point estimate and 2) projects
+predictive distribution and not just a point estimate and 2) projects
 the reference model posterior to the submodel instead of using a
 simple refit of submodels.
 
@@ -639,7 +654,7 @@ simple refit of submodels.
   \centering
   \includegraphics[width=0.98\textwidth]{graphics/rmse_vs_fdr_parallel.pdf}
   \vspace{-0.3\baselineskip}
-  \caption{Simulation study 1: Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars. The projpred approach has the smallest RMSE and false discovery ratio.}
+  \caption{Simulation study 1: Root mean square error (RMSE) against false discovery rate in the minimal subset variable selection with one standard deviation error bars. Use of a reference model reduces RMSE of the selected model for all the methods. The projpred approach has the smallest RMSE and false discovery ratio.}
   \label{fig:rmse_vs_fdr}
 \end{figure}
 
@@ -655,7 +670,7 @@ simple refit of submodels.
 \hypertarget{bodyfat-2}{
 \subsection{Body fat example: Part 2}\label{bodyfat-2}}
 
-Here we repeat the selection of Section \ref{bodyfat-1} via
+Here, we repeat the selection of Section \ref{bodyfat-1} via
 stepwise backward regression. In this case, the overall number of
 variables (original plus noisy) is 100, as it was in the last part of
 Section \ref{bodyfat-1}. We compare results with and without using
@@ -669,7 +684,7 @@ the reference model reduces the number of irrelevant variables included
 in the final model. This leads to less overfitting and thus to
 improved out-of-sample predictive performance in terms of RMSE. The
 reference model approach applied to the stepwise backward regression
-achieves outstanding improvements considering its simplicity, yet it
+achieves outstanding improvements considering its simplicity, although it
 does not reach the goodness of the much more sophisticated projective
 prediction approach (see results of Section \ref{bodyfat-1}).
 \begin{figure}[tp]
@@ -693,20 +708,21 @@ Reference model + Stepwise selection & 4.7 (0.5) & 25 (7)   \\
 \end{table}
 
 \subsection{Reference model's effect and the projection predictive approach}
-\fede{The previous experiments allowed us to study and disantangle the effect of a reference model in variable selection, specifically in the minimal subset selection case. \\
+\fede{The previous experiments allowed us to study and disantangle the effect of a reference model in variable selection, specifically in the minimal subset selection case.
+  %
 The simulation study based on artificial data of Section \ref{minimal-simulated} shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection with the reference model approach (see Figure \ref{fig:bodyfat_step_refvsdata} and Table \ref{tab:step_refvsdata}). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.}
 
 \section{Complete variable selection}\label{comparison-complete-subset}
 \label{complete-selection}
 
 An alternative to minimal subset variable selection is \emph{complete
-  variable selection} in which the goal is to find all relevant
+  variable selection}, in which the goal is to find all relevant
 variables that have some predictive information about the target. In
 complete variable selection, it is possible that there are theoretically
 relevant variables, but given finite noisy data we are not able to infer their relevance.
 The projection predictive approach was originally designed for the minimal subset
-variable selection but we will test a simple iterative variant for the complete
-variable selection case in this Section.
+variable selection, but we will test a simple iterative variant for the complete
+variable selection case in this section.
  In addition, we analyse the benefits of the reference
 model approach in combination with three other
 methods which have been specifically designed for complete variable selection. 
@@ -717,13 +733,14 @@ variables over the total number of relevant variables). We also provide
 a comparison of the stability of the selection by means of a stability
 measure proposed by \citet{paper:stability}, which goes from 0 to 1 and a higher value 
 means a more stable selection. 
-\\
-The code to run all
-the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
+%
+% The code to run all
+% the experiments is available on GitHub\footnote{\url{https://github.com/fpavone/ref-approach-paper}}.
 
 \subsection{Iterative projections}
 
-We modify the projection predictive approach for complete variable
+Projection predictive approach has been originally designed for minimal subset selection. For the comparison purposes, 
+we modify the projection predictive approach for complete variable
 selection by using it iteratively.  Applying the straightforward
 implementation of projpred, we are able to select a minimal subset of
 variables, which yield to a model with a predictive performance
@@ -732,7 +749,7 @@ comparable to the full model's predictive performance.
 the projpred selection for different iterations, at each time
 excluding the variables selected in the previous
 iterations from the search.
- At each iteration the selected submodel size corresponds to the
+ At each iteration, the selected submodel size corresponds to the
 one having a predictive performance close enough to the baseline
 model, which in this iterative version is the submodel with the
 highest predictive score explored at the current iteration. This translates
@@ -741,13 +758,13 @@ in the following stopping rule at each iteration:
 \label{eq:rule_of_thumb}
 \text{min} \{i\in \{0,\ldots,p\}: \text{P}(\text{elpd}_{i}-\text{elpd}_{\text{best}}>0)\geq \alpha \},
 \end{equation}
-where $i$ indexes the submodel size and ``best'' stands for the best predictive explored submodel
-at the considered iteration. The algorithm terminates when the empty model (only intercept) satisfies
+where $i$ indexes the submodel size, ``best'' stands for the best predictive explored submodel
+at the considered iteration, and the probability is computed from the normal approximation for the uncertainty in the cross-validation performance comparison \citep{Vehtari+etal:2017:practical,paper:projpred,Sivula+etal:2020:loo_uncertainty}. The algorithm terminates when the empty model (only intercept) satisfies
 the stopping rule (see Algorithm \ref{alg:iterated_proj}).
 The choice of the hyperparameter $\alpha$ is non-trivial, and we have 
 observed sensitivity of the selection to such a choice, mainly when using cross-validation with a small
-number of observations or not very predictive variables. 
-In our experiments we chose the default value used in the \texttt{projpred} 
+number of observations or not very predictive variables. We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and worth a further research.
+In our experiments, we chose the default value used in the \texttt{projpred} 
 \texttt{R}-package, that is, $\alpha=0.16$. \fede{The choice of $\alpha$ to determine 
 the submodel size is discussed in \cite{paper:projpred}. One possible way to proceed, 
 but just as rule of thumb, is to choose $\alpha = 0.16$, which correspond to requiring 
@@ -779,7 +796,7 @@ from the best submodel predictive score.}
 \end{center}
 
 In the experiments shown in the next sections, we include an additional iterative
-method which we refer to as `iterative lasso'. It consists of the same iterative
+method, which we refer to as `iterative lasso'. It consists of the same iterative
 algorithm as iterative projpred except for not using any reference model, but
 the lasso method for variable selection, instead.
 That is, it uses the observed target values instead of predictions of the reference model.
@@ -799,7 +816,7 @@ z-values $\{z_{j}\}_{j=1}^{p}$ of a normal mean problem (explained in Section \r
 on whether they belong to the
 theoretical null distribution $f_{0}$ (i.e., the null hypothesis $H_0$
 meaning no relevance) against the alternative hypothesis distribution
-$f_{1}$. In our case $f_{0}$ corresponds to the standard normal
+$f_{1}$. In our case, $f_{0}$ corresponds to the standard normal
 distribution (see expression \eqref{eq:normal_means_problem2}). The
 quantity of interest is the local false discovery rate (loc.fdr)
 defined as: \
@@ -825,7 +842,7 @@ a heavy-tailed distribution. We use the implementation in the
 \cite{johnstone2004needles}, we use a Laplace distribution resulting
 in a thresholding property, that is, there exists a threshold value
 such that all the data under that threshold have posterior median
-equal to zero. Therefore the selection is done by selecting only those
+equal to zero. Therefore, the selection is done by selecting only those
 parameters whose posterior median is different from zero. The
 hyperparameter of the Laplace distribution and the mixing weight of
 the prior are estimated by marginal maximum likelihood.
@@ -836,7 +853,7 @@ horseshoe prior \Citep{paper:rhs} and selecting those variables whose posterior
 distribution does not include zero in the interval between the 5\% and
 the 95\% quantiles.
 
-All of these methods provide a complete selection approach and we
+All of these methods provide a complete selection approach, and we
 compare their performance with and without using a reference model.
 That is, in the data condition, we apply the method on the original
 data $y$ while, in the reference model condition, we replace $y$ by
@@ -869,7 +886,7 @@ statistically relevant to the disease. One common way to proceed is to
 compute the two-sample $t$-statistic for every gene separately.  After
 normalising these statistics, they then become the data $Z$ in the
 normal means problem \eqref{eq:normal_means_problem}. For further
-details see the examples by \cite{paper:efron, efron2012large}.
+details, see the examples by \cite{paper:efron, efron2012large}.
 
 In our experiments, we retrieve the normal means problem from the
 sample correlations between the target and the variables using the
@@ -904,7 +921,7 @@ and the number of relevant variables $k$ are fixed to $p = 1000$ and
 $k = 100$, respectively. In general, the lower $\rho$ and $n$, the
 more challenging the variable selection is. For this example, \citet{paper:projpred} proposed to
 use a reference model which a Bayesian linear regression using the first five
-supervised principal components (SPC) as variables and imposing an hierarchical prior on
+supervised principal components (SPC) as variables and imposing a hierarchical prior on
 their coefficients:
 \begin{equation}
 \label{eq:ref_mod}
@@ -964,7 +981,7 @@ misspecified models with cross-validation \citep{bengio2004no}.
 
 Figure \ref{fig:stability_iterated} shows the estimates of the stability
 measure proposed by \cite{paper:stability} with 0.95 confidence
-intervals based on 100 simulations. Such a measure takes in account
+intervals based on 100 simulations. Such a measure takes to account
 the variability of the subset of the selected variables at each
 simulation (originally at each bootstrap sample), modelling the
 selection of each variable as a Bernoulli process. Further details are
@@ -998,9 +1015,9 @@ projection does not perform well in the hardest scenarios.
 \end{figure}
 
 We conclude our complete selection experiments using the body fat
-dataset one more time. As earlier we add noisy uncorrelated variables
+dataset one more time. As earlier, we add noisy uncorrelated variables
 to the original data to get a total of 100 variables.
-Since we do not have a ground truth available with regard the original
+Since we do not have a ground truth available with regard to the original
 variables of the data, we assume it is reasonable to consider all of
 them relevant, at least to some degree. The artificially added
 variables are naturally irrelevant by construction.
@@ -1035,18 +1052,18 @@ carried over for the complete variable selection with iterative
 projpred (even changing the reference model with a full encompassing 
 linear regression with regularised horseshoe prior), and the methods 
 specifically designed for the complete variable selection perform better. 
-However we still observe a better selection with respect to iterative lasso
+However, we still observe a better selection with respect to iterative lasso
 in any of the examined scenarios, mainly in terms of false discovery rate.
 Figure \ref{fig:bodyfat_stability} shows the stability
 results using the measure by
 \cite{paper:stability}. The benefits of the reference model are here
-marginal with only small improvements.
+marginal, with only small improvements.
 
 In this example, we have used the reference model defined as a linear
 regression over some supervised principal components, because it is
 natural for a large number of correlating variables, and has fairly good
 predictive performance plus it is computationally efficient. We do not
-argue that this is always the best choice and more sophisticated
+argue that this is always the best choice, and more sophisticated
 models can lead to even better results. Here the purpose of the
 experiments were to motivate the use of reference models in general,
 and as we needed to average results over a lot of repetitions per
@@ -1070,7 +1087,7 @@ filter on the observed target values on top of different widely used
 variable selection methods. Overall, using a reference model leads to
 more accurate and stable selection results independently of the
 specific selection method. These benefits apply to a large family of
-different methods all involving a reference model in one way or the
+different methods, all involving a reference model in one way or the
 other. Some of these approaches have been present in the literature for some time
 \cite[e.g., see references in][]{vehtari2012survey,paper:projpred}
 but often without a clear explanation of {why} they are actually
@@ -1088,28 +1105,28 @@ model itself and assessing its predictive performance.
 To build good predictive reference models, which are specifically
 tuned to the data and problem at hand, we recommend them to be
 developed using a robust Bayesian modelling workflow, for instance, as
-outlined by \citet{gelman2013bayesian} and \citet{gabry2019visualization}.
+outlined by \citet{gelman2020bayesian} and \citet{gabry2019visualization}.
 
 Another main result of this paper is that the projective prediction
 approach shows superior performance in minimal subset variable
-selection compared to alternative methods whether or not these methods
+selection compared to alternative methods, whether or not these methods
 make use of a reference model. That is, while the reference model is
-certainly one important aspect the projective prediction approach, it
+certainly one important aspect of the projective prediction approach, it
 is not the only reason for its superior performance.  Rather, by
 incorporating the full uncertainty of the posterior predictive
 distribution into the variable selection procedure (instead of just
-using point estimates) and using principled cross-validation method,
+using point estimates) and using a principled cross-validation method,
 projective predictions combine several desirable variables into a
 single procedure \citep{paper:projpred}.  In summary, we would
 strongly recommend using projective predictions for minimal subset
- variable selection if possible and feasible. 
+ variable selection if possible and computationally feasible. 
  However, if this is not an option in a given
 situation, we would in any case recommend using a reference model on
 top of the chosen variable selection method.
 
 The projective prediction approach was not designed for the complete
 variable selection. We tested a simple iterative version of projpred,
-with mixed results and the methods specifically designed for complete
+with mixed results, and the methods specifically designed for complete
 variable selection (especially loc.fdr) performed better in our
 experiments. It is left for future research to develop 
 a better projective prediction approach for complete variable
@@ -1122,9 +1139,9 @@ the probabilistic programming language \texttt{Stan}
 \texttt{rstan} \citep{Rrstan} and \texttt{rstanarm} \citep{Rrstanarm}.
 Graphics elaborations have been done using \texttt{ggplot2} \citep{Rggplot2}
 and the \texttt{tidyverse} framework \citep{Rtidyverse}.
-The code to run all
-the experiments is available on GitHub
-(\url{https://github.com/fpavone/ref-approach-paper}).
+% The code to run all
+% the experiments is available on GitHub
+% (\url{https://github.com/fpavone/ref-approach-paper}).
 
 \section*{Acknowledgments}
 
@@ -1185,7 +1202,7 @@ formulation by][]{paper:original_proj}, following
 \cite{paper:projpred}. Suppose we have observed $n$ statistical units
 with target values $\{y_{i}\}_{i=1}^{n}$ and a set of observed
 variables for which we want to obtain a minimally relevant
-subset. Than, the main steps are the following:
+subset. Then, the main steps are the following:
 \begin{enumerate}
 \item Devise and fit a reference model. Let $\{\boldsymbol{\theta}_{*}^{s}\}_{s=1}^{S}$ be the set of $S$ draws from the reference model's posterior.
 \item Rank the variables according to their relevance using some
@@ -1193,7 +1210,7 @@ subset. Than, the main steps are the following:
   preserve this order, starting from including only the highest ranked
   variable. The submodels are then naturally identified by their
   model size. This step is not strictly necessary but reduces the number
-  of submodels to considered in the following steps and thus reduces computation time.
+  of submodels considered in the following steps and thus reduces computation time.
 \item For each submodel $\pi$ selected in Step 2, project each of the reference model's posterior draws $\boldsymbol{\theta}_{*}^{s}$ as follows:
 \begin{equation}\label{eq:draw_by_draw}
 \boldsymbol{\theta}_{\perp}^{s} = \underset{\boldsymbol{\theta^{s}}\in\Theta}{\text{argmin}} \frac{1}{n}\sum_{i=1}^{n}\text{KL} \left[ p(\tilde{y}_{i}|\boldsymbol{\theta}_{*}^{s})\;||\;q_\pi(\tilde{y}_{i}|\boldsymbol{\theta}^{s}) \right],
@@ -1206,7 +1223,7 @@ $i$), whereas $q_\pi(\tilde{y}_{i}|\boldsymbol{\theta}^{s})$ is the
 predictive distribution of the submodel. The projected draws
 $\boldsymbol{\theta}_{\perp}^{s}$ then present the projected posterior
 for the submodel.
-\item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation. Fast cross-validation can be performed using using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
+\item For each submodel (size), test the predictive performance for a chosen predictive utility score, for example, via cross-validation. Fast cross-validation can be performed using approximate leave-one-out cross-validation via Pareto-smoothed importance-sampling
 \citep[PSIS-LOO-CV; ][]{paper:psis_loo}.
 \item Choose the smallest submodel (size) that is sufficiently close to the reference model's predictive utility score. The results in this paper were not sensitive to the specific choice of how ``sufficiently close'' is defined, and we used the same definition as \citet{paper:projpred}.
 \end{enumerate} 
@@ -1216,7 +1233,7 @@ However, in the special case of the submodels being
 generalised linear models with a likelihood coming from the exponential family, \eqref{eq:draw_by_draw} reduces to a
 maximum likelihood estimation problem, which can be easily solved
 \citep{paper:original_proj}. For further details on the projective
-prediction workflow and implementation see the paper by \citet{paper:projpred}.
+prediction workflow and implementation, see the paper by \citet{paper:projpred}.
 
 \end{document}
 

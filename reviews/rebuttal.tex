@@ -98,25 +98,24 @@ Reviewer 3 gave precious comments on how to clarify the real intentions of our w
 % Let's start point-by-point with Reviewer 1
 \reviewersection
 \begin{comment}
-The paper is well written and organized an the topic analyzed is very relevant and practice. However, in my view, the goals of the paper, described in the introduction section, have already been reached in the excellent paper of Pironen et al. (2020) and, in this sense, the contributions of the current paper is very marginal. The framework of Pironen et al. (2020) is more general (they consider exponential family models and generalized linear models) and provide some theoretical results that, as they said “... help us to understand when the reference model could be helpful for parameter learning in linear submodels” (section 8 of Piironen et al., 2020). The only innovation that I can appreciate in the current paper is the proposal of an algorithm to solve a complete variable selection problem that, unfortunately, does not work very well as the authors explicitly recognize: “The great performance of projpred in minimal subset selection is not carried out over for the complete variable selection with iterative projpred ..., and the methods specifically designed for the complete variable selection perform better” (page 12, lines 24-27), even though they observe a better selection to iterative lasso. In my view, this is due to that the algorithm is too simple (as the authors explicitly recognize in the conclusions) and that the projective prediction approach was not designed for the complete variable selection. You should modify this algorithm in such a way that a more exhaustive exploration of the space of models was carried out, perhaps using Bayesian variable selection procedures based on the use of Occam’s window or something similar.
+The paper is well written and organized an the topic analyzed is very relevant and practice. However, in my view, the goals of the paper, described in the introduction section, have already been reached in the excellent paper of Piironen et al. (2020) and, in this sense, the contributions of the current paper is very marginal. The framework of Piironen et al. (2020) is more general (they consider exponential family models and generalized linear models) and provide some theoretical results that, as they said “... help us to understand when the reference model could be helpful for parameter learning in linear submodels” (section 8 of Piironen et al., 2020). The only innovation that I can appreciate in the current paper is the proposal of an algorithm to solve a complete variable selection problem that, unfortunately, does not work very well as the authors explicitly recognize: “The great performance of projpred in minimal subset selection is not carried out over for the complete variable selection with iterative projpred ..., and the methods specifically designed for the complete variable selection perform better” (page 12, lines 24-27), even though they observe a better selection to iterative lasso. In my view, this is due to that the algorithm is too simple (as the authors explicitly recognize in the conclusions) and that the projective prediction approach was not designed for the complete variable selection. You should modify this algorithm in such a way that a more exhaustive exploration of the space of models was carried out, perhaps using Bayesian variable selection procedures based on the use of Occam’s window or something similar.
 \end{comment}
 
 \begin{reply}
-	Thank you very much for your comments. We believe that in the first version of the paper, the purpouse of our work was not clear and subject to possible misunderstandings. Our contribution takes clear insipiration from the work of \citet{piironen2020projective}, but aims at a different goal: We studied the impact of using a reference model in general, disentangled from the specific variable selection algorithm.
+	Thank you very much for your comments. We believe that in the first version of the paper, the purpose of our work was not clear and subject to possible misunderstandings. Our contribution takes clear inspiration from the work of \citet{paper:projpred}, but aims at a different goal: We studied the impact of using a reference model in general, disentangled from the specific variable selection algorithm.
 	We now make our goals explicit already in Section 1, where we now write
 	
-	\vspace{0.5cm}
-	
-	\textit{``The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
+\vspace{0.5\baselineskip}
+	\textit{The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
 		\begin{itemize}
 			\item propose a simple and intuitive approach to combine any variable selection method with the reference model approach. This allows us to investigate the benefit of using reference models independent of the specific variable selection method;
 			\item perform extensive numerical experiments to compare variable selection methods with or without using a reference model, both for complete and minimal subset variable selection and assessing the quality of the selection;
-			\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in minimial subset variable selection.''
+			\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in minimal subset variable selection.
 		\end{itemize}}
 		
-		\vspace{0.5cm}
+		\vspace{0.5\baselineskip}
 		
-		Moreover, we clarified that the projective prediction approach for complete variable selection is not the main aim of this work. The method has been included solely for the sake of a more exhaustive comparison, since the good performances of the projective prediction method (projpred) for minimal variable selection. Indeed, we have highlighted how projpred has been designed specificly for the minimal selection case, making it non-trivial to extend for the complete selection. We cannot rule out that better projective prediction methods for complete selection can be designed in the future but this is not in the scope of this paper. 
+		Moreover, we clarified that the projective prediction approach for complete variable selection is not the main aim of this work. The method has been included solely for the sake of a more exhaustive comparison, since the good performances of the projective prediction method (projpred) for minimal variable selection. Indeed, we have highlighted how projpred has been designed specifically for the minimal selection case, making it non-trivial to extend for the complete selection. We cannot rule out that better projective prediction methods for complete selection can be designed in the future but this is not in the scope of this paper. 
 \end{reply}
 
 % Point one description 
@@ -127,11 +126,11 @@ My main concern with respect to the projective predictive approach is the robust
 \begin{reply}
 Thank you for this comment. We have added some clarifications at the end of Section 2.2 with regard to building the reference model, where we write
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 \textit{
-``Clearly, the reference model approach requires a sensible reference model. The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. The goodness of a reference model comes from its predictive ability which should be assessed via proper validation methods. [...] In general, there is no restriction on the type of model the reference models should be and a sensible reference model does not even need to be Bayesian necessarily.''
+Clearly, the reference model approach requires a sensible reference model. The construction of such a model should follow proper modelling workflow \citep[see, e.g.][]{gelman2020bayesian}. Better predictive models imply better selection results. The goodness of a reference model comes from its predictive ability which should be assessed via proper validation methods. [...] In general, there is no restriction on the type of model the reference models should be and a sensible reference model does not even need to be Bayesian necessarily.
 }
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 
 As such, for example, a model predicting constant output or a model predicting uncorrelated noise are not useful reference models.
 
@@ -155,9 +154,8 @@ This is an interesting question. The way we see it is that MLE tends to be more 
 
 Inspired by your question, we added a discussion of this in the new version of the paper. In Section 2.2 we write
 
-\vspace{0.5cm}
-
-\textit{``In general, there is no restriction on the type of model the reference models 
+\vspace{0.5\baselineskip}
+\textit{In general, there is no restriction on the type of model the reference models 
 	should be and a sensible reference model does not even need to be Bayesian.
 	However, Bayesian methods can help in some of those situations
 	where MLE procedures struggle. 
@@ -167,9 +165,9 @@ Inspired by your question, we added a discussion of this in the new version of t
 	The use of a prior in Bayesian inference automatically incorporates 
 	some kind of shrinkage in the Bayesian estimator under a given loss function \citep[see, e.g.][]{rockova2012hierarchical}. 
 	For the sake of our study, we rely on simple data structure which can be well be described 
-	by linear regression models. However, more complex data can arise in practice, for example, including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the joint posterior distribution of all parameters.''}
+	by linear regression models. However, more complex data can arise in practice, for example, including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the joint posterior distribution of all parameters.}
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 
 \end{reply}
 
@@ -179,18 +177,18 @@ What if the true generator process is a mixture model, in such a way that there 
 \end{point}
 
 \begin{reply}
-The projection predictive variable selection and its properties have been extensively discussed in \citet{piironen2017comparison} and \citet{piironen2020projective}, and we refer to them for the detailed discussion on the uncertainty related to search paths. \citet{paasiniemi2018} provides illustrations how this uncertainty can be communicated to the users. When there are correlating variables that have exactly the same amount of information, the minimal set is not unique. In this paper, we focused on the average performance of the minimal set, but when analysing a single dataset, we recommend the approaches presented in \citet{paasiniemi2018} to analyse alternative possible variable sets.
+The projection predictive variable selection and its properties have been extensively discussed in \citet{piironen2017comparison} and \citet{paper:projpred}, and we refer to them for the detailed discussion on the uncertainty related to search paths. \citet{paasiniemi2018} provides illustrations how this uncertainty can be communicated to the users. When there are correlating variables that have exactly the same amount of information, the minimal set is not unique. In this paper, we focused on the average performance of the minimal set, but when analysing a single dataset, we recommend the approaches presented in \citet{paasiniemi2018} to analyse alternative possible variable sets.
 
-\fede{We clarified this point in the paper in Section 3, writing:}
+We have clarified this point in the paper in Section 3, writing:
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 
-\textit{``Such nature of the minimal subset makes the solution
+\textit{Such nature of the minimal subset makes the solution
 	not unique, except in the particular case of completely orthogonal predictors. 
 	The non-uniqueness of the solution is not a problem per se, as different samples of the data
 	are expected to give possible different minimal subsets but with same predictive power. 
 	However, it makes it difficult to define a proper
-	concept of stability of the selection.''}
+	concept of stability of the selection.}
 \end{reply}
 
 \begin{point}
@@ -198,18 +196,50 @@ In most of real situations, we have an M-open problem (particularly in big data 
 \end{point}
 
 \begin{reply}
-We assume that all models are wrong. Analysing model misspecification is well studied in the Bayesian literature and there are plenty of methods available for model checking \citep[see, e.g.][]{gelman2020bayesian}. The reference model approach assumes we have first made the best possible model, following all the best practices for Bayesian model building \citep{gelman2020bayesian}. Even a misspecifed model that would introduce some bias can reduce the variance so that the variable selection is improved via an improved bias-variance tradeoff.
-TODO: clarify this in the paper 
+We assume that all models are wrong. Analysing model misspecification is well studied in the Bayesian literature and there are plenty of methods available for model checking \citep[see, e.g.][]{gelman2020bayesian}. The reference model approach assumes we have first made the best possible model, following all the best practices for Bayesian model building \citep{gelman2020bayesian}. Even a misspecified model that would introduce some bias can reduce the variance so that the variable selection is improved via an improved bias-variance tradeoff. As the selection is to find a submodel that is not far from the reference model, the performance of the selected model is not far from the reference model.
+
+We have clarified this in the introduction:
 \end{reply}
+
+\vspace{0.5\baselineskip}
+\textit{
+We assume all models are wrong, but we assume we have constructed a
+model which reflects our beliefs about the future data in the best
+possible way and which has passed model checking and criticism
+\citep{gelman2020bayesian,gabry2019visualization}.  Using the usual
+best practices for constructing the reference model is important, as
+using a garbage reference model can only lead to selecting similarly
+garbage smaller model. If the reference model is considered to have
+useful predictions then the smaller models selected will also have
+similar useful predictions.
+}
 
 \begin{point} \label{q5}
 In big data problems with $n<<p$ and the explanatory variables are weakly related (in such a way that the number of significant principal components is large), how do you build a reference model? Is it possible?
 \end{point}
 
 \begin{reply}
-This situation was studied in \citet{piironen2020projective} and we now reference it in the paper by writing: 
-TODO: please add a clarifying sentence
+  Yes, it is possible. This situation has been studied by
+  \citet{piironen2017comparison},
+  \citet{Piironen:2015:Stan_projection}, and
+  \citet{paper:projpred}. We had added to the introduction:
 \end{reply}
+
+
+\vspace{0.5\baselineskip}
+\textit{
+Examples of useful reference models can be found for example for
+small-$n$-large-$p$ regression and logistic regression by
+\citet{piironen2017comparison} (with spike-and-slab prior),
+\citet{Piironen:2015:Stan_projection} (with horseshoe prior), and
+\citet{paper:projpred} (with iterative supervised principal
+components), for generalized linear and additive multilevel models by
+\citet{Catalina:2020:GAMM_projection}, for regression models with
+non-exponential family observation models by
+\citet{Catalina+etal:2021:latent_projection}, and for generic
+multivariate non-linear regression with higher order interactions by
+\citet{Piironen:2016:GPprojection}.
+}
 
 \begin{point}
 The same question that \ref{q5} but if n is small and your data have not power to discriminate between two alternative reference models.
@@ -236,7 +266,7 @@ In the Bayesian stepwise selection procedures of section 3.1 you use posterior p
 \end{point}
 
 \begin{reply}
-There is no need of calibrating these $p$-values, since they are used only to pre-select predictors for potential exclusion. Such a predictor is then excluded or not, by comparing the predictive performance of the reduced model without this predictor and of the not-reduced model including the predictor. In such a way, the posterior $p$-values matter only in terms of their ordering and not in terms of their magnitude.
+There is no need of calibrating these $p$-values, since they are used only to pre-select predictors for potential exclusion. Such a predictor is then excluded or not, by comparing the predictive performance of the reduced model without this predictor and the not-reduced model including the predictor. In such a way, the posterior $p$-values matter only in terms of their ordering and not in terms of their magnitude.
 \end{reply}
 
 \begin{point}
@@ -244,7 +274,7 @@ Section 3.1 steplm procedure: Why have you chosen the AIC criterion which, as it
 \end{point}
 
 \begin{reply}
-We used AIC because \citet{heinze2018variable} used AIC in the steplm procedure. The goal of our paper was not to compare all possible information criteria but to investigate whether using reference models helps variable selection methods. We made some choices to keep the paper within reasonable length and complexity. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
+We used AIC because \citet{heinze2018variable} used AIC in the steplm procedure and we wanted our results to be comparable to their results. The goal of our paper was not to compare all possible information criteria but to investigate whether using reference models helps variable selection methods. We made some choices to keep the paper within reasonable length and complexity. Based on the results, we assume that variable selection using any *IC approach will benefit from using a reference model. 
 \end{reply}
 
 \begin{point}
@@ -252,7 +282,7 @@ Section 4.1, page 8, line 38: $\text{elpd}_\text{base}$ should be $\text{elpd}_\
 \end{point}
 
 \begin{reply}
-Thanks for pointing out the typo. We fixed it in the new version of the paper.
+Thanks for pointing out the typo. We have fixed it.
 \end{reply}
 
 \begin{point}
@@ -260,30 +290,39 @@ How is calculated the probability used in the stopping rule (2)? Using the refer
 \end{point}
 
 \begin{reply}\label{reply:stopping}
-At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{piironen2020projective}. Explained shortly, the predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples form a distribution than can be used to estimate said probability.
-TODO: is it worth adding at least half of a sentence for this?
+At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{paper:projpred}. The predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples form a distribution than can be used to estimate said probability. We have added following sentence:
+TODO: is the sentence below enough?
 \end{reply}
+
+\textit{
+\ldots and the probability is computed from the normal approximation for the uncertainty in the cross-validation performance comparison \citep{Vehtari+etal:2017:practical,paper:projpred,Sivula+etal:2020:loo_uncertainty}.
+}
 
 \begin{point}
 It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{best}>0$? Perhaps you should consider other limits similar to those used in Bayes factors (Kass and Raftery, 1995) and not to choose only on solution but to explore other possible solutions in the spirit of Occam’s window
 \end{point}
 
 \begin{reply}
-The above condition is derived from the original criteria to choose the model size in \citet{piironen2020projective} for the use of the projection predictive approach in the minimal subset scenario. In that case, the comparison is between the predictive score of the submodel of size $i$ and the reference model. Here we decided to compare the submodel of size $i$ with the ``best'' size, at the given iteration, due to the natural loss of explanatory power of the remaining covariates as the iterations increase. \\
-In general, the condition is expressed as the probability of that event, which is anyhow less exigent than the inequality itself. We don't want to imply that this procedure could not be improved somehow to take, for example, something like Occam's window into account. However, since this was not the main aim of this paper, we cannot reasonably address it here but will leave it for future research.
-TODO: is it worth adding a small sentence in the manuscropt about this?
+The above condition is derived from the original criteria to choose the model size in \citet{paper:projpred} for the use of the projection predictive approach in the minimal subset scenario. In that case, the comparison is between the predictive score of the submodel of size $i$ and the reference model. Here we decided to compare the submodel of size $i$ with the ``best'' size, at the given iteration, due to the natural loss of explanatory power of the remaining covariates as the iterations increase. \\
+In general, the condition is expressed as the probability of that event, which is anyhow less exigent than the inequality itself. We don't want to imply that this procedure could not be improved somehow to take, for example, something like Occam's window into account. However, since the projection predictive approach was not the main point of this paper, we cannot reasonably address it here and leave it for future research. We have added a following sentence to the paper.
+TODO: would this be enough?
 \end{reply}
+
+\vspace{0.5\baselineskip}
+\textit{
+We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and worth a further research.
+}
 
 \begin{point}
 Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha= 0.16$ is a magic number and a more thoroughly discussion of the influence of this value should be provided.
 \end{point}
 
 \begin{reply}
-\fede{We clarified the choice of $\alpha$ by writing in Section 4.1:}
+We have clarified the choice of $\alpha$ by writing in Section 4.1:
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 
-\textit{``The choice of $\alpha$ to determine the submodel size is discussed in \citet{piironen2020projective}. One possible way to proceed, but just as rule of thumb, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score.''}
+\textit{The choice of $\alpha$ to determine the submodel size is discussed in \citet{paper:projpred}. One possible way to proceed, but just as rule of thumb, is to choose $\alpha=0.16$, which correspond to requiring that the submodel predictive score is at most at one standard deviation distance from the best submodel predictive score.}
 
 \end{reply}
 
@@ -292,7 +331,7 @@ Section 4.1, line 50 “expect” should be “except”
 \end{point}
 
 \begin{reply}
-Thanks for pointing out the typo. We fixed it in the new version of the paper.
+Thanks for pointing out the typo. We have fixed it.
 \end{reply}
 
 \reviewersection
@@ -307,18 +346,18 @@ Although main articles related to the use of the reference model approach in the
 \end{point}
 
 \begin{reply}
-Thank you for your very helpful feedback. We have updated Section 1 following your suggestions. In particular, we clarified the motivation of our work and, thus, the purpouse of the reference model approach used in our experiments. In the revised version of the paper we write
+Thank you for your very helpful feedback. We have updated Section 1 following your suggestions. In particular, we clarified the motivation of our work and, thus, the purpose of the reference model approach used in our experiments. In the revised version of the paper we write
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 
-\textit{``The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
+\textit{The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
 		\begin{itemize}
 			\item propose a simple and intuitive approach to combine any variable selection method with the reference model approach. This allows us to investigate the benefit of using reference models independent of the specific variable selection method;
 			\item perform extensive numerical experiments to compare variable selection methods with or without using a reference model, both for complete and minimal subset variable selection and assessing the quality of the selection;
-			\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in minimial subset variable selection.''
+			\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in minimal subset variable selection.
 		\end{itemize}}
 	
-	\vspace{0.5cm}	
+	\vspace{0.5\baselineskip}	
 
 \end{reply}
 
@@ -338,12 +377,12 @@ Please add a brief summary of the results you obtained in Section 3 and the main
 \begin{reply}
 This is a good idea. We added a new Section 3.3 which summarises and elaborate the results of Section 3. In particular, we write:
 
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 \textit{
-``The previous experiments allowed us to study the impact of using reference models in variable selection and to disentangle their influence from that of the actual variable selection method, specifically in the minimal subset selection case.
-The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the actual variable selection method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection when coupled with the reference model approach (see Figure 5 and Table 4). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.''
+The previous experiments allowed us to study the impact of using reference models in variable selection and to disentangle their influence from that of the actual variable selection method, specifically in the minimal subset selection case.
+The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the actual variable selection method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection when coupled with the reference model approach (see Figure 5 and Table 4). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.
 }
-\vspace{0.5cm}
+\vspace{0.5\baselineskip}
 \end{reply}
 
 \begin{point}
@@ -351,11 +390,11 @@ Please mention the availability of the R codes to reproduce the results under ea
 \end{point}
 
 \begin{reply}
-Thank you for the feedback, we mentioned the availability of the R codes under each section in the new version of the paper.
+Thank you for the feedback, we mentioned the availability of the R code in the end of the introduction.
 \end{reply}
 
 
 \bibliographystyle{abbrvnat}
-\bibliography{rebuttal}
+\bibliography{../paper/ref_approach}
 
 \end{document}
