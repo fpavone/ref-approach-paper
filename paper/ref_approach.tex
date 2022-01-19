@@ -165,7 +165,8 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability, leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model, leading to projection predictive variable selection approach. Alternatively, reference models may also be used in an ad-hoc manner in combination with common variable selection methods.  In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection. Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods, independently of whether or not they use reference models.
+  Variable selection, or more generally, model reduction is an important aspect of the statistical workflow aiming to provide insights from data. In this paper, we discuss and demonstrate the benefits of using a reference model in variable selection. A reference model acts as a noise-filter on the target variable by modeling its data generating mechanism. As a result, using the reference model predictions in the model selection procedure reduces the variability and improves stability, leading to improved model selection performance. Assuming that a Bayesian reference model describes the true distribution of future data well, the theoretically preferred usage of the reference model is to project its predictive distribution to a reduced model, leading to projection predictive variable selection approach. We analyse how much the great performance of the projection predictive variable is due to the use of reference model and show that other variable selection methods can also be greatly improved by using the reference model as target instead of the original data. In several numerical experiments, we investigate the performance of the projective prediction approach as well as alternative variable selection methods with and without reference models. Our results indicate that the use of reference models generally translates into better and more stable variable selection.
+  %Additionally, we demonstrate that the projection predictive approach shows superior performance as compared to alternative variable selection methods, independently of whether or not they use reference models.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -197,7 +198,7 @@ performance.  In contrast, reference model based methods approximate
 the future data generation mechanism using the predictive distribution
 of a reference model, which can be, for example, a full-encompassing
 model including all variables.
-%
+
 We assume all models are wrong, but we assume we have constructed a
 model which reflects our beliefs about the future data in the best
 possible way and which has passed model checking and criticism
@@ -226,10 +227,10 @@ non-exponential family observation models by
 multivariate non-linear regression with higher order interactions by
 \citet{Piironen:2016:GPprojection}.
 
-Reference models have been also used in non-Bayesian contexts, in which
+Reference models have been also used in non-Bayesian context.
 \cite{harrell2015regression} describes them as full models that can be
-thought of as a ``gold standard'' (for a given application).  For
-example, \cite{faraggi2001understanding} deal with the necessity of
+thought of as a ``gold standard'' (for a given application).
+\cite{faraggi2001understanding} deal with the necessity of
 identifying interpretable risk groups in the context of survival data
 using neural networks, which typically perform very well in terms of
 prediction, but whose variables are difficult to be understood in
@@ -239,11 +240,12 @@ stepwise regression against consistent estimates $\hat{y}$ of a
 reference model instead of the observed responses $y$.
 
 \fede{All these methods can be framed into the family of reference model approaches. 
-The common denominator is the use of the reference model posterior predictive information 
+The common denominator is the use of the reference model predictive information 
 instead of simply observed data to guide the selection.}
 Whatever the terminology or applied statistical framework, reference
 models offer a powerful approach to improving variable selection, as we
-will demonstrate in the present paper. \\
+will demonstrate in the present paper. 
+
 \fede{The goal of our work is to study the impact of reference model approaches
 disentangling the benefit of the usage of a reference model from the specific selection algorithm.
 Specifically, we:}
@@ -280,7 +282,7 @@ into the theoretical reasons why reference models help in variable selection.
 \label{bodyfat-1}
 
 To motivate the further discussion and experiments, we start by a simple
-variable selection example using body fat data by \citet{johnson1996fitting}.
+variable selection example using body fat data by \citet{johnson1996fitting}. The same data was used illustrate the variable selection with classic stepwise backward regression by \citet{paper:bodyfat}.
 We compare the projective prediction approach (\emph{projpred},
 \citet{paper:projpred}) which uses a reference model, and classic
 stepwise backward regression (\emph{steplm}).
@@ -408,13 +410,17 @@ Both projpred and steplm compare a large number of models using either
 forward or backward search, which can lead to selection induced
 overfitting, but even with 100 variables, projpred is able to select a
 submodel with similar performance as the full model. In this example, the two
- compared methods also differ in other aspects than the usage of a reference 
- model, such as that projpred
-uses Bayesian inference and steplm uses maximum likelihood estimation. 
-However, as we show in the present paper, one of the primary difference 
-with respect to quality of the variable selection is indeed whether or 
-not a reference model is applied, and the performance of steplm can
-also be improved by using a reference model.
+compared methods also differ in other aspects than the usage of a reference 
+model, such as that projpred
+uses Bayesian inference and steplm uses maximum likelihood estimation.
+%
+To separate the effect of using a reference model, we show that
+performance of other variable selection methods, including steplm, can
+also be improved by using reference models.
+% However, as we show in the present paper, one of the primary difference 
+% with respect to quality of the variable selection is indeed whether or 
+% not a reference model is applied, and the performance of steplm can
+% also be improved by using a reference model.
 
 \subsection{Benefits and costs of using a reference model}
 
@@ -437,7 +443,7 @@ should be and a sensible reference model does not need to be Bayesian.
 However, Bayesian methods can help in some of those situations
 where MLE procedures struggle. 
 It is known that as the number of parameters in the model increases, the MLE
-estimator is dominated by shrunk estimators 
+estimator is dominated by shrinkage estimators 
 \citep{stein1956inadmissibility, stein1961estimation, parmigiani2009decision, efron2011tweedie}.
 The use of a prior in Bayesian inference automatically incorporates 
 some kind of shrinkage in the Bayesian estimator under a given loss function \citep[see, e.g.][]{rockova2012hierarchical}. 
@@ -621,11 +627,7 @@ The selection continues if the reduced model has an elpd score higher
 In Figure \ref{fig:rmse_vs_fdr}, the predictive performance is shown
 for different values of $n$ and $\rho$ in terms of RMSE and the false discovery rate (FDR, the ratio of the number of non-relevant selected
 variables over the number of selected variables) of the selected submodel,
-averaged after 100 data simulations. Use of a reference model reduces RMSE of the selected model for all the methods. projpred has superior FDR and the
-smallest RMSE. Using a reference model improves also FDR of steplm significantly. Stepwise
-Bayesian linear regression is better than steplm when comparing both methods with
-and without a reference model, respectively. However, the minimal subset variable
-selection of the Bayesian linear regression is still less reliable than projpred.
+averaged after 100 data simulations. Use of a reference models greatly reduces the overfitting in the selection process, and thus produces much lower test set RMSE of the selected model for all the methods. projpred has the lowest FDR and RMSE. Using a reference model improves also FDR of steplm stepwise Bayesian liena rgegression significantly. 
 
 When the variable selection is repeated with different simulated data
 sets, there is some variability in the selected variables. We
@@ -962,10 +964,10 @@ the vertical axis and the average false discovery rate on the
 horizontal axis based on 100 data simulations for the different
 combinations of $n$ and $\rho$. The best selection performance is on the
 top-left corner of each plot, as it implies the lowest false discovery
-rate and the highest sensitivity. We see that regardless of the
-applied selection method, the use of a reference model improves the
+rate and the highest sensitivity. We see that for all tested
+selection methods, the use of a reference model improves the
 selection performance, as it reduces the false discovery rate (shifting
-to the left) or increases the sensitivity (shifting upwards). In
+to the left) and increases the sensitivity (shifting upwards). In
 accordance with what can be expected, the larger data set size ($n$) and the higher the true correlations ($\rho$), the easier the
 selection is. Thus, for easier selection scenarios, the benefits of
 the reference model are smaller since the raw data already provide
@@ -973,11 +975,17 @@ enough information to identify the relevant variables. The iterative
 projpred has good false discovery rate in all cases, and the
 sensitivity is good except when the number of observations and the
 correlation level are small. It performs better than the iterative lasso 
-selection in any of the simulated scenarios. Tuning $\alpha$ might lead to improved
-selection, yet the main source of poor performance could well be the
-miscalibration of the uncertainty of the predictive utility score for
-misspecified models with cross-validation \citep{bengio2004no}.
-
+selection in all simulated scenarios.
+%
+For all these variable selection methods, tuning the corresponding
+method parameters could affect the balance between FDR and
+sensitivity, and thus the methods could made to produce more similar
+results. This was not done in this experiment, as the main point was
+to show that all methods can perform better with a reference model.
+% Tuning $\alpha$ might lead to improved selection, yet the main
+% source of poor performance could well be the miscalibration of the
+% uncertainty of the predictive utility score for misspecified models
+% with cross-validation \citep{Sivula+etal:2020:loo_uncertainty}.
 
 Figure \ref{fig:stability_iterated} shows the estimates of the stability
 measure proposed by \cite{paper:stability} with 0.95 confidence
@@ -985,15 +993,14 @@ intervals based on 100 simulations. Such a measure takes to account
 the variability of the subset of the selected variables at each
 simulation (originally at each bootstrap sample), modelling the
 selection of each variable as a Bernoulli process. Further details are
-available in \cite{paper:stability}. The reference model helps in
-improving the stability of the selection: again, the benefits are
-bigger when the problem is more difficult (small $n$ and $\rho$). In
+available in \cite{paper:stability}. Use of a reference model 
+improves the stability of all selection methods. The improvement is 
+larger when the problem is more difficult (small $n$ and $\rho$). In
 addition, we observe less uncertainty in the stability estimates for
 the reference approach (i.e., smaller width of the 95\% intervals),
 which can be still connected to the overall stability of the
 procedure. As in Figure \ref{fig:sensitivity_vs_fdr_iterated}, the iterative
 projection does not perform well in the hardest scenarios. 
-
 
 
 \hypertarget{bodyfat-2}{%
