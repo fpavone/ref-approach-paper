@@ -246,18 +246,12 @@ Whatever the terminology or applied statistical framework, reference
 models offer a powerful approach to improving variable selection, as we
 will demonstrate in the present paper. 
 
-\fede{The goal of our work is to study the impact of reference model approaches
-disentangling the benefit of the usage of a reference model from the specific selection algorithm.
-Specifically, we:}
-% The main contributions of our work are:
-\fede
-{\begin{itemize}
-\item disentangle the action of the reference model through a simple and intuitive way to combine any variable selection method with the reference model approach. This allows us to build up a comparison independent of the specific variable selection method;
-% We show a simple and intuitive way to combine any variable selection method with the reference model approach.
-\item perform extensive numerical experiments to compare variable selection methods with or without using a reference model, both for complete and minimal subset feature selection and assessing the quality of the selection;
-\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in variable selection.
-\end{itemize}
-}
+\fede{The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
+\begin{itemize}
+	\item propose a simple and intuitive approach to combine any variable selection method with the reference model approach. This allows us to investigate the benefit of using reference models independent of the specific variable selection method;
+	\item perform extensive numerical experiments to compare variable selection methods with or without using a reference model, both for complete and minimal subset variable selection and assessing the quality of the selection;
+	\item provide evidence supporting, in particular, the projection predictive approach as a principled way to use reference models in minimal subset variable selection.
+\end{itemize}}
 
 The paper is structured as follows. In Section
 \ref{ref-intro}, we review the concept of the reference
@@ -438,8 +432,7 @@ bias due to model misspecification.
 perform variable selection, it is known that large variance is
 generally more harmful than small bias \citep{piironen2017comparison}.}
 
-\fede{In general, there is not restriction on the type of model the reference models 
-should be and a sensible reference model does not need to be Bayesian.
+\fede{In general, there is no restriction on the type of model the reference models should be and a sensible reference model does not even need to be Bayesian necessarily.
 However, Bayesian methods can help in some of those situations
 where MLE procedures struggle. 
 It is known that as the number of parameters in the model increases, the MLE
@@ -448,7 +441,7 @@ estimator is dominated by shrinkage estimators
 The use of a prior in Bayesian inference automatically incorporates 
 some kind of shrinkage in the Bayesian estimator under a given loss function \citep[see, e.g.][]{rockova2012hierarchical}. 
 For the sake of our study, we rely on simple data structure which can be well described 
-by linear regression models. However, more complex data can arise from applications, for example including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the posterior distribution.}
+by linear regression models. However, more complex data can arise in practice, for example, including hierarchical structures. In these cases, MLE inference tends to become cumbersome, whereas the Bayesian framework provides a natural way to convey uncertainties and make inference through the joint posterior distribution of all parameters.}
 
 We argue that, regardless of how
 the reference model is set up and used in the inference procedure, it
@@ -710,9 +703,8 @@ Reference model + Stepwise selection & 4.7 (0.5) & 25 (7)   \\
 \end{table}
 
 \subsection{Reference model's effect and the projection predictive approach}
-\fede{The previous experiments allowed us to study and disantangle the effect of a reference model in variable selection, specifically in the minimal subset selection case.
-  %
-The simulation study based on artificial data of Section \ref{minimal-simulated} shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection with the reference model approach (see Figure \ref{fig:bodyfat_step_refvsdata} and Table \ref{tab:step_refvsdata}). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.}
+\fede{The previous experiments allowed us to study the impact of using reference models in variable selection and to disentangle their influence from that of the actual variable selection method, specifically in the minimal subset selection case.
+The simulation study based on artificial data of Section 3.1 shows clear improvements in terms of predictive performance of the selected model and false discovery rate when the selection is based on a reference model, regardless of the actual variable selection method applied. These results are confirmed also in the real word data example with the body fat dataset. The stepwise selection achieves far better selection when coupled with the reference model approach (see Figure 5 and Table 4). However, the projection predictive approach remains the best method in any of the experiment we run and on all the performance indexes we measured. Although we designed a reference model approach for general selection method, the projection predictive approach is a principled and validated way to do the selection. Indeed, the purpose of the former is only for fair comparisons in our study rather than a ready-to-use selection method.}
 
 \section{Complete variable selection}\label{comparison-complete-subset}
 \label{complete-selection}
