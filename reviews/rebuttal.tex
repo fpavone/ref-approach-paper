@@ -134,9 +134,9 @@ Clearly, the reference model approach requires a sensible reference model. The c
 
 As such, for example, a model predicting constant output or a model predicting uncorrelated noise are not useful reference models.
 
-The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking \citep[see, e.g.][]{gelman2020bayesian}. In this paper the point is not the Bayesian workflow, but to analyse given a good reference model what is the importance of making the submodel inference using the decision theoretically justified version or whether other algorithms can also be improved by replacing the data with filtered prediction from the reference model. 
+The sensitivity of the Bayesian models to choice of priors is well studied and there exists well-developed workflows for doing prior sensitivity analysis and other model checking \citep[see, e.g.][]{gelman2020bayesian}. As such, the aim of this paper is not to show how to build good reference models. Instead, we study the importance of reference models in submodel inference using either the decision theoretically justified version or other algorithms that we show can also be improved by replacing the data with filtered prediction from the reference model. 
 
-The reference models used in the examples are using widely accepted weakly informative priors and there are no prior sensitivity issues for them. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
+The reference models applied in the examples are using widely accepted weakly informative priors and there are no prior sensitivity issues for them. As the same reference models are used for all algorithms, the relative comparison between different algorithms and the overall usefulness of the reference model approach is not influenced by the details of the reference models.
 \end{reply}
 
 
@@ -289,12 +289,12 @@ How is calculated the probability used in the stopping rule (2)? Using the refer
 \end{point}
 
 \begin{reply}\label{reply:stopping}
-At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{paper:projpred}. The predictive performance is evaluated via cross-validation both for the reference model and the submodels using the log-predictive density (lpd) score. The obtained lpd samples form a distribution than can be used to estimate said probability. We have added following sentence:
-TODO: is the sentence below enough?
+At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{paper:projpred}. The predictive performance is evaluated via cross-validation both for the reference model and the submodels using the expected log-predictive density (elpd) score. The obtained elpd samples form a distribution than can be used to estimate said probability. We have added following sentence:
+TODO: is the sentence below enough? Paul: Please note my change to the below sentence.
 \end{reply}
 
 \textit{
-\ldots and the probability is computed from the normal approximation for the uncertainty in the cross-validation performance comparison \citep{Vehtari+etal:2017:practical,paper:projpred,Sivula+etal:2020:loo_uncertainty}.
+\ldots and the probability is computed from a normal approximation of the uncertainty in the cross-validation performance comparison using the mean and standard error of the elpd difference between reference and submodel \citep{Vehtari+etal:2017:practical,paper:projpred,Sivula+etal:2020:loo_uncertainty}.
 }
 
 \begin{point}
@@ -304,12 +304,12 @@ It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{be
 \begin{reply}
 The above condition is derived from the original criteria to choose the model size in \citet{paper:projpred} for the use of the projection predictive approach in the minimal subset scenario. In that case, the comparison is between the predictive score of the submodel of size $i$ and the reference model. Here we decided to compare the submodel of size $i$ with the ``best'' size, at the given iteration, due to the natural loss of explanatory power of the remaining covariates as the iterations increase. \\
 In general, the condition is expressed as the probability of that event, which is anyhow less exigent than the inequality itself. We don't want to imply that this procedure could not be improved somehow to take, for example, something like Occam's window into account. However, since the projection predictive approach was not the main point of this paper, we cannot reasonably address it here and leave it for future research. We have added a following sentence to the paper.
-TODO: would this be enough?
+TODO: would this be enough? Paul: please note that I changed the sentence below
 \end{reply}
 
 \vspace{0.5\baselineskip}
 \textit{
-We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and worth a further research.
+We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and may be worth further research.
 }
 
 \begin{point}
@@ -367,6 +367,7 @@ Please include the computational cost of compared approaches in Section 2.1.
 \begin{reply}
 Thanks for the suggestion. We discuss the computational aspects in Section 2.2. In general, the reference model approach has the additional cost of fitting the reference model before performing selection. However, this reference models is usually available anyway when building up a model via robust workflows \citep{gelman2020bayesian}. Therefore, in these cases there is no additional cost. In any case we believe that the benefits of a more stable and efficient selection overcome the cost of fitting a reference model.
 \fede{We added a new table (Table 3) reporting the computational time for the bodyf fat example, showing how the burden is divided between the fit of the reference model and the rest of the selection procedure.}
+Paul: why is this still in red?
 \end{reply}
 
 \begin{point}
