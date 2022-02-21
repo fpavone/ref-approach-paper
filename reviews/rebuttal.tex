@@ -104,8 +104,8 @@ The paper is well written and organized an the topic analyzed is very relevant a
 \end{comment}
 
 \begin{reply}
-	Thank you very much for your comments. We believe that in the first version of the paper, the purpose of our work was not clear and subject to possible misunderstandings. Our contribution takes clear inspiration from the work of \citet{paper:projpred}, but aims at a different goal: We studied the impact of using a reference model in general, disentangled from the specific variable selection algorithm.
-	We now make our goals explicit already in Section 1, where we now write
+	Thank you very much for your comments. We believe that in the first version of the paper, the purpose of our work was not clear and subject to possible misunderstandings. Our contribution takes clear inspiration from the work of \citet{paper:projpred}, but aims at a different goal: we studied the impact of using a reference model in general, disentangled from the specific variable selection algorithm.
+	We now make our goals explicit already in Section 1, where we now write:
 	
 \vspace{0.5\baselineskip}
 	\textit{The goal of the present paper is to study the impact of reference model approaches by disentangling the benefit of using reference models per se from the benefit of specific variable selection algorithms. In particular, we:
@@ -292,12 +292,13 @@ How is calculated the probability used in the stopping rule (2)? Using the refer
 
 \begin{reply}\label{reply:stopping}
 At each iteration, the best model is selected via the default stopping rule implemented in the \texttt{R}-package \texttt{projpred}. For details, see \citet{paper:projpred}. The predictive performance is evaluated via cross-validation both for the reference model and the submodels using the expected log-predictive density (elpd) score. The obtained elpd samples form a distribution than can be used to estimate said probability. We have added following sentence:
-TODO: is the sentence below enough? Paul: Please note my change to the below sentence.
-\end{reply}
 
+\vspace{0.5\baselineskip}
 \textit{
 \ldots and the probability is computed from a normal approximation of the uncertainty in the cross-validation performance comparison using the mean and standard error of the elpd difference between reference and submodel \citep{Vehtari+etal:2017:practical,paper:projpred,Sivula+etal:2020:loo_uncertainty}.
 }
+
+\end{reply}
 
 \begin{point}
 It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{best}>0$? Perhaps you should consider other limits similar to those used in Bayes factors (Kass and Raftery, 1995) and not to choose only on solution but to explore other possible solutions in the spirit of Occam’s window
@@ -306,13 +307,15 @@ It is not very exigent in (2) to impose that $\text{elpd}_i-\text{elpd}_\text{be
 \begin{reply}
 The above condition is derived from the original criteria to choose the model size in \citet{paper:projpred} for the use of the projection predictive approach in the minimal subset scenario. In that case, the comparison is between the predictive score of the submodel of size $i$ and the reference model. Here we decided to compare the submodel of size $i$ with the ``best'' size, at the given iteration, due to the natural loss of explanatory power of the remaining covariates as the iterations increase. \\
 In general, the condition is expressed as the probability of that event, which is anyhow less exigent than the inequality itself. We don't want to imply that this procedure could not be improved somehow to take, for example, something like Occam's window into account. However, since the projection predictive approach was not the main point of this paper, we cannot reasonably address it here, and leave it for future research. We have added a following sentence to the paper.
-TODO: would this be enough? Paul: please note that I changed the sentence below
-\end{reply}
 
 \vspace{0.5\baselineskip}
 \textit{
-We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and may be worth further research.
+	We have used the stopping rule recommended by \citet{paper:projpred} for the minimal subset selection, but other stopping rules would be possible in the iterative case and may be worth further research.
 }
+
+\end{reply}
+
+
 
 \begin{point}
 Section 4.1: It is no clear how the value of $\alpha$ should be chosen. $\alpha= 0.16$ is a magic number and a more thoroughly discussion of the influence of this value should be provided.
@@ -368,8 +371,7 @@ Please include the computational cost of compared approaches in Section 2.1.
 
 \begin{reply}
 Thanks for the suggestion. We discuss the computational aspects in Section 2.2. In general, the reference model approach has the additional cost of fitting the reference model before performing selection. However, this reference models is usually available anyway when building up a model via robust workflows \citep{gelman2020bayesian}. Therefore, in these cases there is no additional cost. In any case we believe that the benefits of a more stable and efficient selection overcome the cost of fitting a reference model.
-\fede{We added a new table (Table 3) reporting the computational time for the bodyf fat example, showing how the burden is divided between the fit of the reference model and the rest of the selection procedure.}
-Paul: why is this still in red?
+We added a new table (Table 3) reporting the computational time for the bodyf fat example, showing how the burden is divided between the fit of the reference model and the rest of the selection procedure.
 \end{reply}
 
 \begin{point}
